@@ -130,6 +130,25 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Pattern</Name>
+        <GetScriptBlock>
+                        param()
+@(
+$viewX = [Math]::Max($this.Maximum.X, $this.Minimum.X * -1)
+$viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
+"&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
+"&lt;defs&gt;"
+    "&lt;pattern id='turtle-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'&gt;"
+        "&lt;path id='turtle-path' d='$($this.PathData)' stroke='$(
+            if ($this.Stroke) { $this.Stroke } else { 'black' }
+        )' fill='transparent'/&gt;"
+    "&lt;/pattern&gt;"
+"&lt;/defs&gt;"
+"&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' /&gt;"
+"&lt;/svg&gt;") -join '' -as [xml]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Points</Name>
         <GetScriptBlock>
                         $this.Steps -replace '[\w-[\d\.]]+' -split '\s+' -ne '' -as [double[]]

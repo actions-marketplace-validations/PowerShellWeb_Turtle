@@ -95,6 +95,25 @@ if ($posY -gt $this.'.Maximum'.Y) {
 }
                     </SetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Steps</Name>
+        <GetScriptBlock>
+                        if ($this.'.Steps') {
+    return $this.'.Steps'
+}
+return @()
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[string[]]
+$Steps
+)
+
+$this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value $Steps
+
+                    </SetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
 </Types>

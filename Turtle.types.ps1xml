@@ -112,6 +112,12 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Points</Name>
+        <GetScriptBlock>
+                        $this.Steps -replace '[\w-[\d\.]]+' -split '\s+' -ne '' -as [double[]]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Position</Name>
         <GetScriptBlock>
                         if (-not $this.'.Position') {

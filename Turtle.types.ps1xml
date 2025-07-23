@@ -259,6 +259,25 @@ $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
 ) -join '' -as [xml]
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Symbol</Name>
+        <GetScriptBlock>
+                        param()
+
+@(
+    $viewX = [Math]::Max($this.Maximum.X, $this.Minimum.X * -1)
+    $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
+    "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
+        "&lt;symbol id='turtle-symbol' viewBox='0 0 $viewX $viewY' transform-origin='50% 50%'&gt;"
+            "&lt;path id='turtle-path' transform-origin='50% 50%' d='$($this.PathData)' stroke='$(
+                if ($this.Stroke) { $this.Stroke } else { 'black' }
+            )' fill='transparent'/&gt;"
+        "&lt;/symbol&gt;"
+        "&lt;use href='#turtle-symbol' width='100%' height='100%' /&gt;"
+    "&lt;/svg&gt;"
+) -join '' -as [xml]
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
 </Types>

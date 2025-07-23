@@ -1,0 +1,35 @@
+<!-- Generated with EZOut 2.0.6: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<Types>
+  <Type>
+    <Name>Turtle</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Heading</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the turtle's heading.
+.DESCRIPTION
+    Gets the current heading of the turtle.
+#&gt;
+param()
+if ($null -ne $this.'.TurtleHeading') {
+    return $this.'.TurtleHeading'
+}
+return 0
+
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[double]
+$Heading
+)
+
+$this |  Add-Member -MemberType NoteProperty -Force -Name '.TurtleHeading' -Value $Heading
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+</Types>

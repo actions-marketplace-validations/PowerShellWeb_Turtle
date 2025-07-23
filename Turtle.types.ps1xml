@@ -3,6 +3,19 @@
   <Type>
     <Name>Turtle</Name>
     <Members>
+      <ScriptMethod>
+        <Name>Rotate</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Rotates the turtle.
+.DESCRIPTION
+    Rotates the turtle by the specified angle.
+#&gt;
+param([double]$Angle = 90)
+$this.Heading += $Angle
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>Heading</Name>
         <GetScriptBlock>

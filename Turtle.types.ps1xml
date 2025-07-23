@@ -4,6 +4,14 @@
     <Name>Turtle</Name>
     <Members>
       <ScriptMethod>
+        <Name>Clear</Name>
+        <Script>
+                        $this.Position = 0, 0
+$this.Heading = 0
+$this.Steps = @()
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>Forward</Name>
         <Script>
                         param(

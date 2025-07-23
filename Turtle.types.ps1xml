@@ -206,6 +206,21 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value $Steps
 $this | Add-Member -MemberType NoteProperty -Force -Name '.Stroke' -Value $value
                     </SetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>StrokeThickness</Name>
+        <GetScriptBlock>
+                        if ($this.'.StrokeThickness') {
+    return $this.'.StrokeThickness'
+} else {
+    return '0.1%'
+}
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param([string]$value)
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeThickness' -Value $value
+                    </SetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
 </Types>

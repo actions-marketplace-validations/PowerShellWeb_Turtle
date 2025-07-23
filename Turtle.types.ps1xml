@@ -39,6 +39,16 @@ param([double]$Angle = 90)
 $this.Heading += $Angle
                     </Script>
       </ScriptMethod>
+      <ScriptMethod>
+        <Name>Square</Name>
+        <Script>
+                        param([double]$Size = 50)
+foreach ($n in 1..4) {
+    $this.Forward($Size)
+    $this.Rotate(90)
+}
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>Heading</Name>
         <GetScriptBlock>

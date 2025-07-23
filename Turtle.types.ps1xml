@@ -191,6 +191,21 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value $Steps
 
                     </SetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Stroke</Name>
+        <GetScriptBlock>
+                        if ($this.'.Stroke') {
+    return $this.'.Stroke'
+} else {
+    return '#4488ff'
+}
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param([string]$value)
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.Stroke' -Value $value
+                    </SetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
 </Types>

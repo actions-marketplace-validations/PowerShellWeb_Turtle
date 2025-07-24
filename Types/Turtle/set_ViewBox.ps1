@@ -25,7 +25,8 @@ if ($viewBox[0] -eq 0 -and
 ) {
     $viewX = $this.Maximum.X + ($this.Minimum.X * -1)
     $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
-    $viewBox = 0, 0, $viewX, $viewY    
+    $this.psobject.Properties.Remove('.ViewBox')
+    return
 }
 
 $this | Add-Member -MemberType NoteProperty -Force -Name '.ViewBox' -Value $viewBox

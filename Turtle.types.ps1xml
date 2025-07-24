@@ -242,8 +242,8 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
         <GetScriptBlock>
                         param()
 $segments = @(
-$viewX = [Math]::Max($this.Maximum.X, $this.Minimum.X * -1)
-$viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
+$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
+$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
 "&lt;defs&gt;"
     "&lt;pattern id='turtle-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'$(
@@ -258,6 +258,8 @@ $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
         "&lt;path id='turtle-path' d='$($this.PathData)' stroke='$(
             if ($this.Stroke) { $this.Stroke } else { 'black' }
+        )' stroke-width='$(
+            if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
         )' fill='transparent'/&gt;"
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
@@ -380,10 +382,10 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.Stroke' -Value $value
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
-        <Name>StrokeThickness</Name>
+        <Name>StrokeWidth</Name>
         <GetScriptBlock>
-                        if ($this.'.StrokeThickness') {
-    return $this.'.StrokeThickness'
+                        if ($this.'.StrokeWidth') {
+    return $this.'.StrokeWidth'
 } else {
     return '0.1%'
 }
@@ -391,7 +393,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.Stroke' -Value $value
         <SetScriptBlock>
                         param([string]$value)
 
-$this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeThickness' -Value $value
+$this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $value
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -400,14 +402,14 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeThickness' -Val
                         param()
 @(
 
-$viewX = [Math]::Max($this.Maximum.X, $this.Minimum.X * -1)
-$viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
+$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
+$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
 
 "&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 $viewX $viewY' transform-origin='50% 50%' width='100%' height='100%'&gt;"
     "&lt;path id='turtle-path' transform-origin='50% 50%' d='$($this.PathData)' stroke='$(
         if ($this.Stroke) { $this.Stroke } else { '#4488ff' }
-    )' stroke-thickness='$(
-        if ($this.StrokeThickness) { $this.StrokeThickness } else { '0.1%' }
+    )' stroke-width='$(
+        if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
     )' fill='transparent'/&gt;"
 "&lt;/svg&gt;"
 ) -join '' -as [xml]
@@ -418,13 +420,16 @@ $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
         <GetScriptBlock>
                         param()
 
-@(
-    $viewX = [Math]::Max($this.Maximum.X, $this.Minimum.X * -1)
-    $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
+$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
+$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
+
+@(    
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
         "&lt;symbol id='turtle-symbol' viewBox='0 0 $viewX $viewY' transform-origin='50% 50%'&gt;"
             "&lt;path id='turtle-path' transform-origin='50% 50%' d='$($this.PathData)' stroke='$(
                 if ($this.Stroke) { $this.Stroke } else { 'black' }
+            )' stroke-width='$(
+                if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
             )' fill='transparent'/&gt;"
         "&lt;/symbol&gt;"
         "&lt;use href='#turtle-symbol' width='100%' height='100%' /&gt;"

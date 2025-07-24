@@ -3,7 +3,7 @@ param(
     [int]$Order = 2,
     [double]$Angle = 120
 )        
-$this.L('F-G-G',  [Ordered]@{
+return $this.L('F-G-G',  [Ordered]@{
     F = 'F-G+F+G-F'
     G = 'GG'
 }, $Order, [Ordered]@{
@@ -11,4 +11,3 @@ $this.L('F-G-G',  [Ordered]@{
     '-'     = { $this.Rotate($Angle * -1) }
     '[FG]'  = { $this.Forward($Size) }
 })
-return $this

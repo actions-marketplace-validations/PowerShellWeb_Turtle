@@ -3,7 +3,9 @@ param(
     [int]$Order = 5,
     [double]$Angle = 90
 )        
-$this.L('A',  @{
+
+
+return $this.L('A',  @{
     A = '+BF-AFA-FB+'
     B = '-AF+BFB+FA-'
 }, $Order, @{
@@ -11,4 +13,3 @@ $this.L('A',  @{
     '\+'    = { $this.Rotate($Angle) }
     '\-'    = { $this.Rotate($Angle * -1) }
 })
-return $this

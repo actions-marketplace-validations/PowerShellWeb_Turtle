@@ -32,7 +32,7 @@ foreach ($iteration in 1..$n) {
 }
 
 $finalState = $currentState
-foreach ($character in $finalState.ToCharArray()) {
+$null = foreach ($character in $finalState.ToCharArray()) {
     foreach ($key in $Variable.Keys) {
         if ($character -match $key) {
             $action = $Variable[$key]

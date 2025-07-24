@@ -220,6 +220,21 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.TurtleHeading' -Valu
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Mask</Name>
+        <GetScriptBlock>
+                        $segments = @(
+"&lt;svg xmlns='http://www.w3.org/2000/svg' width='0%' height='0%'&gt;"
+    "&lt;defs&gt;"
+        "&lt;mask id='turtle-mask'&gt;"
+            $this.Symbol.OuterXml -replace '\&lt;\?[^\&gt;]+\&gt;'
+        "&lt;/mask&gt;"
+    "&lt;/defs&gt;"
+"&lt;/svg&gt;"
+)
+[xml]($segments -join '')
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Maximum</Name>
         <GetScriptBlock>
                         &lt;#
@@ -303,11 +318,7 @@ $null, $null, $viewX, $viewY = $viewBox
         }
     )&gt;"
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        "&lt;path id='turtle-path' d='$($this.PathData)' stroke='$(
-            if ($this.Stroke) { $this.Stroke } else { 'black' }
-        )' stroke-width='$(
-            if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-        )' fill='transparent' class='foreground-stroke' /&gt;"
+        $this.PathElement.OuterXml        
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
 "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' /&gt;"
@@ -333,6 +344,21 @@ $PatternAnimation
 $this | Add-Member -MemberType NoteProperty -Force -Name '.PatternAnimation' -Value $PatternAnimation
 
                     </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>PatternMask</Name>
+        <GetScriptBlock>
+                        $segments = @(
+"&lt;svg xmlns='http://www.w3.org/2000/svg' width='0%' height='0%'&gt;"
+    "&lt;defs&gt;"
+        "&lt;mask id='turtle-mask'&gt;"
+            $this.Pattern.OuterXml -replace '\&lt;\?[^\&gt;]+\&gt;'
+        "&lt;/mask&gt;"
+    "&lt;/defs&gt;"    
+"&lt;/svg&gt;"
+)
+[xml]($segments -join '')
+                    </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>PatternTransform</Name>
@@ -449,11 +475,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $
                         param()
 @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='$($this.ViewBox)' transform-origin='50% 50%' width='100%' height='100%'&gt;"
-    "&lt;path id='turtle-path' transform-origin='50% 50%' d='$($this.PathData)' stroke='$(
-        if ($this.Stroke) { $this.Stroke } else { '#4488ff' }
-    )' stroke-width='$(
-        if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-    )' fill='transparent'/&gt;"
+    $this.PathElement.OuterXml
 "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>
@@ -466,11 +488,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $
 @(    
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
         "&lt;symbol id='turtle-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
-            "&lt;path id='turtle-path' transform-origin='50% 50%' d='$($this.PathData)' stroke='$(
-                if ($this.Stroke) { $this.Stroke } else { 'black' }
-            )' stroke-width='$(
-                if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-            )' fill='transparent'/&gt;"
+            $this.PathElement.OuterXml
         "&lt;/symbol&gt;"
         "&lt;use href='#turtle-symbol' width='100%' height='100%' /&gt;"
     "&lt;/svg&gt;"

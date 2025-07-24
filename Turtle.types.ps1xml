@@ -275,6 +275,23 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.PatternAnimation' -Va
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>PatternTransform</Name>
+        <GetScriptBlock>
+                        if ($this.'.PatternTransform') {
+    return $this.'.PatternTransform'
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[Collections.IDictionary]
+$PatternTransform
+)
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.PatternTransform' -Value $PatternTransform
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Points</Name>
         <GetScriptBlock>
                         $this.Steps -replace '[\w-[\d\.E\-]]+' -split '\s+' -ne '' -as [double[]]

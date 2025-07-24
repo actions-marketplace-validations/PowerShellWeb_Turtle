@@ -273,6 +273,18 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>PathElement</Name>
+        <GetScriptBlock>
+                        @(
+"&lt;path id='turtle-path' d='$($this.PathData)' stroke='$(
+    if ($this.Stroke) { $this.Stroke } else { 'black' }
+)' stroke-width='$(
+    if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
+)' fill='transparent' class='foreground-stroke' /&gt;"
+) -as [xml]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Pattern</Name>
         <GetScriptBlock>
                         param()

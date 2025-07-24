@@ -1,7 +1,7 @@
 param()
 $segments = @(
-$viewX = [Math]::Max($this.Maximum.X, $this.Minimum.X * -1)
-$viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
+$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
+$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
 "<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'>"
 "<defs>"
     "<pattern id='turtle-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'$(
@@ -16,6 +16,8 @@ $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
         "<path id='turtle-path' d='$($this.PathData)' stroke='$(
             if ($this.Stroke) { $this.Stroke } else { 'black' }
+        )' stroke-width='$(
+            if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
         )' fill='transparent'/>"
     "</pattern>"
 "</defs>"

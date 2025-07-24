@@ -114,6 +114,21 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Polygon</Name>
+        <Script>
+                        param(
+    $Size = 100, 
+    $SideCount = 6
+)
+
+$null = foreach ($n in 1..$SideCount) {    
+    $this.Forward($Size)
+    $this.Rotate(360 / $SideCount)    
+}
+return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>Rotate</Name>
         <Script>
                         &lt;#
@@ -436,6 +451,53 @@ $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
     "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ViewBox</Name>
+        <GetScriptBlock>
+                        if ($this.'.ViewBox') { return $this.'.ViewBox' }
+$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
+$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
+
+return 0, 0, $viewX, $viewY
+
+
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[double[]]
+$viewBox
+)
+
+if ($viewBox.Length -gt 4) {
+    $viewBox = $viewBox[0..3]
+}
+if ($viewBox.Length -lt 4) {
+    if ($viewBox.Length -eq 3) {
+        $viewBox = $viewBox[0], $viewBox[1], $viewBox[2],$viewBox[2]
+    }
+    if ($viewBox.Length -eq 2) {
+        $viewBox = 0,0, $viewBox[0], $viewBox[1]
+    }
+    if ($viewBox.Length -eq 1) {
+        $viewBox = 0,0, $viewBox[0], $viewBox[0]
+    }
+}
+
+if ($viewBox[0] -eq 0 -and 
+    $viewBox[1] -eq 0 -and 
+    $viewBox[2] -eq 0 -and  
+    $viewBox[3] -eq 0
+) {
+    $viewX = $this.Maximum.X + ($this.Minimum.X * -1)
+    $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
+    $viewBox = 0, 0, $viewX, $viewY    
+}
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.ViewBox' -Value $viewBox
+
+                    </SetScriptBlock>
       </ScriptProperty>
       <NoteProperty>
         <Name>DefaultDisplay</Name>

@@ -47,7 +47,9 @@ return $this
     [int]$Order = 5,
     [double]$Angle = 90
 )        
-$this.L('A',  @{
+
+
+return $this.L('A',  @{
     A = '+BF-AFA-FB+'
     B = '-AF+BFB+FA-'
 }, $Order, @{
@@ -55,7 +57,7 @@ $this.L('A',  @{
     '\+'    = { $this.Rotate($Angle) }
     '\-'    = { $this.Rotate($Angle * -1) }
 })
-return $this
+
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -95,7 +97,7 @@ foreach ($iteration in 1..$n) {
 }
 
 $finalState = $currentState
-foreach ($character in $finalState.ToCharArray()) {
+$null = foreach ($character in $finalState.ToCharArray()) {
     foreach ($key in $Variable.Keys) {
         if ($character -match $key) {
             $action = $Variable[$key]
@@ -133,7 +135,7 @@ return $this
     [int]$Order = 2,
     [double]$Angle = 120
 )        
-$this.L('F-G-G',  [Ordered]@{
+return $this.L('F-G-G',  [Ordered]@{
     F = 'F-G+F+G-F'
     G = 'GG'
 }, $Order, [Ordered]@{
@@ -141,7 +143,6 @@ $this.L('F-G-G',  [Ordered]@{
     '-'     = { $this.Rotate($Angle * -1) }
     '[FG]'  = { $this.Forward($Size) }
 })
-return $this
 
                     </Script>
       </ScriptMethod>
@@ -149,7 +150,7 @@ return $this
         <Name>Square</Name>
         <Script>
                         param([double]$Size = 50)
-foreach ($n in 1..4) {
+$null = foreach ($n in 1..4) {
     $this.Forward($Size)
     $this.Rotate(90)
 }

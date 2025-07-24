@@ -6,3 +6,4 @@
 #>
 param([double]$Angle = 90)
 $this.Heading += $Angle
+return $this

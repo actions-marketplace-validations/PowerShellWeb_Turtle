@@ -44,4 +44,4 @@ foreach ($character in $finalState.ToCharArray()) {
         }
     }
 }
-return
+return $this

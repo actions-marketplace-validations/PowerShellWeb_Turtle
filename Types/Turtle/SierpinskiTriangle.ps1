@@ -11,3 +11,4 @@ $this.L('F-G-G',  [Ordered]@{
     '-'     = { $this.Rotate($Angle * -1) }
     '[FG]'  = { $this.Forward($Size) }
 })
+return $this

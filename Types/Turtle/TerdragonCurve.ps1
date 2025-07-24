@@ -1,5 +1,11 @@
 
 <#
+.SYNOPSIS
+    Generates a Terdragon Curve.
+.DESCRIPTION
+    Generates a Terdragon curve using turtle graphics.
+.LINK
+    https://en.wikipedia.org/wiki/Dragon_curve#Terdragon
 .EXAMPLE
     $turtle.TerdragonCurve().Pattern.Save("$pwd/TerdragonCurve.svg")
 .EXAMPLE

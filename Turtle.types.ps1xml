@@ -259,7 +259,7 @@ $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
       <ScriptProperty>
         <Name>Points</Name>
         <GetScriptBlock>
-                        $this.Steps -replace '[\w-[\d\.]]+' -split '\s+' -ne '' -as [double[]]
+                        $this.Steps -replace '[\w-[\d\.E\-]]+' -split '\s+' -ne '' -as [double[]]
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>

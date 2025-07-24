@@ -3,6 +3,18 @@
   <Type>
     <Name>Turtle</Name>
     <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>Heading</Name>
+              <Name>Position</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
       <ScriptMethod>
         <Name>Clear</Name>
         <Script>
@@ -373,6 +385,12 @@ $viewY = [Math]::Max($this.Maximum.Y, $this.Minimum.Y * -1)
 ) -join '' -as [xml]
                     </GetScriptBlock>
       </ScriptProperty>
+      <NoteProperty>
+        <Name>DefaultDisplay</Name>
+        <Value>Heading
+Position
+</Value>
+      </NoteProperty>
     </Members>
   </Type>
 </Types>

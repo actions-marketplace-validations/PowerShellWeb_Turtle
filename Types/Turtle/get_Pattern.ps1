@@ -14,11 +14,7 @@ $null, $null, $viewX, $viewY = $viewBox
         }
     )>"
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        "<path id='turtle-path' d='$($this.PathData)' stroke='$(
-            if ($this.Stroke) { $this.Stroke } else { 'black' }
-        )' stroke-width='$(
-            if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-        )' fill='transparent' class='foreground-stroke' />"
+        $this.PathElement.OuterXml        
     "</pattern>"
 "</defs>"
 "<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' />"

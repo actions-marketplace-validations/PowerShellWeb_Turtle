@@ -21,6 +21,9 @@
                         $this.Position = 0, 0
 $this.Heading = 0
 $this.Steps = @()
+$this | Add-Member -MemberType NoteProperty -Force -Name '.Minimum' -Value ([pscustomobject]@{ X = 0; Y = 0 })
+$this | Add-Member -MemberType NoteProperty -Force -Name '.Maximum' -Value ([pscustomobject]@{ X = 0; Y = 0 })
+$this.ViewBox = 0
 return $this
                     </Script>
       </ScriptMethod>
@@ -274,12 +277,12 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
         <GetScriptBlock>
                         param()
 $segments = @(
-$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
-$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
+$viewBox = $this.ViewBox
+$null, $null, $viewX, $viewY = $viewBox
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
 "&lt;defs&gt;"
     "&lt;pattern id='turtle-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'$(
-        if ($this.PatternTransform) {             
+        if ($this.PatternTransform) {
             " patternTransform='" + (
                 @(foreach ($key in $this.PatternTransform.Keys) {
                     "$key($($this.PatternTransform[$key]))"
@@ -292,7 +295,7 @@ $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
             if ($this.Stroke) { $this.Stroke } else { 'black' }
         )' stroke-width='$(
             if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-        )' fill='transparent'/&gt;"
+        )' fill='transparent' class='foreground-stroke' /&gt;"
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
 "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' /&gt;"
@@ -433,11 +436,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $
         <GetScriptBlock>
                         param()
 @(
-
-$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
-$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
-
-"&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 $viewX $viewY' transform-origin='50% 50%' width='100%' height='100%'&gt;"
+"&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='$($this.ViewBox)' transform-origin='50% 50%' width='100%' height='100%'&gt;"
     "&lt;path id='turtle-path' transform-origin='50% 50%' d='$($this.PathData)' stroke='$(
         if ($this.Stroke) { $this.Stroke } else { '#4488ff' }
     )' stroke-width='$(
@@ -452,12 +451,9 @@ $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
         <GetScriptBlock>
                         param()
 
-$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
-$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
-
 @(    
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
-        "&lt;symbol id='turtle-symbol' viewBox='0 0 $viewX $viewY' transform-origin='50% 50%'&gt;"
+        "&lt;symbol id='turtle-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
             "&lt;path id='turtle-path' transform-origin='50% 50%' d='$($this.PathData)' stroke='$(
                 if ($this.Stroke) { $this.Stroke } else { 'black' }
             )' stroke-width='$(
@@ -473,6 +469,7 @@ $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
         <Name>ViewBox</Name>
         <GetScriptBlock>
                         if ($this.'.ViewBox') { return $this.'.ViewBox' }
+
 $viewX = $this.Maximum.X + ($this.Minimum.X * -1)
 $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
 
@@ -509,7 +506,8 @@ if ($viewBox[0] -eq 0 -and
 ) {
     $viewX = $this.Maximum.X + ($this.Minimum.X * -1)
     $viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
-    $viewBox = 0, 0, $viewX, $viewY    
+    $this.psobject.Properties.Remove('.ViewBox')
+    return
 }
 
 $this | Add-Member -MemberType NoteProperty -Force -Name '.ViewBox' -Value $viewBox

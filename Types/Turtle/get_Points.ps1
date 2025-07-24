@@ -1,1 +1,1 @@
-$this.Steps -replace '[\w-[\d\.]]+' -split '\s+' -ne '' -as [double[]]
+$this.Steps -replace '[\w-[\d\.E\-]]+' -split '\s+' -ne '' -as [double[]]

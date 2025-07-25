@@ -473,6 +473,36 @@ return $this.L('FX+FX+',  [Ordered]@{
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>AnimateMotionDuration</Name>
+        <GetScriptBlock>
+                        if ($this.'.AnimateMotionDuration') {
+    return $this.'.AnimateMotionDuration'
+}
+$thesePoints = $this.Points
+if ($thesePoints.Length -eq 0) {
+    return "$(($thesePoints.Length / 2 / 10))s"
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[PSObject]
+$AnimateMotionDuration
+)
+
+if ($AnimateMotionDuration -is [TimeSpan]) {
+    $AnimateMotionDuration = $AnimateMotionDuration.TotalSeconds + 's'
+}
+
+if ($AnimateMotionDuration -is [int] -or $AnimateMotionDuration -is [double]) {
+    $AnimateMotionDuration = "${AnimateMotionDuration}s"
+}
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.AnimateMotionDuration' -Value $AnimateMotionDuration
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Heading</Name>
         <GetScriptBlock>
                         &lt;#

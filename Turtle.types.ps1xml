@@ -461,6 +461,18 @@ return $this.L('FX+FX+',  [Ordered]@{
                     </Script>
       </ScriptMethod>
       <ScriptProperty>
+        <Name>AnimateMotion</Name>
+        <GetScriptBlock>
+                        @("&lt;animateMotion dur='$(
+    if ($this.AnimateMotionDuration) {
+        $this.AnimateMotionDuration
+    } else {
+        "$(($this.Points.Length / 2 / 10))s"
+    }
+)' repeatCount='indefinite' path='$($this.PathData)' /&gt;") -as [xml]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Heading</Name>
         <GetScriptBlock>
                         &lt;#

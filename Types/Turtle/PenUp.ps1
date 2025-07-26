@@ -1,2 +1,2 @@
-$this.IsDown = $false
+$this.IsPenDown = $false
 return $this

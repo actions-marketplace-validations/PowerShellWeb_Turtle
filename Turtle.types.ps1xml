@@ -219,7 +219,7 @@ return $this
       <ScriptMethod>
         <Name>PenDown</Name>
         <Script>
-                        $this.IsDown = $true
+                        $this.IsPenDown = $true
 return $this
 
                     </Script>
@@ -227,7 +227,7 @@ return $this
       <ScriptMethod>
         <Name>PenUp</Name>
         <Script>
-                        $this.IsDown = $false
+                        $this.IsPenDown = $false
 return $this
 
                     </Script>

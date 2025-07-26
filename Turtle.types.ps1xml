@@ -103,8 +103,7 @@ return $this
     [double]$Angle = 90
 )        
 
-
-return $this.L('A',  @{
+return $this.LSystem('A',  @{
     A = '+BF-AFA-FB+'
     B = '-AF+BFB+FA-'
 }, $Order, @{
@@ -123,7 +122,7 @@ return $this.L('A',  @{
     [double]$Rotation = 90,
     [int]$Order = 4
 )    
-return $this.L('F',  @{
+return $this.LSystem('F',  @{
     F = 'F+F-F-F+F'
 }, $Order, [Ordered]@{
     '\+' = { $this.Rotate($Rotation) }
@@ -162,7 +161,7 @@ param(
     [int]$Order = 4,
     [double]$Rotation = 60
 )    
-return $this.L('F--F--F ',  @{
+return $this.LSystem('F--F--F ',  @{
     F = 'F+F--F+F'
 }, $Order, [Ordered]@{
     '\+' = { $this.Rotate($Rotation) }
@@ -172,7 +171,23 @@ return $this.L('F--F--F ',  @{
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
-        <Name>L</Name>
+        <Name>Left</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Turns the turtle left
+.DESCRIPTION
+    Turns the turtle left (counter-clockwise) by the specified angle.
+#&gt;
+param(
+[double]$Angle = 90
+)
+
+$this.Rotate($Angle * -1)
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>LSystem</Name>
         <Script>
                         param(
 [Alias('Start', 'StartString', 'Initiator')]
@@ -222,22 +237,6 @@ $null = foreach ($character in $finalState.ToCharArray()) {
 }
 return $this
 
-                    </Script>
-      </ScriptMethod>
-      <ScriptMethod>
-        <Name>Left</Name>
-        <Script>
-                        &lt;#
-.SYNOPSIS
-    Turns the turtle left
-.DESCRIPTION
-    Turns the turtle left (counter-clockwise) by the specified angle.
-#&gt;
-param(
-[double]$Angle = 90
-)
-
-$this.Rotate($Angle * -1)
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -332,7 +331,7 @@ param(
     [int]$Order = 8,
     [double]$Angle = 60
 )
-return $this.L('XF',  [Ordered]@{
+return $this.LSystem('XF',  [Ordered]@{
     X = 'YF + XF + Y'
     Y = 'XF - YF - X'
 }, $Order, [Ordered]@{
@@ -373,7 +372,7 @@ param(
     [int]$Order = 4,
     [double]$Angle = 45
 )
-return $this.L('F--XF--F--XF',  [Ordered]@{
+return $this.LSystem('F--XF--F--XF',  [Ordered]@{
     X ='XF+G+XF--F--XF+G+X'
 }, $Order, [Ordered]@{
     '\+'    = { $this.Rotate($Angle) }
@@ -413,7 +412,7 @@ param(
     [int]$Order = 5,
     [double]$Angle = 90
 )
-return $this.L('X',  [Ordered]@{
+return $this.LSystem('X',  [Ordered]@{
     X = 'XF-F+F-XF+F+XF-F+F-X'
 }, $Order, [Ordered]@{
     '\+'    = { $this.Rotate($Angle) }
@@ -426,12 +425,36 @@ return $this.L('X',  [Ordered]@{
       <ScriptMethod>
         <Name>SierpinskiTriangle</Name>
         <Script>
-                        param(
+                        &lt;#
+.SYNOPSIS
+    Generates a Sierpinski Triangle.
+.DESCRIPTION
+    Generates a Sierpinski Triangle using turtle graphics.
+.LINK
+    https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle
+.EXAMPLE
+    $turtle.SierpinskiTriangle().Pattern.Save("$pwd/SierpinskiTriangle.svg")
+.EXAMPLE
+    $turtle.Clear()
+    $turtle.SierpinskiTriangle(10,6)
+    $turtle.PatternTransform = @{
+        'scale' = 0.9        
+    }    
+    $turtle.PatternAnimation = "
+    &lt;animateTransform attributeName='patternTransform' attributeType='XML' type='scale' values='1;0.9;1' dur='19s' repeatCount='indefinite' additive='sum' /&gt;
+    &lt;animateTransform attributeName='patternTransform' attributeType='XML' type='skewY' values='0;-30;30;-30;0' dur='67s' repeatCount='indefinite' additive='sum' /&gt;
+    &lt;animateTransform attributeName='patternTransform' attributeType='XML' type='skewX' values='0;-30;30;-30;0' dur='83s' repeatCount='indefinite' additive='sum' /&gt;
+    &lt;animateTransform attributeName='patternTransform' attributeType='XML' type='rotate' values='0;360' dur='163s' repeatCount='indefinite' additive='sum' /&gt;
+    &lt;animateTransform attributeName='patternTransform' attributeType='XML' type='translate' values='0 0;200 200;0 0' dur='283s' repeatCount='indefinite' additive='sum' /&gt;
+    "
+    $turtle.Pattern.Save("$pwd/SierpinskiTriangle2.svg")
+#&gt;
+param(
     [double]$Size = 200,
     [int]$Order = 2,
     [double]$Angle = 120
-)        
-return $this.L('F-G-G',  [Ordered]@{
+)
+return $this.LSystem('F-G-G',  [Ordered]@{
     F = 'F-G+F+G-F'
     G = 'GG'
 }, $Order, [Ordered]@{
@@ -486,7 +509,7 @@ param(
     [int]$Order = 8,
     [double]$Angle = 120
 )
-return $this.L('F',  [Ordered]@{
+return $this.LSystem('F',  [Ordered]@{
     F = 'F+F-F'    
 }, $Order, [Ordered]@{
     '\+'    = { $this.Rotate($Angle) }
@@ -529,7 +552,7 @@ param(
     [int]$Order = 6,
     [double]$Angle = 90
 )
-return $this.L('FX+FX+',  [Ordered]@{
+return $this.LSystem('FX+FX+',  [Ordered]@{
     X = 'X+YF'
     Y = 'FX-Y'
 }, $Order, [Ordered]@{

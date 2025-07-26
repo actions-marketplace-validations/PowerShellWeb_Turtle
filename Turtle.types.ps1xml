@@ -15,6 +15,26 @@
           </PropertySet>
         </Members>
       </MemberSet>
+      <AliasProperty>
+        <Name>down</Name>
+        <ReferencedMemberName>PenDown</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>fd</Name>
+        <ReferencedMemberName>Forward</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>pd</Name>
+        <ReferencedMemberName>PenDown</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>pu</Name>
+        <ReferencedMemberName>PenUp</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>up</Name>
+        <ReferencedMemberName>PenUp</ReferencedMemberName>
+      </AliasProperty>
       <ScriptMethod>
         <Name>BoxFractal</Name>
         <Script>
@@ -192,6 +212,22 @@ $null = foreach ($character in $finalState.ToCharArray()) {
         }
     }
 }
+return $this
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>PenDown</Name>
+        <Script>
+                        $this.IsDown = $true
+return $this
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>PenUp</Name>
+        <Script>
+                        $this.IsDown = $false
 return $this
 
                     </Script>

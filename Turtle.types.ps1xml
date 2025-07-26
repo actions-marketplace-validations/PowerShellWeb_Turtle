@@ -58,7 +58,11 @@ $Distance = 10
 $x = $Distance * [math]::round([math]::cos($this.Heading * [Math]::PI / 180),15)
 $y = $Distance * [math]::round([math]::sin($this.Heading * [Math]::PI / 180),15)
 $this.Position = $x, $y
-$this.Steps += "l $x $y"
+if ($This.IsPenDown) {
+    $this.Steps += " l $x $y"
+} else {
+    $this.Steps += " m $x $y"
+}
 return $this
                     </Script>
       </ScriptMethod>
@@ -527,6 +531,27 @@ $Heading
 
 $this |  Add-Member -MemberType NoteProperty -Force -Name '.TurtleHeading' -Value $Heading
 
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>IsPenDown</Name>
+        <GetScriptBlock>
+                        if ($null -ne $this.'.IsPenDown') { return $this.'.IsPenDown' }
+return $true
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[bool]
+$IsDown
+)
+
+$this | 
+    Add-Member -MemberType NoteProperty -Force -Name '.IsPenDown' -Value $IsDown
+    
+if ($VerbosePreference -ne 'SilentlyContinue') {
+    Write-Verbose "Turtle is now $($IsDown ? 'down' : 'up')"
+}
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>

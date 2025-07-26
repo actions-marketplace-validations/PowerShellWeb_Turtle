@@ -43,6 +43,14 @@
         <Name>up</Name>
         <ReferencedMemberName>PenUp</ReferencedMemberName>
       </AliasProperty>
+      <AliasProperty>
+        <Name>xPos</Name>
+        <ReferencedMemberName>xcor</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>yPos</Name>
+        <ReferencedMemberName>ycor</ReferencedMemberName>
+      </AliasProperty>
       <ScriptMethod>
         <Name>BoxFractal</Name>
         <Script>
@@ -563,6 +571,18 @@ return $this.LSystem('FX+FX+',  [Ordered]@{
 
                     </Script>
       </ScriptMethod>
+      <ScriptMethod>
+        <Name>xcor</Name>
+        <Script>
+                        return $this.Position.X
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>ycor</Name>
+        <Script>
+                        return $this.Position.Y
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>AnimateMotion</Name>
         <GetScriptBlock>
@@ -623,13 +643,30 @@ return 0
 
                     </GetScriptBlock>
         <SetScriptBlock>
-                        param(
+                        &lt;#
+.SYNOPSIS
+    Sets the turtle's heading.
+.DESCRIPTION
+    Sets the turtle's heading.  
+    
+    This is one of two key properties of the turtle, the other being its position.
+#&gt;
+param(
+# The new turtle heading.  
 [double]
 $Heading
 )
 
-$this |  Add-Member -MemberType NoteProperty -Force -Name '.TurtleHeading' -Value $Heading
+if ($this -and -not $this.psobject.properties['.TurtleHeading']) {
+    $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', 0), $false)
+}
+$this.'.TurtleHeading' = $Heading
 
+# $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', $Heading), $false)
+# $this |  Add-Member -MemberType NoteProperty -Force -Name '.TurtleHeading' -Value $Heading
+if ($VerbosePreference -ne 'SilentlyContinue') {
+    Write-Verbose "Heading to $Heading"
+}
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -879,7 +916,7 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value $Steps
                         if ($this.'.Stroke') {
     return $this.'.Stroke'
 } else {
-    return '#4488ff'
+    return 'currentColor'
 }
                     </GetScriptBlock>
         <SetScriptBlock>
@@ -977,6 +1014,18 @@ if ($viewBox[0] -eq 0 -and
 $this | Add-Member -MemberType NoteProperty -Force -Name '.ViewBox' -Value $viewBox
 
                     </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>X</Name>
+        <GetScriptBlock>
+                        $this.Position.X
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Y</Name>
+        <GetScriptBlock>
+                        $this.Position.Y
+                    </GetScriptBlock>
       </ScriptProperty>
       <NoteProperty>
         <Name>DefaultDisplay</Name>

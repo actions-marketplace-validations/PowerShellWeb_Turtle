@@ -28,7 +28,7 @@ param(
     [int]$Order = 6,
     [double]$Angle = 90
 )
-return $this.L('FX+FX+',  [Ordered]@{
+return $this.LSystem('FX+FX+',  [Ordered]@{
     X = 'X+YF'
     Y = 'FX-Y'
 }, $Order, [Ordered]@{

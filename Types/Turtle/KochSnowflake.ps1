@@ -25,7 +25,7 @@ param(
     [int]$Order = 4,
     [double]$Rotation = 60
 )    
-return $this.L('F--F--F ',  @{
+return $this.LSystem('F--F--F ',  @{
     F = 'F+F--F+F'
 }, $Order, [Ordered]@{
     '\+' = { $this.Rotate($Rotation) }

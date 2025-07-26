@@ -4,8 +4,7 @@ param(
     [double]$Angle = 90
 )        
 
-
-return $this.L('A',  @{
+return $this.LSystem('A',  @{
     A = '+BF-AFA-FB+'
     B = '-AF+BFB+FA-'
 }, $Order, @{

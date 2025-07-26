@@ -25,7 +25,7 @@ param(
     [int]$Order = 5,
     [double]$Angle = 90
 )
-return $this.L('X',  [Ordered]@{
+return $this.LSystem('X',  [Ordered]@{
     X = 'XF-F+F-XF+F+XF-F+F-X'
 }, $Order, [Ordered]@{
     '\+'    = { $this.Rotate($Angle) }

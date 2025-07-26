@@ -5,5 +5,7 @@
     down = 'PenDown'
     up = 'PenUp'
     l = 'Left'
-    r = 'Right'    
+    r = 'Right'
+    xPos = 'xcor'
+    yPos = 'ycor'    
 }

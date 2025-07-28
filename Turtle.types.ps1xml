@@ -729,6 +729,47 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.AnimateMotionDuration
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Canvas</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a turtle canvas
+.DESCRIPTION
+    Gets a turtle a canvas element.
+#&gt;
+
+@(
+    $viewBox = $this.ViewBox
+    $null, $null, $viewX, $viewY = $viewBox
+    "&lt;style&gt;canvas {max-width: 100%; height: 100%}&lt;/style&gt;"
+    "&lt;canvas id='turtle-canvas' width='$($viewX + 1)' height='$($viewY + 1)'&gt;&lt;/canvas&gt;"
+
+    "&lt;script&gt;"    
+@"
+window.onload = async function() {
+  var canvas = document.getElementById('turtle-canvas');
+  var ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '$($this.Stroke)'
+  ctx.lineWidth = '$(
+    if ($this.StrokeWidth -match '%') {
+        [Math]::Max($viewX, $viewY) * ($this.StrokeWidth -replace '%' -as [double])/100
+    } else {
+        $this.StrokeWidth
+    }
+)'
+  ctx.fillStyle = '$($this.Fill)'
+  var p = new Path2D("$($this.PathData)")
+  ctx.stroke(p)
+  ctx.fill(p)
+}
+"@
+    "&lt;/script&gt;"
+)
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Fill</Name>
         <GetScriptBlock>
                         if ($this.'.Fill') { 

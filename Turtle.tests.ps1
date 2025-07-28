@@ -13,4 +13,9 @@ describe Turtle {
         $turtle.Clear().SierpinskiTriangle(200, 2, 120).points.Count |
             Should -Be 54
     }
+
+    it 'Can rasterize an image, with a little help from chromium' {
+        $png = New-Turtle | Move-Turtle SierpinskiTriangle 15 5 | Select-Object -ExpandProperty PNG
+        $png.GetType() | Should -Be [byte[]]
+    }
 }

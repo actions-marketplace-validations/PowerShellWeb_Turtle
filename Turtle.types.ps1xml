@@ -16,6 +16,14 @@
         </Members>
       </MemberSet>
       <AliasProperty>
+        <Name>Back</Name>
+        <ReferencedMemberName>Backward</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>bk</Name>
+        <ReferencedMemberName>Backward</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>down</Name>
         <ReferencedMemberName>PenDown</ReferencedMemberName>
       </AliasProperty>
@@ -59,6 +67,31 @@
         <Name>yPos</Name>
         <ReferencedMemberName>ycor</ReferencedMemberName>
       </AliasProperty>
+      <ScriptMethod>
+        <Name>Backward</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Moves backwards
+.DESCRIPTION
+    Moves the turtle backwards by a specified distance.
+.EXAMPLE
+    Move-Turtle Forward 10 | 
+        Move-Turtle Backward 5 | 
+        Move-Turtle Rotate 90 | 
+        Move-Turtle Forward 20 | 
+        Save-Turtle ./DrawT.svg
+#&gt;
+param(
+# The distance to move backwards
+[double]
+$Distance = 10
+)
+
+$this.Forward($Distance * -1)
+
+                    </Script>
+      </ScriptMethod>
       <ScriptMethod>
         <Name>BoxFractal</Name>
         <Script>

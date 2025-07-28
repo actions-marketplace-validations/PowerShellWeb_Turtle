@@ -7,5 +7,7 @@
     l = 'Left'
     r = 'Right'
     xPos = 'xcor'
-    yPos = 'ycor'    
+    yPos = 'ycor'
+    SetPos = 'GoTo'
+    SetPosition = 'GoTo'
 }

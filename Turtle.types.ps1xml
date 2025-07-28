@@ -696,6 +696,26 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.AnimateMotionDuration
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Fill</Name>
+        <GetScriptBlock>
+                        if ($this.'.Fill') { 
+    return $this.'.Fill'
+}
+return 'transparent'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+    [string]$Fill = 'transparent'
+)
+
+if (-not $this.'.Fill') {
+    $this | Add-Member -MemberType NoteProperty -Name '.Fill' -Value $Fill -Force
+} else {
+    $this.'.Fill' = $Fill
+}
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Heading</Name>
         <GetScriptBlock>
                         &lt;#

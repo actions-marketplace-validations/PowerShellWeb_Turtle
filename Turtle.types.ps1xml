@@ -84,6 +84,14 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>FillColor</Name>
+        <Script>
+                        param($fill = 'transparent')
+$this.Fill = $fill
+return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>Forward</Name>
         <Script>
                         param(

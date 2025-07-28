@@ -14,12 +14,7 @@ function Set-Turtle {
     # The property of the turtle to set.
     [Parameter(Mandatory)]
     [ArgumentCompleter({
-        param ( $commandName,
-            $parameterName,
-            $wordToComplete,
-            $commandAst,
-            $fakeBoundParameters )
-        $myInv = $myInvocation
+        param ( $commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters )
         $turtleType = Get-TypeData -TypeName Turtle
         $propertyNames = @(foreach ($memberName in $turtleType.Members.Keys) {
             if ($turtleType.Members[$memberName] -is [System.Management.Automation.Runspaces.ScriptPropertyData] -and
@@ -29,13 +24,13 @@ function Set-Turtle {
         })
                 
         if ($wordToComplete) {
-            return $propertyNames -like "$wordToComplete*"            
+            return $propertyNames -like "$wordToComplete*"
         } else {
             return $propertyNames
         }
     })]
     [string]
-    $Property = 'Stroke',
+    $Property,
     
     # The value to set.
     [PSObject]
@@ -49,13 +44,18 @@ function Set-Turtle {
     )
 
     process {
+        # If there is no input object, return.
         if (-not $inputObject) { return }
+        # Get the property to set.
         $propInfo = $inputObject.psobject.properties[$property]
+        # If the property is not settable, return an error.
         if (-not $propInfo.SetterScript) {
             Write-Error "Property '$property' can not be set."
             return
         }
+        # set the property value.
         $inputObject.$property = $Value
+        # return our input for the next step of the pipeline.
         return $inputObject
     }
 }

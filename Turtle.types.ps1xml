@@ -36,6 +36,14 @@
         <ReferencedMemberName>Left</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>LineTo</Name>
+        <ReferencedMemberName>GoTo</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>MoveTo</Name>
+        <ReferencedMemberName>Teleport</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>pd</Name>
         <ReferencedMemberName>PenDown</ReferencedMemberName>
       </AliasProperty>

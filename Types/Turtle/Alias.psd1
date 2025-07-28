@@ -8,8 +8,10 @@
     r = 'Right'
     xPos = 'xcor'
     yPos = 'ycor'
+    LineTo = 'GoTo'
     SetPos = 'GoTo'
     SetPosition = 'GoTo'
+    MoveTo = 'Teleport'
     Back = 'Backward'
     bk = 'Backward'
 }

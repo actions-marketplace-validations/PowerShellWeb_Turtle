@@ -493,6 +493,10 @@ jobs:
         uses: actions/checkout@main
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
+      - name: Run Turtle (on branch)
+        if: ${{github.ref_name != 'main'}}
+        uses: ./
+        id: TurtleAction
 env: 
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}

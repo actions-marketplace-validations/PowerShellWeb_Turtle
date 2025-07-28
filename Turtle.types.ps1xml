@@ -318,6 +318,14 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>PenColor</Name>
+        <Script>
+                        param($stroke = 'currentColor')
+$this.Stroke = $stroke
+return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>PenDown</Name>
         <Script>
                         $this.IsPenDown = $true

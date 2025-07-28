@@ -1031,6 +1031,12 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>OffsetPath</Name>
+        <GetScriptBlock>
+                        "offset-path: $($this.PathData);"
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>PathAttribute</Name>
         <GetScriptBlock>
                         if ($this.'.PathAttribute') { 

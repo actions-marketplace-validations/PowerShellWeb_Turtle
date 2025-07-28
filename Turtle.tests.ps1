@@ -16,6 +16,6 @@ describe Turtle {
 
     it 'Can rasterize an image, with a little help from chromium' {
         $png = New-Turtle | Move-Turtle SierpinskiTriangle 15 5 | Select-Object -ExpandProperty PNG
-        $png.GetType() | Should -Be [byte[]]
+        $png[1..3] -as 'char[]' -as 'string[]' -join '' | Should -Be PNG
     }
 }

@@ -848,6 +848,12 @@ window.onload = async function() {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>ClipPath</Name>
+        <GetScriptBlock>
+                        "clip-path: path(`"$($this.PathData)`");"
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Fill</Name>
         <GetScriptBlock>
                         if ($this.'.Fill') { 

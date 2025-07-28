@@ -28,6 +28,8 @@ window.onload = async function() {
   var p = new Path2D("$($this.PathData)")
   ctx.stroke(p)
   ctx.fill(p)
+
+  /*Insert-Post-Processing-Here*/
 }
 "@
     "</script>"

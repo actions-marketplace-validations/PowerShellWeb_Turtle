@@ -10,4 +10,6 @@
     yPos = 'ycor'
     SetPos = 'GoTo'
     SetPosition = 'GoTo'
+    Back = 'Backward'
+    bk = 'Backward'
 }

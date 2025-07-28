@@ -9,7 +9,9 @@
     $turtle = New-Turtle
     $turtle.PeanoCurve().Pattern.Save("$pwd/PeanoCurve.svg")
 .EXAMPLE
-    Move-Turtle PeanoCurve 15 5
+    Move-Turtle PeanoCurve 15 5 |
+        Set-Turtle Stroke '#4488ff' |
+        Save-Turtle "./PeanoCurve.svg"
 #>
 param(
     [double]$Size = 10,

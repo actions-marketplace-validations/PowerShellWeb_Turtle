@@ -838,6 +838,28 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>PathAttribute</Name>
+        <GetScriptBlock>
+                        if ($this.'.PathAttribute') { 
+    return $this.'.PathAttribute'
+}
+return [Ordered]@{}
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[Collections.IDictionary]
+$PathAttribute = [Ordered]@{}
+)
+
+if (-not $this.'.PathAttribute') {
+    $this | Add-Member -MemberType NoteProperty -Name '.PathAttribute' -Value $PathAttribute -Force
+}
+foreach ($key in $PathAttribute.Keys) {
+    $this.'.PathAttribute'[$key] = $PathAttribute[$key]
+}
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>PathData</Name>
         <GetScriptBlock>
                         @(
@@ -869,10 +891,14 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
         <GetScriptBlock>
                         @(
 "&lt;path id='turtle-path' d='$($this.PathData)' stroke='$(
-    if ($this.Stroke) { $this.Stroke } else { 'black' }
+    if ($this.Stroke) { $this.Stroke } else { 'currentColor' }
 )' stroke-width='$(
     if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-)' fill='transparent' class='foreground-stroke' /&gt;"
+)' fill='$($this.Fill)' class='foreground-stroke'$(
+    foreach ($pathAttributeName in $this.PathAttribute.Keys) {
+        " $pathAttributeName='$($this.PathAttribute[$pathAttributeName])'"
+    }
+) /&gt;"
 ) -as [xml]
                     </GetScriptBlock>
       </ScriptProperty>

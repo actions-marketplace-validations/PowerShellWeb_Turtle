@@ -6,7 +6,12 @@ function Save-Turtle {
         Saves a turtle graphics pattern to a file.
     .EXAMPLE
         New-Turtle | 
-            Move-Turtle Si
+            Move-Turtle SierpinskiTriangle 20 3 |
+            Save-Turtle "./SierpinskiTriangle.svg"
+    .EXAMPLE
+        Move-Turtle BoxFractal 15 5 |
+            Set-Turtle Stroke '#4488ff' |
+            Save-Turtle ./BoxFractal.png
     #>
     param(
     # The file path to save the turtle graphics pattern.
@@ -17,12 +22,7 @@ function Save-Turtle {
 
     # The property of the turtle to save.
     [ArgumentCompleter({
-        param ( $commandName,
-            $parameterName,
-            $wordToComplete,
-            $commandAst,
-            $fakeBoundParameters )
-        $myInv = $myInvocation
+        param ( $commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters )        
         $turtleType = Get-TypeData -TypeName Turtle
         $propertyNames = @(foreach ($memberName in $turtleType.Members.Keys) {
             if ($turtleType.Members[$memberName] -is [System.Management.Automation.Runspaces.ScriptPropertyData]) {
@@ -48,6 +48,11 @@ function Save-Turtle {
 
     process {
         if (-not $inputObject) { return }
+        switch -regex ($FilePath) {
+            '\.png$' { if ($Property -eq 'Symbol') { $Property = 'PNG' } }
+            '\.jpe?g$' { if ($Property -eq 'Symbol') { $Property = 'JPEG' } }
+            '\.webp$' { if ($Property -eq 'Symbol') { $Property = 'WEBP' } }
+        }
         $toExport = $inputObject.$Property
         if (-not $toExport) { return }
         $unresolvedPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($FilePath)
@@ -60,6 +65,7 @@ function Save-Turtle {
         } else {                        
             $toExport > $unresolvedPath
         }
+
         if ($?) {
             Get-Item -Path $unresolvedPath
         }

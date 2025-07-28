@@ -1338,7 +1338,7 @@ if ($posY -gt $this.'.Maximum'.Y) {
                         if ($this.'.Steps') {
     return $this.'.Steps'
 }
-return @()
+return ,@()
 
                     </GetScriptBlock>
         <SetScriptBlock>

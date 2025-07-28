@@ -216,7 +216,7 @@ function InvokeActionModule {
                 "### $($scriptFile.Fullname -replace [Regex]::Escape($env:GITHUB_WORKSPACE))" |
                     Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
             }
-            $scriptCmd = $ExecutionContext.SessionState.InvokeCommand.GetCommand($scriptFile.FullName, 'ExternalScript')                
+            $scriptCmd = $ExecutionContext.SessionState.InvokeCommand.GetCommand($scriptFile.FullName, 'ExternalScript')
             foreach ($requiredModule in $CommandInfo.ScriptBlock.Ast.ScriptRequirements.RequiredModules) {
                 if ($requiredModule.Name -and 
                     (-not $requiredModule.MaximumVersion) -and
@@ -225,10 +225,12 @@ function InvokeActionModule {
                     InstallActionModule $requiredModule.Name
                 }
             }
+            Push-Location $scriptFile.Directory.Fullname
             $scriptFileOutputs = . $scriptCmd
             $scriptFileOutputs |
                 . ProcessOutput  | 
                 Out-Host
+            Pop-Location
         }    
     
     $MyScriptFilesTook = [Datetime]::Now - $MyScriptFilesStart

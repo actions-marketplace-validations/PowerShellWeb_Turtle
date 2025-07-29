@@ -1,0 +1,1 @@
+"offset-path: $($this.PathData);"

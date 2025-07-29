@@ -4,7 +4,7 @@ $PathAttribute = [Ordered]@{}
 )
 
 if (-not $this.'.PathAttribute') {
-    $this | Add-Member -MemberType NoteProperty -Name '.PathAttribute' -Value $PathAttribute -Force
+    $this | Add-Member -MemberType NoteProperty -Name '.PathAttribute' -Value ([Ordered]@{}) -Force
 }
 foreach ($key in $PathAttribute.Keys) {
     $this.'.PathAttribute'[$key] = $PathAttribute[$key]

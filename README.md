@@ -68,13 +68,13 @@ The turtle is represented as an object, and any number of commands can make or m
 
 Last but not least:  Get-Turtle lets you run multiple steps of turtle, and is aliased to 	urtle.
 
-#### Drawing Simple Shapes
+
+### Drawing Squares
 
 <div align='center'>
 
 <img src='./Examples/Square.svg' alt='Square' width='50%' />
 </div>
-
 
 Let's start simple, by drawing a square with a series of commands.
 
@@ -141,11 +141,7 @@ So our shortest square can be written as:
 turtle square 10 | Save-Turtle ./Square.svg
 ~~~
 
-We can also just say, make a square directly:
-
-~~~PowerShell
-New-Turtle | Move-Turtle Square 10 | Save-Turtle ./Square.svg
-~~~
+### Drawing Other Shapes
 
 We can use the same techniques to construct other shapes.
 
@@ -177,6 +173,9 @@ Because this Turtle generates SVG, we can also use it to create patterns.
 <div align='center'>
 <img src='./Examples/HexagonPattern.svg' alt='Hexagon Pattern' width='50%' />
 </div>
+
+### Drawing Fractals
+
 Turtle is often used to draw fractals.
 
 Many fractals can be described in something called a [L-System](https://en.wikipedia.org/wiki/L-system) (short for Lindenmayer system)
@@ -270,7 +269,7 @@ Pop-Location
 <img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' />
 </div>
 
-### Turtles in a PowerShell Workflow
+### Turtle GitHub Action
 
 Turtle has a GitHub action, and can be run in a workflow.
 

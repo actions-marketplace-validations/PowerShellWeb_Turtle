@@ -1,6 +1,9 @@
 # Turtle
 
-<img src='./Examples/SierpinskiTriangle.svg' alt='SierpinskiTriangle' height='10%' />
+<div align='center'>
+    <img src='./Examples/SierpinskiTriangle.svg' alt='SierpinskiTriangle' width='50%' />
+</div>
+
 
 
 ## Turtles in a PowerShell

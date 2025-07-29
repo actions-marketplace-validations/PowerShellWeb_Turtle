@@ -1493,6 +1493,29 @@ foreach ($key in $PathAttribute.Keys) {
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>PathClass</Name>
+        <GetScriptBlock>
+                        if ($this.'.PathClass') { return $this.'.PathClass'}
+return 'foreground-stroke'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the turtle path class
+.DESCRIPTION
+    Sets the css classes that apply to the turtle path.
+
+    This property will rarely be set directly, but can be handy for integrating turtle graphics into custom pages.
+#&gt;
+param(
+$PathClass
+)
+
+$this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @($PathClass)
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>PathData</Name>
         <GetScriptBlock>
                         @(
@@ -1527,7 +1550,9 @@ foreach ($key in $PathAttribute.Keys) {
     if ($this.Stroke) { $this.Stroke } else { 'currentColor' }
 )' stroke-width='$(
     if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-)' fill='$($this.Fill)' class='foreground-stroke'$(
+)' fill='$($this.Fill)' class='$(
+    $this.PathClass -join ' '
+)' $(
     foreach ($pathAttributeName in $this.PathAttribute.Keys) {
         " $pathAttributeName='$($this.PathAttribute[$pathAttributeName])'"
     }

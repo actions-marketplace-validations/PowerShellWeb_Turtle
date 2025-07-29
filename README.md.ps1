@@ -320,8 +320,8 @@ We can also animate the pattern, for endless variety:
 
 ~~~PowerShell
 $(
-    Get-Content ./Examples/EndlessSnowflake.turtle.ps1 | 
-    Select-Object -Skip 1
+    @(Get-Content ./Examples/EndlessSnowflake.turtle.ps1 | 
+    Select-Object -Skip 1) -join [Environment]::NewLine
 )
 ~~~
 "@
@@ -336,9 +336,28 @@ $(
 
 
 
+#region Turtle PowerShell GitHub Action
+
+@"
+
+### Turtles in a PowerShell Workflow
+
+Turtle has a GitHub action, and can be run in a workflow.
+
+To use the turtle action, simply refer to this repository:
+
+~~~yaml
+- name: UseTurtle
+  uses: StartAutomating/Turtle@main
+~~~
+
+This will run any *.turtle.ps1 files found in your repository, and check in any files that have changed.
+"@
+
+#endregion Turtle PowerShell GitHub Action
 
 
-"![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)"
+# "![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)"
 
 
 ""

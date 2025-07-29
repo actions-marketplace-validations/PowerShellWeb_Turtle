@@ -107,12 +107,16 @@ $turtle | Save-Turtle ./Square.svg
 ~~~
 
 This just demonstrates how we can construct shapes out of these two simple primitive steps.
+
 We can also just say, make a square directly:
 
 ~~~PowerShell
 New-Turtle | Move-Turtle Square 10 | Save-Turtle ./Square.svg
 ~~~
-We can use loops:
+
+We can use the same techniques to construct other shapes.
+
+For example, this builds us a hexagon:
 
 ~~~PowerShell
 $turtle = New-Turtle
@@ -187,7 +191,6 @@ Lets show the first three generations of the box fractal:
 ~~~
 
 
-@"
 <div align='center'>
 <img src='./Examples/BoxFractal1.svg' alt='Box Fractal 1' width='50%' />
 <img src='./Examples/BoxFractal2.svg' alt='Box Fractal 2' width='50%' />
@@ -208,6 +211,14 @@ For example, here is an example of a pattern comprised of Koch Snowflakes:
 ~~~
 <div align='center'>
 <img src='./Examples/KochSnowflakePattern.svg' alt='Snowflake Pattern' width='50%' />
+</div>
+We can also animate the pattern, for endless variety:
+
+~~~PowerShell
+$turtle = turtle KochSnowflake 10 4 |      Set-Turtle -Property PatternTransform -Value @{scale=0.33} |     set-turtle -property Fill -value '#4488ff' |     Set-Turtle -Property PatternAnimation -Value "      <animateTransform attributeName='patternTransform' attributeType='XML' type='scale' values='0.66;0.33;0.66' dur='23s' repeatCount='indefinite' additive='sum' />      <animateTransform attributeName='patternTransform' attributeType='XML' type='rotate' from='0' to='360' dur='41s' repeatCount='indefinite' additive='sum' />      <animateTransform attributeName='patternTransform' attributeType='XML' type='skewX' values='30;-30;30' dur='83s' repeatCount='indefinite' additive='sum' />      <animateTransform attributeName='patternTransform' attributeType='XML' type='skewY' values='30;-30;30' dur='103s' repeatCount='indefinite' additive='sum' />      <animateTransform attributeName='patternTransform' attributeType='XML' type='translate' values='0 0;42 42;0 0' dur='117s' repeatCount='indefinite' additive='sum' />      "             $turtle | save-turtle -Path ./EndlessSnowflake.svg -Property Pattern Pop-Location
+~~~
+<div align='center'>
+<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' />
 </div>
 ![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)
 

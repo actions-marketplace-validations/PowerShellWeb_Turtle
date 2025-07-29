@@ -147,8 +147,8 @@ This just demonstrates how we can construct shapes out of these two simple primi
 '@
 
 
-
 @'
+
 We can also just say, make a square directly:
 
 ~~~PowerShell
@@ -159,7 +159,10 @@ New-Turtle | Move-Turtle Square 10 | Save-Turtle ./Square.svg
 
 
 @'
-We can use loops:
+
+We can use the same techniques to construct other shapes.
+
+For example, this builds us a hexagon:
 
 ~~~PowerShell
 $turtle = New-Turtle
@@ -274,7 +277,6 @@ $(
     )
 )
 
-@"
 <div align='center'>
 <img src='./Examples/BoxFractal1.svg' alt='Box Fractal 1' width='50%' />
 <img src='./Examples/BoxFractal2.svg' alt='Box Fractal 2' width='50%' />
@@ -313,6 +315,22 @@ $SnowFlakePattern = . $MakeSnowflakePattern
 </div>
 "@
 
+@"
+We can also animate the pattern, for endless variety:
+
+~~~PowerShell
+$(
+    Get-Content ./Examples/EndlessSnowflake.turtle.ps1 | 
+    Select-Object -Skip 1
+)
+~~~
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' />
+</div>
+"@
 
 #endregion LSystems
 

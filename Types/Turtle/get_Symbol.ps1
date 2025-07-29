@@ -18,6 +18,11 @@ param()
         "<symbol id='turtle-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'>"
             $this.PathElement.OuterXml
         "</symbol>"
+        $(
+            if ($this.BackgroundColor) {
+                "<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' />"
+            }
+        )
         "<use href='#turtle-symbol' width='100%' height='100%' transform-origin='50% 50%' />"
     "</svg>"
 ) -join '' -as [xml]

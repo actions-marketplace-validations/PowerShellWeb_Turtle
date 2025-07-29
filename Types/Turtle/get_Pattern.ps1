@@ -17,7 +17,12 @@ $null, $null, $viewX, $viewY = $viewBox
         $this.PathElement.OuterXml        
     "</pattern>"
 "</defs>"
-"<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' />"
+$(
+    if ($this.BackgroundColor) {
+        "<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' />"
+    }
+)
+"<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' transform-origin='50% 50%' />"
 "</svg>") 
 
 $segments -join '' -as [xml]

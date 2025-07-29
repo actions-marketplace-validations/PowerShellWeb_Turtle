@@ -1720,7 +1720,7 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @($Ste
                         if ($this.'.Stroke') {
     return $this.'.Stroke'
 } else {
-    return 'currentColor'
+    return 'currentcolor'
 }
                     </GetScriptBlock>
         <SetScriptBlock>

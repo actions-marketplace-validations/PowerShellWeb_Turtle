@@ -25,11 +25,11 @@ Turtle graphics starts with these two operations:
 * Rotate() rotates the turtle
 * Forward() moves forward
 
-We can easily represent these steps in memory, and draw them within a webpage using SVG.
+We can easily keep a list of these steps in memory, and draw them with [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG).
 
-We can implement Turtle in any language.
+We can make Turtle in any language.
 
-This module implements Turtle in PowerShell.
+This module makes Turtle in PowerShell.
 ### Installing and Importing
 
 We can install Turtle from the PowerShell Gallery:
@@ -59,6 +59,15 @@ Import-Module ./ -Force -PassThru
 
 Once we've imported Turtle, we can create any number of turtles, and control them with commands and methods.
 
+The turtle is represented as an object, and any number of commands can make or move turtles.
+
+* New-Turtle created a turtle
+* Move-Turtle performs a single turtle movement
+* Set-Turtle changes the turtle's properties
+* Save-Turtle saves the output of a turtle.
+
+Last but not least:  Get-Turtle lets you run multiple steps of turtle, and is aliased to 	urtle.
+
 #### Drawing Simple Shapes
 
 <div align='center'>
@@ -67,7 +76,7 @@ Once we've imported Turtle, we can create any number of turtles, and control the
 </div>
 
 
-Let's start simple, by drawing a square.
+Let's start simple, by drawing a square with a series of commands.
 
 ~~~PowerShell
 
@@ -106,7 +115,31 @@ foreach ($n in 1..4) {
 $turtle | Save-Turtle ./Square.svg
 ~~~
 
+Or we could use `Get-Turtle` directly.
+
+~~~PowerShell
+turtle forward 10 rotate 90 forward 10 rotate 90 forward 10 rotate 90 forward 10 rotate 90 |
+    Save-Turtle ./Square.svg
+~~~
+
+Or we could use `Get-Turtle` with a bit of PowerShell multiplication magic:
+
+~~~PowerShell
+turtle ('forward',10,'rotate',90 * 4) |
+    Save-Turtle ./Square.svg
+~~~
+
 This just demonstrates how we can construct shapes out of these two simple primitive steps.
+
+There are a shell of a lot of ways you can draw any shape.
+
+Turtle has many methods to help you draw, including a convenience method for squares.
+
+So our shortest square can be written as:
+
+~~~PowerShell
+turtle square 10 | Save-Turtle ./Square.svg
+~~~
 
 We can also just say, make a square directly:
 
@@ -218,22 +251,17 @@ We can also animate the pattern, for endless variety:
 $turtle = turtle KochSnowflake 10 4 | 
     Set-Turtle -Property PatternTransform -Value @{scale=0.33} |
     set-turtle -property Fill -value '#4488ff' |
-    Set-Turtle -Property PatternAnimation -Value "
-
-    <animateTransform attributeName='patternTransform' attributeType='XML' type='scale' values='0.66;0.33;0.66' dur='23s' repeatCount='indefinite' additive='sum' />
-
-    <animateTransform attributeName='patternTransform' attributeType='XML' type='rotate' from='0' to='360' dur='41s' repeatCount='indefinite' additive='sum' />
-
-    <animateTransform attributeName='patternTransform' attributeType='XML' type='skewX' values='30;-30;30' dur='83s' repeatCount='indefinite' additive='sum' />
-
-    <animateTransform attributeName='patternTransform' attributeType='XML' type='skewY' values='30;-30;30' dur='103s' repeatCount='indefinite' additive='sum' />
-
-    <animateTransform attributeName='patternTransform' attributeType='XML' type='translate' values='0 0;42 42;0 0' dur='117s' repeatCount='indefinite' additive='sum' />
-
-    "
-    
-
-
+    Set-Turtle -Property PatternAnimation -Value ([Ordered]@{
+        type = 'scale'    ; values = 0.66,0.33, 0.66 ; repeatCount = 'indefinite' ;dur = "23s"; additive = 'sum'
+    }, [Ordered]@{
+        type = 'rotate'   ; values = 0, 360 ;repeatCount = 'indefinite'; dur = "41s"; additive = 'sum'
+    }, [Ordered]@{
+        type = 'skewX'    ; values = -30,30,-30;repeatCount = 'indefinite';dur = "83s";additive = 'sum'
+    }, [Ordered]@{
+        type = 'skewY'    ; values = 30,-30, 30;repeatCount = 'indefinite';additive = 'sum';dur = "103s"
+    }, [Ordered]@{
+        type = 'translate';values = "0 0","42 42", "0 0";repeatCount = 'indefinite';additive = 'sum';dur = "117s"
+    })    
     
 $turtle | save-turtle -Path ./EndlessSnowflake.svg -Property Pattern
 Pop-Location

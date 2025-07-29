@@ -37,11 +37,11 @@ Turtle graphics starts with these two operations:
 * `Rotate()` rotates the turtle
 * `Forward()` moves forward
 
-We can easily represent these steps in memory, and draw them within a webpage using SVG.
+We can easily keep a list of these steps in memory, and draw them with [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG).
 
-We can implement Turtle in any language.
+We can make Turtle in any language.
 
-This module implements Turtle in PowerShell.
+This module makes Turtle in PowerShell.
 "@
 
 #endregion Introduction
@@ -84,6 +84,15 @@ Import-Module ./ -Force -PassThru
 
 Once we've imported Turtle, we can create any number of turtles, and control them with commands and methods.
 
+The turtle is represented as an object, and any number of commands can make or move turtles.
+
+* `New-Turtle` created a turtle
+* `Move-Turtle` performs a single turtle movement
+* `Set-Turtle` changes the turtle's properties
+* `Save-Turtle` saves the output of a turtle.
+
+Last but not least:  `Get-Turtle` lets you run multiple steps of turtle, and is aliased to `turtle`.
+
 #### Drawing Simple Shapes
 
 <div align='center'>
@@ -96,7 +105,7 @@ $(
 </div>
 
 
-Let's start simple, by drawing a square.
+Let's start simple, by drawing a square with a series of commands.
 
 ~~~PowerShell
 $(
@@ -143,7 +152,31 @@ foreach ($n in 1..4) {
 $turtle | Save-Turtle ./Square.svg
 ~~~
 
+Or we could use `Get-Turtle` directly.
+
+~~~PowerShell
+turtle forward 10 rotate 90 forward 10 rotate 90 forward 10 rotate 90 forward 10 rotate 90 |
+    Save-Turtle ./Square.svg
+~~~
+
+Or we could use `Get-Turtle` with a bit of PowerShell multiplication magic:
+
+~~~PowerShell
+turtle ('forward',10,'rotate',90 * 4) |
+    Save-Turtle ./Square.svg
+~~~
+
 This just demonstrates how we can construct shapes out of these two simple primitive steps.
+
+There are a shell of a lot of ways you can draw any shape.
+
+Turtle has many methods to help you draw, including a convenience method for squares.
+
+So our shortest square can be written as:
+
+~~~PowerShell
+turtle square 10 | Save-Turtle ./Square.svg
+~~~
 '@
 
 

@@ -1162,6 +1162,26 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.AnimateMotionDuration
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>BackgroundColor</Name>
+        <GetScriptBlock>
+                        param()
+
+if ($this.'.BackgroundColor') {
+    return $this.'.BackgroundColor'
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[PSObject]
+$value
+)
+
+$this | Add-Member NoteProperty -Name '.BackgroundColor' -Value $value -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Canvas</Name>
         <GetScriptBlock>
                         &lt;#
@@ -1480,7 +1500,12 @@ $null, $null, $viewX, $viewY = $viewBox
         $this.PathElement.OuterXml        
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
-"&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' /&gt;"
+$(
+    if ($this.BackgroundColor) {
+        "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' /&gt;"
+    }
+)
+"&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' transform-origin='50% 50%' /&gt;"
 "&lt;/svg&gt;") 
 
 $segments -join '' -as [xml]
@@ -1721,6 +1746,11 @@ param()
         "&lt;symbol id='turtle-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
             $this.PathElement.OuterXml
         "&lt;/symbol&gt;"
+        $(
+            if ($this.BackgroundColor) {
+                "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' /&gt;"
+            }
+        )
         "&lt;use href='#turtle-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
     "&lt;/svg&gt;"
 ) -join '' -as [xml]

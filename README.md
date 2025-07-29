@@ -119,6 +119,7 @@ $turtle |
     <img src='./Examples/Hexagon.svg' alt='Hexagon' width='50%' />
 </div>
 Because this Turtle generates SVG, we can also use it to create patterns.
+
 ~~~PowerShell
 
     turtle ('Forward', 10, 'Rotate', 60  * 6) | 
@@ -126,6 +127,7 @@ Because this Turtle generates SVG, we can also use it to create patterns.
         Save-Turtle -Path ./Examples/HexagonPattern.svg -Property Pattern
 
 ~~~
+
 <div align='center'>
     C:\Users\JamesBrundage\Documents\WindowsPowerShell\Modules\Turtle\Examples\HexagonPattern.svg
     <img src='./Examples/HexagonPattern.svg' alt='Hexagon Pattern' width='50%' />

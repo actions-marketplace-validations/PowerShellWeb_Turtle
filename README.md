@@ -61,7 +61,10 @@ Once we've imported Turtle, we can create any number of turtles, and control the
 
 #### Drawing Squares
 
-![Turtle Square](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHRyYW5zZm9ybS1vcmlnaW49IjUwJSA1MCUiPjxzeW1ib2wgaWQ9InR1cnRsZS1zeW1ib2wiIHZpZXdCb3g9IjAgMCAxMCAxMCIgdHJhbnNmb3JtLW9yaWdpbj0iNTAlIDUwJSI+PHBhdGggaWQ9InR1cnRsZS1wYXRoIiBkPSJtIDAgMCAgbCAxMCAwICBsIDAgMTAgIGwgLTEwIDAgIGwgLTAgLTEwIiBzdHJva2U9IiM0NDg4ZmYiIHN0cm9rZS13aWR0aD0iMSUiIGZpbGw9InRyYW5zcGFyZW50IiBjbGFzcz0iZm9yZWdyb3VuZC1zdHJva2UiIC8+PC9zeW1ib2w+PHVzZSBocmVmPSIjdHVydGxlLXN5bWJvbCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdHJhbnNmb3JtLW9yaWdpbj0iNTAlIDUwJSIgLz48L3N2Zz4=)
+<div align='center'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" transform-origin="50% 50%"><symbol id="turtle-symbol" viewBox="0 0 10 10" transform-origin="50% 50%"><path id="turtle-path" d="m 0 0  l 10 0 l 0 10 l -10 0 l -0 -10" stroke="#4488ff" stroke-width="0.5%" fill="transparent" class="foreground-stroke" /></symbol><use href="#turtle-symbol" width="100%" height="100%" transform-origin="50% 50%" /></svg>
+</div>
+![Turtle Square]()
 
 Let's start simple, by drawing a square.
 
@@ -110,6 +113,6 @@ foreach ($n in 1..6) {
 $turtle | 
     Save-Turtle "./Hexagon.svg" 
 ~~~
-![Turtle Hexagon](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHRyYW5zZm9ybS1vcmlnaW49IjUwJSA1MCUiPjxzeW1ib2wgaWQ9InR1cnRsZS1zeW1ib2wiIHZpZXdCb3g9IjAgMCAyMCAxNy4zMjA1MDgwNzU2ODg4IiB0cmFuc2Zvcm0tb3JpZ2luPSI1MCUgNTAlIj48cGF0aCBpZD0idHVydGxlLXBhdGgiIGQ9Im0gNSAwICBsIDEwIDAgIGwgNSA4LjY2MDI1NDAzNzg0NDM5ICBsIC01IDguNjYwMjU0MDM3ODQ0MzkgIGwgLTEwIDAgIGwgLTUgLTguNjYwMjU0MDM3ODQ0MzggIGwgNSAtOC42NjAyNTQwMzc4NDQzOSIgc3Ryb2tlPSIjNDQ4OGZmIiBzdHJva2Utd2lkdGg9IjElIiBmaWxsPSJ0cmFuc3BhcmVudCIgY2xhc3M9ImZvcmVncm91bmQtc3Ryb2tlIiAvPjwvc3ltYm9sPjx1c2UgaHJlZj0iI3R1cnRsZS1zeW1ib2wiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHRyYW5zZm9ybS1vcmlnaW49IjUwJSA1MCUiIC8+PC9zdmc+)
+![Turtle Hexagon](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHRyYW5zZm9ybS1vcmlnaW49IjUwJSA1MCUiPjxzeW1ib2wgaWQ9InR1cnRsZS1zeW1ib2wiIHZpZXdCb3g9IjAgMCAyMCAxNy4zMjA1MDgwNzU2ODg4IiB0cmFuc2Zvcm0tb3JpZ2luPSI1MCUgNTAlIj48cGF0aCBpZD0idHVydGxlLXBhdGgiIGQ9Im0gNSAwICBsIDEwIDAgbCA1IDguNjYwMjU0MDM3ODQ0MzkgbCAtNSA4LjY2MDI1NDAzNzg0NDM5IGwgLTEwIDAgbCAtNSAtOC42NjAyNTQwMzc4NDQzOCBsIDUgLTguNjYwMjU0MDM3ODQ0MzkiIHN0cm9rZT0iIzQ0ODhmZiIgc3Ryb2tlLXdpZHRoPSIwLjUlIiBmaWxsPSJ0cmFuc3BhcmVudCIgY2xhc3M9ImZvcmVncm91bmQtc3Ryb2tlIiAvPjwvc3ltYm9sPjx1c2UgaHJlZj0iI3R1cnRsZS1zeW1ib2wiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHRyYW5zZm9ybS1vcmlnaW49IjUwJSA1MCUiIC8+PC9zdmc+)
 ![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)
 

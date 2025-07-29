@@ -84,15 +84,15 @@ Import-Module ./ -Force -PassThru
 
 Once we've imported Turtle, we can create any number of turtles, and control them with commands and methods.
 
-#### Drawing Squares
+#### Drawing Simple Shapes
 
 <div align='center'>
-    $(
-        $null = Get-Turtle Square 10 | 
-            Set-Turtle -Property Stroke '#4488ff' |
-            Save-Turtle -Path ./Examples/Square.svg
-    )
-    <img src='./Examples/Square.svg' alt='Square' width='50%' />
+$(
+    $null = Get-Turtle Square 10 | 
+        Set-Turtle -Property Stroke '#4488ff' |
+        Save-Turtle -Path ./Examples/Square.svg
+)
+<img src='./Examples/Square.svg' alt='Square' width='50%' />
 </div>
 
 
@@ -131,6 +131,16 @@ $turtle.
     Forward(10).Rotate(90).
     Forward(10).Rotate(90).
     Symbol.Save("$pwd/Square.svg")
+~~~
+
+Or we could use a loop:
+
+~~~PowerShell
+$turtle = New-Turtle
+foreach ($n in 1..4) {
+    $turtle = $turtle.Forward(10).Rotate(90)
+}
+$turtle | Save-Turtle ./Square.svg
 ~~~
 
 This just demonstrates how we can construct shapes out of these two simple primitive steps.

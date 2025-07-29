@@ -1,6 +1,7 @@
 # Turtle
 
-![SierpinskiTriangle](./Examples/SierpinskiTriangle.svg)
+<img src='./Examples/SierpinskiTriangle.svg' alt='SierpinskiTriangle' height='10%' />
+
 
 ## Turtles in a PowerShell
 

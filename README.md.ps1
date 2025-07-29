@@ -78,6 +78,32 @@ Import-Module ./ -Force -PassThru
 
 #endregion Installation
 
+#region Turtle PowerShell GitHub Action
+
+@"
+
+### Turtle GitHub Action
+
+Turtle has a GitHub action, and can be run in a workflow.
+
+To use the turtle action, simply refer to this repository:
+
+~~~yaml
+- name: UseTurtle
+  uses: StartAutomating/Turtle@main
+~~~
+
+This will run any *.turtle.ps1 files found in your repository, and check in any files that have changed.
+
+What does this give us?
+
+**We Can Generate Turtle Graphics in GitHub Workflows**
+
+"@
+
+#endregion Turtle PowerShell GitHub Action
+
+
 #region Getting Started
 @"
 ### Getting Started
@@ -364,27 +390,74 @@ $(
 
 #endregion LSystems
 
-
-
-#region Turtle PowerShell GitHub Action
-
+#region Turtles in HTML
 @"
 
-### Turtle GitHub Action
+### Turtles in HTML
 
-Turtle has a GitHub action, and can be run in a workflow.
+SVG is HTML.
 
-To use the turtle action, simply refer to this repository:
+So, because our Turtle is built atop of an SVG path, our Turtle _is_ HTML.
 
-~~~yaml
-- name: UseTurtle
-  uses: StartAutomating/Turtle@main
+Don't believe me?  Try this?
+
+~~~PowerShell
+turtle SierpinskiTriangle |
+    Set-Turtle Stroke '#4488ff' | 
+    Save-Turtle ./SierpinskiTriangle.html
 ~~~
 
-This will run any *.turtle.ps1 files found in your repository, and check in any files that have changed.
-"@
+Anything we do with our turtle should work within a webpage.
 
-#endregion Turtle PowerShell GitHub Action
+There are a few properties of the turtle that may be helpful:
+
+* `.Canvas` returns the turtle rendered in an HTML canvas
+* `.OffsetPath` returns the turtle as an offset path
+* `.ClipPath` returns the turtle as a clip path
+
+"@
+#endregion Turtles in HTML
+
+
+#region Turtles in PNG
+@"
+
+### Turtles in Raster
+
+Because our Turtle can be painted onto an HTML canvas, we can easily turn it into a raster format, like PNG.
+
+This works by launching the browser in headless mode, rasterizing the image, and returning the bytes.
+
+Any turtle can be saved as a `PNG`, `JPEG`, and `WEBP`.
+
+~~~PowerShell
+turtle SierpinskiTriangle |
+    Set-Turtle Stroke '#4488ff' | 
+    Save-Turtle ./SierpinskiTriangle.png
+~~~
+
+"@
+#endregion Turtles in PNG
+
+#region Call To Action
+@"
+
+### Turtles are Cool
+
+You should now have some sense of how cool Turtle graphics can be, and how easy it is to get stared.
+
+Play around.  Draw something.  Please provide feedback by filing an issue or starting a discussion.
+
+Open an issue if you want a new shape or fractal.  
+
+File a pull request if you have some cool changes to make.
+
+Have fun!
+
+Hope this helps!
+
+"@
+#endregion Call To Action
 
 
 # "![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)"

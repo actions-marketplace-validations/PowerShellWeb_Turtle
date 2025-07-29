@@ -62,9 +62,10 @@ Once we've imported Turtle, we can create any number of turtles, and control the
 #### Drawing Squares
 
 <div align='center'>
-    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" transform-origin="50% 50%"><symbol id="turtle-symbol" viewBox="0 0 10 10" transform-origin="50% 50%"><path id="turtle-path" d="m 0 0  l 10 0 l 0 10 l -10 0 l -0 -10" stroke="#4488ff" stroke-width="0.5%" fill="transparent" class="foreground-stroke" /></symbol><use href="#turtle-symbol" width="100%" height="100%" transform-origin="50% 50%" /></svg>
+    
+    <img src='./Examples/Square.svg' alt='Square' width='50%' />
 </div>
-![Turtle Square]()
+
 
 Let's start simple, by drawing a square.
 
@@ -113,6 +114,21 @@ foreach ($n in 1..6) {
 $turtle | 
     Save-Turtle "./Hexagon.svg" 
 ~~~
-![Turtle Hexagon](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHRyYW5zZm9ybS1vcmlnaW49IjUwJSA1MCUiPjxzeW1ib2wgaWQ9InR1cnRsZS1zeW1ib2wiIHZpZXdCb3g9IjAgMCAyMCAxNy4zMjA1MDgwNzU2ODg4IiB0cmFuc2Zvcm0tb3JpZ2luPSI1MCUgNTAlIj48cGF0aCBpZD0idHVydGxlLXBhdGgiIGQ9Im0gNSAwICBsIDEwIDAgbCA1IDguNjYwMjU0MDM3ODQ0MzkgbCAtNSA4LjY2MDI1NDAzNzg0NDM5IGwgLTEwIDAgbCAtNSAtOC42NjAyNTQwMzc4NDQzOCBsIDUgLTguNjYwMjU0MDM3ODQ0MzkiIHN0cm9rZT0iIzQ0ODhmZiIgc3Ryb2tlLXdpZHRoPSIwLjUlIiBmaWxsPSJ0cmFuc3BhcmVudCIgY2xhc3M9ImZvcmVncm91bmQtc3Ryb2tlIiAvPjwvc3ltYm9sPjx1c2UgaHJlZj0iI3R1cnRsZS1zeW1ib2wiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHRyYW5zZm9ybS1vcmlnaW49IjUwJSA1MCUiIC8+PC9zdmc+)
+<div align='center'>
+    
+    <img src='./Examples/Hexagon.svg' alt='Hexagon' width='50%' />
+</div>
+Because this Turtle generates SVG, we can also use it to create patterns.
+~~~PowerShell
+
+    turtle ('Forward', 10, 'Rotate', 60  * 6) | 
+        Set-Turtle -Property Stroke '#4488ff' |
+        Save-Turtle -Path ./Examples/HexagonPattern.svg -Property Pattern
+
+~~~
+<div align='center'>
+    C:\Users\JamesBrundage\Documents\WindowsPowerShell\Modules\Turtle\Examples\HexagonPattern.svg
+    <img src='./Examples/HexagonPattern.svg' alt='Hexagon Pattern' width='50%' />
+</div>
 ![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)
 

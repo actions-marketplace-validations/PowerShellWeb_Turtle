@@ -115,8 +115,8 @@ $turtle |
     Save-Turtle "./Hexagon.svg" 
 ~~~
 <div align='center'>
-    
-    <img src='./Examples/Hexagon.svg' alt='Hexagon' width='50%' />
+
+<img src='./Examples/Hexagon.svg' alt='Hexagon' width='50%' />
 </div>
 Because this Turtle generates SVG, we can also use it to create patterns.
 
@@ -127,10 +127,8 @@ Because this Turtle generates SVG, we can also use it to create patterns.
         Save-Turtle -Path ./Examples/HexagonPattern.svg -Property Pattern
 
 ~~~
-
 <div align='center'>
-    C:\Users\JamesBrundage\Documents\WindowsPowerShell\Modules\Turtle\Examples\HexagonPattern.svg
-    <img src='./Examples/HexagonPattern.svg' alt='Hexagon Pattern' width='50%' />
+<img src='./Examples/HexagonPattern.svg' alt='Hexagon Pattern' width='50%' />
 </div>
 ![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)
 

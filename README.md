@@ -138,8 +138,11 @@ For example, here is an example of a pattern comprised of Koch Snowflakes:
 
 ~~~PowerShell
 
-    turtle KochSnowflake 25 6 | 
+    turtle KochSnowflake 2.5 6 | 
         Set-Turtle -Property Stroke '#4488ff' |
+        Set-Turtle -Property StrokeWidth '0.1%' | 
+        Set-Turtle -Property Stroke '#4488ff' | 
+        Set-Turtle -Property PatternTransform -Value @{scale = 0.5 } |
         Save-Turtle -Path ./Examples/KochSnowflakePattern.svg -Property Pattern
 
 ~~~

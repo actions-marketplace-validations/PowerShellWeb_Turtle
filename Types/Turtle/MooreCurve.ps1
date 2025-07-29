@@ -15,7 +15,7 @@
 #>
 param(
     [double]$Size = 10,
-    [int]$Order = 5,
+    [int]$Order = 4,
     [double]$Angle = 90
 )        
 

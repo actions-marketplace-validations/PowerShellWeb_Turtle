@@ -130,5 +130,21 @@ Because this Turtle generates SVG, we can also use it to create patterns.
 <div align='center'>
 <img src='./Examples/HexagonPattern.svg' alt='Hexagon Pattern' width='50%' />
 </div>
+Speaking of patterns, Turtle is often used to draw fractals.
+
+This implementation of Turtle has quite a few built-in fractals.
+
+For example, here is an example of a pattern comprised of Koch Snowflakes:
+
+~~~PowerShell
+
+    turtle KochSnowflake 25 6 | 
+        Set-Turtle -Property Stroke '#4488ff' |
+        Save-Turtle -Path ./Examples/KochSnowflakePattern.svg -Property Pattern
+
+~~~
+<div align='center'>
+<img src='./Examples/KochSnowflakePattern.svg' alt='Snowflake Pattern' width='50%' />
+</div>
 ![SierpinskiTriangle](./Examples/EndlessSierpinskiTrianglePattern.svg)
 

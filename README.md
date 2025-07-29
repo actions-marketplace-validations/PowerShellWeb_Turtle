@@ -130,16 +130,66 @@ Because this Turtle generates SVG, we can also use it to create patterns.
 <div align='center'>
 <img src='./Examples/HexagonPattern.svg' alt='Hexagon Pattern' width='50%' />
 </div>
-Speaking of patterns, Turtle is often used to draw fractals.
+Turtle is often used to draw fractals.
 
+Many fractals can be described in something called a [L-System](https://en.wikipedia.org/wiki/L-system) (short for Lindenmayer system)
+
+L-Systems describe: 
+
+* An initial state (called an Axiom)
+* A series of rewriting rules
+* The way each variable should be interpreted.
+
+For example, let's show how we contruct the [Box Fractal](https://en.wikipedia.org/wiki/Vicsek_fractal)
+
+Our Axiom is F-F-F-F.
+
+This should look familiar:  it's a shorthand for the squares we drew earlier.
+
+It basically reads "go forward, then left, four times"
+
+Our Rule is F = 'F-F+F+F-F'.
+
+This means every time we encounter F, we want to replace it with F-F+F+F-F.
+
+This will turn our one box into 6 new boxes.  If we repeat it again, we'll get 36 boxes.  Once more and we're at 216 boxes.
+
+Lets show the first three generations of the box fractal:
+
+~~~PowerShell
+
+    Turtle BoxFractal 5 1 |
+    Set-Turtle Stroke '#4488ff' |
+    Save-Turtle ./Examples/BoxFractal1.svg
+
+
+
+    Turtle BoxFractal 5 2 |
+    Set-Turtle Stroke '#4488ff' |
+    Save-Turtle ./Examples/BoxFractal2.svg
+
+
+
+    Turtle BoxFractal 5 3 |
+    Set-Turtle Stroke '#4488ff' |
+    Save-Turtle ./Examples/BoxFractal3.svg
+
+~~~
+
+
+@"
+<div align='center'>
+<img src='./Examples/BoxFractal1.svg' alt='Box Fractal 1' width='50%' />
+<img src='./Examples/BoxFractal2.svg' alt='Box Fractal 2' width='50%' />
+<img src='./Examples/BoxFractal3.svg' alt='Box Fractal 3' width='50%' />
+</div>
 This implementation of Turtle has quite a few built-in fractals.
 
 For example, here is an example of a pattern comprised of Koch Snowflakes:
 
 ~~~PowerShell
 
-    turtle KochSnowflake 2.5 6 | 
-        Set-Turtle -Property Stroke '#4488ff' |
+    turtle KochSnowflake 2.5 4 |     
         Set-Turtle -Property StrokeWidth '0.1%' | 
         Set-Turtle -Property Stroke '#4488ff' | 
         Set-Turtle -Property PatternTransform -Value @{scale = 0.5 } |

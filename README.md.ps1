@@ -7,6 +7,7 @@
 #requires -Module Turtle
 param()
 
+#region Introduction
 
 @"
 # Turtle
@@ -43,6 +44,10 @@ We can implement Turtle in any language.
 This module implements Turtle in PowerShell.
 "@
 
+#endregion Introduction
+
+#region Installation
+
 @"
 ### Installing and Importing
 
@@ -71,6 +76,9 @@ Import-Module ./ -Force -PassThru
 ~~~
 "@
 
+#endregion Installation
+
+#region Getting Started
 @"
 ### Getting Started
 
@@ -138,6 +146,8 @@ New-Turtle | Move-Turtle Square 10 | Save-Turtle ./Square.svg
 ~~~
 '@
 
+
+
 @'
 We can use loops:
 
@@ -192,9 +202,78 @@ $HexPattern = . $MakeHexagonPattern
 "@
 
 
-@"
-Speaking of patterns, Turtle is often used to draw fractals.
+#region LSystems
 
+$box1 = {
+    Turtle BoxFractal 5 1 |
+    Set-Turtle Stroke '#4488ff' |
+    Save-Turtle ./Examples/BoxFractal1.svg
+}
+
+$box2 = {
+    Turtle BoxFractal 5 2 |
+    Set-Turtle Stroke '#4488ff' |
+    Save-Turtle ./Examples/BoxFractal2.svg
+}
+
+$box3 = {
+    Turtle BoxFractal 5 3 |
+    Set-Turtle Stroke '#4488ff' |
+    Save-Turtle ./Examples/BoxFractal3.svg
+}
+
+@"
+Turtle is often used to draw fractals.
+
+Many fractals can be described in something called a [L-System](https://en.wikipedia.org/wiki/L-system) (short for Lindenmayer system)
+
+L-Systems describe: 
+
+* An initial state (called an Axiom)
+* A series of rewriting rules
+* The way each variable should be interpreted.
+
+For example, let's show how we contruct the [Box Fractal](https://en.wikipedia.org/wiki/Vicsek_fractal)
+
+Our Axiom is `F-F-F-F`.
+
+This should look familiar:  it's a shorthand for the squares we drew earlier.
+
+It basically reads "go forward, then left, four times"
+
+Our Rule is `F = 'F-F+F+F-F'`.
+
+This means every time we encounter `F`, we want to replace it with `F-F+F+F-F`.
+
+This will turn our one box into 6 new boxes.  If we repeat it again, we'll get 36 boxes.  Once more and we're at 216 boxes.
+
+Lets show the first three generations of the box fractal:
+
+~~~PowerShell
+$box1
+
+$box2
+
+$box3
+~~~
+$(
+    $null = @(
+        . $box1
+        . $box2
+        . $box3
+    )
+)
+
+@"
+<div align='center'>
+<img src='./Examples/BoxFractal1.svg' alt='Box Fractal 1' width='50%' />
+<img src='./Examples/BoxFractal2.svg' alt='Box Fractal 2' width='50%' />
+<img src='./Examples/BoxFractal3.svg' alt='Box Fractal 3' width='50%' />
+</div>
+"@
+
+
+@"
 This implementation of Turtle has quite a few built-in fractals.
 
 For example, here is an example of a pattern comprised of Koch Snowflakes:
@@ -225,7 +304,7 @@ $SnowFlakePattern = . $MakeSnowflakePattern
 "@
 
 
-
+#endregion LSystems
 
 
 

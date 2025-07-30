@@ -1281,12 +1281,12 @@ $this | Add-Member NoteProperty -Name '.BackgroundColor' -Value $value -Force
     $viewBox = $this.ViewBox
     $null, $null, $viewX, $viewY = $viewBox
     "&lt;style&gt;canvas {max-width: 100%; height: 100%}&lt;/style&gt;"
-    "&lt;canvas id='turtle-canvas' width='$($viewX + 1)' height='$($viewY + 1)'&gt;&lt;/canvas&gt;"
+    "&lt;canvas id='$($this.ID)-canvas' width='$($viewX + 1)' height='$($viewY + 1)'&gt;&lt;/canvas&gt;"
 
     "&lt;script&gt;"    
 @"
 window.onload = async function() {
-  var canvas = document.getElementById('turtle-canvas');
+  var canvas = document.getElementById('$($this.ID)-canvas');
   var ctx = canvas.getContext('2d');
   ctx.strokeStyle = '$($this.Stroke)'
   ctx.lineWidth = '$(
@@ -1628,7 +1628,7 @@ $viewBox = $this.ViewBox
 $null, $null, $viewX, $viewY = $viewBox
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
 "&lt;defs&gt;"
-    "&lt;pattern id='turtle-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'$(
+    "&lt;pattern id='$($this.ID)-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'$(
         if ($this.PatternTransform) {
             " patternTransform='" + (
                 @(foreach ($key in $this.PatternTransform.Keys) {
@@ -1646,7 +1646,7 @@ $(
         "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' /&gt;"
     }
 )
-"&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' transform-origin='50% 50%' /&gt;"
+"&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#$($this.ID)-pattern)' transform-origin='50% 50%' /&gt;"
 "&lt;/svg&gt;") 
 
 $segments -join '' -as [xml]

@@ -4,10 +4,10 @@ param(
     [double]$Angle = 90
 )        
 
-return $this.LSystem('A',  @{
+return $this.LSystem('A',  [Ordered]@{
     A = '+BF-AFA-FB+'
     B = '-AF+BFB+FA-'
-}, $Order, @{
+}, $Order, [Ordered]@{
     'F'     = { $this.Forward($Size) }
     '\+'    = { $this.Rotate($Angle) }
     '\-'    = { $this.Rotate($Angle * -1) }

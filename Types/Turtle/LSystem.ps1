@@ -159,4 +159,10 @@ $null = foreach ($character in $finalState.ToCharArray()) {
         }
     }
 }
+$this.PathAttribute = [Ordered]@{
+    "data-l-order" = $N
+    "data-l-axiom" = $Axiom
+    "data-l-rules" = ConvertTo-Json $Rule 
+    "data-l-expanded" = $finalState
+}
 return $this

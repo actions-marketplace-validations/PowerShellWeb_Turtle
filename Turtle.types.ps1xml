@@ -1358,6 +1358,20 @@ if ($VerbosePreference -ne 'SilentlyContinue') {
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>ID</Name>
+        <GetScriptBlock>
+                        if ($this.'.ID') { return $this.'.ID'}
+return 'turtle'
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param([string]$Value)
+
+$this | Add-Member NoteProperty '.ID' $Value -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>IsPenDown</Name>
         <GetScriptBlock>
                         if ($null -ne $this.'.IsPenDown') { return $this.'.IsPenDown' }
@@ -1435,7 +1449,7 @@ if ($chromeOutput -match '&lt;img\ssrc="data:image/\w+;base64,(?&lt;b64&gt;[^"]+
                         $segments = @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='0%' height='0%'&gt;"
     "&lt;defs&gt;"
-        "&lt;mask id='turtle-mask'&gt;"
+        "&lt;mask id='$($this.Id)-mask'&gt;"
             $this.Symbol.OuterXml -replace '\&lt;\?[^\&gt;]+\&gt;'
         "&lt;/mask&gt;"
     "&lt;/defs&gt;"
@@ -1552,7 +1566,7 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @(
         <Name>PathElement</Name>
         <GetScriptBlock>
                         @(
-"&lt;path id='turtle-path' d='$($this.PathData)' stroke='$(
+"&lt;path id='$($this.id)-path' d='$($this.PathData)' stroke='$(
     if ($this.Stroke) { $this.Stroke } else { 'currentColor' }
 )' stroke-width='$(
     if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
@@ -1663,7 +1677,7 @@ $b64 = [Convert]::ToBase64String($OutputEncoding.GetBytes($thisPattern.outerXml)
                         $segments = @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='0%' height='0%'&gt;"
     "&lt;defs&gt;"
-        "&lt;mask id='turtle-mask'&gt;"
+        "&lt;mask id='$($this.ID)-mask'&gt;"
             $this.Pattern.OuterXml -replace '\&lt;\?[^\&gt;]+\&gt;'
         "&lt;/mask&gt;"
     "&lt;/defs&gt;"    
@@ -1872,7 +1886,7 @@ param()
 
 @(    
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
-        "&lt;symbol id='turtle-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
+        "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
             $this.PathElement.OuterXml
         "&lt;/symbol&gt;"
         $(
@@ -1880,7 +1894,7 @@ param()
                 "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' /&gt;"
             }
         )
-        "&lt;use href='#turtle-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
+        "&lt;use href='#$($this.ID)-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
     "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>

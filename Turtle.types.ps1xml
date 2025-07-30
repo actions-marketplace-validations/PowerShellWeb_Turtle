@@ -101,6 +101,26 @@ $this.Forward($Distance * -1)
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>BinaryTree</Name>
+        <Script>
+                        param(
+    [double]$Size = 20,
+    [int]$Order = 4,
+    [double]$Angle = 45
+)
+return $this.Rotate(-90).LSystem('0',  [Ordered]@{
+    '1' = '11'
+    '0' = '1[0]0'    
+}, $Order, [Ordered]@{
+    '[01]'    = { $this.Forward($Size) }
+    '\['      = { $this.Rotate($Angle * -1).Push() }
+    '\]'      = { $this.Pop().Rotate($Angle) }
+})
+
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>BoxFractal</Name>
         <Script>
                         &lt;#
@@ -286,6 +306,26 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>FractalPlant</Name>
+        <Script>
+                        param(
+    [double]$Size = 20,
+    [int]$Order = 4,
+    [double]$Angle = 25
+)
+return $this.Rotate(-90).LSystem('-X',  [Ordered]@{
+    'X' = 'F+[[X]-X]-F[-FX]+X'
+    'F' = 'FF'    
+}, $Order, [Ordered]@{
+    'F'    = { $this.Forward($Size) }
+    '\['      = { $this.Rotate($Angle * -1).Push() }
+    '\]'      = { $this.Pop().Rotate($Angle) }
+})
+
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>GosperCurve</Name>
         <Script>
                         &lt;#
@@ -352,7 +392,7 @@ if ($this.IsPenDown) {
 } else {
     $this.Steps += " m $deltaX $deltaY"
 }
-$this.Position = $x, $y
+$this.Position = $deltaX, $deltaY
 return $this
                     </Script>
       </ScriptMethod>
@@ -365,10 +405,10 @@ return $this
     [double]$Angle = 90
 )        
 
-return $this.LSystem('A',  @{
+return $this.LSystem('A',  [Ordered]@{
     A = '+BF-AFA-FB+'
     B = '-AF+BFB+FA-'
-}, $Order, @{
+}, $Order, [Ordered]@{
     'F'     = { $this.Forward($Size) }
     '\+'    = { $this.Rotate($Angle) }
     '\-'    = { $this.Rotate($Angle * -1) }
@@ -682,6 +722,12 @@ $null = foreach ($character in $finalState.ToCharArray()) {
         }
     }
 }
+$this.PathAttribute = [Ordered]@{
+    "data-l-order" = $N
+    "data-l-axiom" = $Axiom
+    "data-l-rules" = ConvertTo-Json $Rule 
+    "data-l-expanded" = $finalState
+}
 return $this
 
                     </Script>
@@ -798,6 +844,37 @@ $null = foreach ($n in 1..$SideCount) {
     $this.Forward($Size)
     $this.Rotate(360 / $SideCount)    
 }
+return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Pop</Name>
+        <Script>
+                        if ($this.'.Stack' -isnot [Collections.Stack]) {
+    return
+}
+
+if ($this.'.Stack'.Count -eq 0) {
+    return
+}
+
+$popped = $this.'.Stack'.Pop()
+$this.PenUp().Goto($popped.Position.X, $popped.Position.Y).PenDown()
+$this.Heading = $popped.Heading
+return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Push</Name>
+        <Script>
+                        if (-not $this.'.Stack') {
+    $this | Add-Member NoteProperty '.Stack' ([Collections.Stack]::new()) -Force
+}
+
+$this.'.Stack'.Push(@{
+    Position = [Ordered]@{X=$this.Position.X;Y=$this.Position.Y}
+    Heading = $this.Heading
+})
 return $this
                     </Script>
       </ScriptMethod>
@@ -1057,7 +1134,7 @@ $Y
 $deltaX = $x - $this.X 
 $deltaY = $y - $this.Y
 $this.Steps += "m $deltaX $deltaY"
-$this.Position = $x, $y
+$this.Position = $deltaX, $deltaY
 return $this
                     </Script>
       </ScriptMethod>
@@ -1102,6 +1179,14 @@ return $this.LSystem('F',  [Ordered]@{
     '[F]'  = { $this.Forward($Size) }
 })
 
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>ToString</Name>
+        <Script>
+                        param()
+
+return "$($this.SVG.OuterXml)"
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -1236,12 +1321,12 @@ $this | Add-Member NoteProperty -Name '.BackgroundColor' -Value $value -Force
     $viewBox = $this.ViewBox
     $null, $null, $viewX, $viewY = $viewBox
     "&lt;style&gt;canvas {max-width: 100%; height: 100%}&lt;/style&gt;"
-    "&lt;canvas id='turtle-canvas' width='$($viewX + 1)' height='$($viewY + 1)'&gt;&lt;/canvas&gt;"
+    "&lt;canvas id='$($this.ID)-canvas' width='$($viewX + 1)' height='$($viewY + 1)'&gt;&lt;/canvas&gt;"
 
     "&lt;script&gt;"    
 @"
 window.onload = async function() {
-  var canvas = document.getElementById('turtle-canvas');
+  var canvas = document.getElementById('$($this.ID)-canvas');
   var ctx = canvas.getContext('2d');
   ctx.strokeStyle = '$($this.Stroke)'
   ctx.lineWidth = '$(
@@ -1352,6 +1437,20 @@ if ($VerbosePreference -ne 'SilentlyContinue') {
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>ID</Name>
+        <GetScriptBlock>
+                        if ($this.'.ID') { return $this.'.ID'}
+return 'turtle'
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param([string]$Value)
+
+$this | Add-Member NoteProperty '.ID' $Value -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>IsPenDown</Name>
         <GetScriptBlock>
                         if ($null -ne $this.'.IsPenDown') { return $this.'.IsPenDown' }
@@ -1429,7 +1528,7 @@ if ($chromeOutput -match '&lt;img\ssrc="data:image/\w+;base64,(?&lt;b64&gt;[^"]+
                         $segments = @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='0%' height='0%'&gt;"
     "&lt;defs&gt;"
-        "&lt;mask id='turtle-mask'&gt;"
+        "&lt;mask id='$($this.Id)-mask'&gt;"
             $this.Symbol.OuterXml -replace '\&lt;\?[^\&gt;]+\&gt;'
         "&lt;/mask&gt;"
     "&lt;/defs&gt;"
@@ -1546,7 +1645,7 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @(
         <Name>PathElement</Name>
         <GetScriptBlock>
                         @(
-"&lt;path id='turtle-path' d='$($this.PathData)' stroke='$(
+"&lt;path id='$($this.id)-path' d='$($this.PathData)' stroke='$(
     if ($this.Stroke) { $this.Stroke } else { 'currentColor' }
 )' stroke-width='$(
     if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
@@ -1569,7 +1668,7 @@ $viewBox = $this.ViewBox
 $null, $null, $viewX, $viewY = $viewBox
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'&gt;"
 "&lt;defs&gt;"
-    "&lt;pattern id='turtle-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'$(
+    "&lt;pattern id='$($this.ID)-pattern' patternUnits='userSpaceOnUse' width='$viewX' height='$viewY' transform-origin='50% 50%'$(
         if ($this.PatternTransform) {
             " patternTransform='" + (
                 @(foreach ($key in $this.PatternTransform.Keys) {
@@ -1587,7 +1686,7 @@ $(
         "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' /&gt;"
     }
 )
-"&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#turtle-pattern)' transform-origin='50% 50%' /&gt;"
+"&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#$($this.ID)-pattern)' transform-origin='50% 50%' /&gt;"
 "&lt;/svg&gt;") 
 
 $segments -join '' -as [xml]
@@ -1657,7 +1756,7 @@ $b64 = [Convert]::ToBase64String($OutputEncoding.GetBytes($thisPattern.outerXml)
                         $segments = @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' width='0%' height='0%'&gt;"
     "&lt;defs&gt;"
-        "&lt;mask id='turtle-mask'&gt;"
+        "&lt;mask id='$($this.ID)-mask'&gt;"
             $this.Pattern.OuterXml -replace '\&lt;\?[^\&gt;]+\&gt;'
         "&lt;/mask&gt;"
     "&lt;/defs&gt;"    
@@ -1744,9 +1843,10 @@ if ($chromeOutput -match '&lt;img\ssrc="data:image/png;base64,(?&lt;b64&gt;[^"]+
         <Name>Position</Name>
         <GetScriptBlock>
                         if (-not $this.'.Position') {
-    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value [pscustomobject]@{ X = 0; Y = 0 }
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value ([pscustomobject]@{ X = 0; Y = 0 })
 }
 return $this.'.Position'
+
                     </GetScriptBlock>
         <SetScriptBlock>
                         param([double[]]$xy)
@@ -1776,6 +1876,16 @@ if ($posY -gt $this.'.Maximum'.Y) {
     $this.'.Maximum'.Y = $posY
 }
                     </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Stack</Name>
+        <GetScriptBlock>
+                        if ($null -ne $this.'.Stack'.Count) {
+    $this | Add-Member NoteProperty '.Stack' ([Collections.Stack]::new()) -Force
+}
+$this.'.Stack'
+
+                    </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Steps</Name>
@@ -1865,7 +1975,7 @@ param()
 
 @(    
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
-        "&lt;symbol id='turtle-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
+        "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
             $this.PathElement.OuterXml
         "&lt;/symbol&gt;"
         $(
@@ -1873,7 +1983,7 @@ param()
                 "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' /&gt;"
             }
         )
-        "&lt;use href='#turtle-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
+        "&lt;use href='#$($this.ID)-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
     "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>

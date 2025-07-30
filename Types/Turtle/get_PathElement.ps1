@@ -1,5 +1,5 @@
 @(
-"<path id='turtle-path' d='$($this.PathData)' stroke='$(
+"<path id='$($this.id)-path' d='$($this.PathData)' stroke='$(
     if ($this.Stroke) { $this.Stroke } else { 'currentColor' }
 )' stroke-width='$(
     if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }

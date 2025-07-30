@@ -1,5 +1,5 @@
 
-name: TurtlePower
+name: TurtlePowerShell
 description: Turtles in a PowerShell
 inputs: 
   Run: 
@@ -55,17 +55,17 @@ runs:
       id: TurtleAction
       shell: pwsh
       env: 
-        Run: ${{inputs.Run}}
-        UserName: ${{inputs.UserName}}
         GitHubToken: ${{inputs.GitHubToken}}
+        SkipScriptFile: ${{inputs.SkipScriptFile}}
         NoPush: ${{inputs.NoPush}}
         ActionScript: ${{inputs.ActionScript}}
-        UserEmail: ${{inputs.UserEmail}}
-        CommitMessage: ${{inputs.CommitMessage}}
-        TargetBranch: ${{inputs.TargetBranch}}
         InstallModule: ${{inputs.InstallModule}}
-        SkipScriptFile: ${{inputs.SkipScriptFile}}
         NoCommit: ${{inputs.NoCommit}}
+        TargetBranch: ${{inputs.TargetBranch}}
+        CommitMessage: ${{inputs.CommitMessage}}
+        UserName: ${{inputs.UserName}}
+        Run: ${{inputs.Run}}
+        UserEmail: ${{inputs.UserEmail}}
       run: |
         $Parameters = @{}
         $Parameters.Run = ${env:Run}

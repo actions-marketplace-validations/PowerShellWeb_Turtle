@@ -1750,9 +1750,10 @@ if ($chromeOutput -match '&lt;img\ssrc="data:image/png;base64,(?&lt;b64&gt;[^"]+
         <Name>Position</Name>
         <GetScriptBlock>
                         if (-not $this.'.Position') {
-    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value [pscustomobject]@{ X = 0; Y = 0 }
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value ([pscustomobject]@{ X = 0; Y = 0 })
 }
 return $this.'.Position'
+
                     </GetScriptBlock>
         <SetScriptBlock>
                         param([double[]]$xy)

@@ -25,5 +25,5 @@ if ($this.IsPenDown) {
 } else {
     $this.Steps += " m $deltaX $deltaY"
 }
-$this.Position = $x, $y
+$this.Position = $deltaX, $deltaY
 return $this

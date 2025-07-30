@@ -19,5 +19,5 @@ $Y
 $deltaX = $x - $this.X 
 $deltaY = $y - $this.Y
 $this.Steps += "m $deltaX $deltaY"
-$this.Position = $x, $y
+$this.Position = $deltaX, $deltaY
 return $this

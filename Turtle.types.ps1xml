@@ -1111,6 +1111,14 @@ return $this.LSystem('F',  [Ordered]@{
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>ToString</Name>
+        <Script>
+                        param()
+
+return "$($this.SVG.OuterXml)"
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>TwinDragonCurve</Name>
         <Script>
                         &lt;#

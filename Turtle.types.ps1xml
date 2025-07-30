@@ -365,10 +365,10 @@ return $this
     [double]$Angle = 90
 )        
 
-return $this.LSystem('A',  @{
+return $this.LSystem('A',  [Ordered]@{
     A = '+BF-AFA-FB+'
     B = '-AF+BFB+FA-'
-}, $Order, @{
+}, $Order, [Ordered]@{
     'F'     = { $this.Forward($Size) }
     '\+'    = { $this.Rotate($Angle) }
     '\-'    = { $this.Rotate($Angle * -1) }
@@ -1836,6 +1836,16 @@ if ($posY -gt $this.'.Maximum'.Y) {
     $this.'.Maximum'.Y = $posY
 }
                     </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Stack</Name>
+        <GetScriptBlock>
+                        if ($null -ne $this.'.Stack'.Count) {
+    $this | Add-Member NoteProperty '.Stack' ([Collections.Stack]::new()) -Force
+}
+$this.'.Stack'
+
+                    </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Steps</Name>

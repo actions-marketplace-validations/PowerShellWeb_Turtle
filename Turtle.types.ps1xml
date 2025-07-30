@@ -808,6 +808,20 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Push</Name>
+        <Script>
+                        if (-not $this.'.Stack') {
+    $this | Add-Member NoteProperty '.Stack' ([Collections.Stack]::new()) -Force
+}
+
+$this.'.Stack'.Push(@{
+    Position = [Ordered]@{X=$this.Position.X;Y=$this.Position.Y}
+    Heading = $this.Heading
+})
+return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>Right</Name>
         <Script>
                         &lt;#

@@ -449,6 +449,15 @@ return $this.LSystem('A',  [Ordered]@{
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Home</Name>
+        <Script>
+                        param()
+
+return $this.Teleport(0,0)
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>Jump</Name>
         <Script>
                         &lt;#

@@ -40,6 +40,10 @@
         <ReferencedMemberName>GoTo</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>lt</Name>
+        <ReferencedMemberName>Left</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>MoveTo</Name>
         <ReferencedMemberName>Teleport</ReferencedMemberName>
       </AliasProperty>
@@ -53,6 +57,10 @@
       </AliasProperty>
       <AliasProperty>
         <Name>r</Name>
+        <ReferencedMemberName>Right</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>rt</Name>
         <ReferencedMemberName>Right</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>

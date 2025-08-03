@@ -950,6 +950,29 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Save</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Saves the turtle.
+.DESCRIPTION
+    Saves the current turtle to a file.
+.LINK
+    Save-Turtle
+#&gt;
+param(
+[string]
+$FilePath,
+
+[string]
+$Property
+)
+
+return $this | Save-Turtle $FilePath -Property $Property
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>SierpinskiArrowheadCurve</Name>
         <Script>
                         &lt;#

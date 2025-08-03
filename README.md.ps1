@@ -14,6 +14,10 @@ param()
 
 <div align='center'>
     <img src='./Examples/SierpinskiTriangle.svg' alt='SierpinskiTriangle' width='50%' />
+    <br/>
+    <a href='https://www.powershellgallery.com/packages/Turtle/' >
+    <img src='https://img.shields.io/powershellgallery/dt/Turtle' />
+    </a>
 </div>
 
 

@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.1'
+    ModuleVersion = '0.1.2'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -16,11 +16,18 @@
     Copyright = '2025 Start-Automating'
     # Type files (.ps1xml) to be loaded when importing this module
     TypesToProcess = @('Turtle.types.ps1xml')
+
+    FunctionsToExport = 
+        'Get-Turtle',
+        'Move-Turtle',
+        'New-Turtle',
+        'Set-Turtle',
+        'Save-Turtle'
     # Format files (.ps1xml) to be loaded when importing this module
     # FormatsToProcess = @()
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     VariablesToExport = '*'
-    AliasesToExport = '*'
+    AliasesToExport = 'Turtle'
     PrivateData = @{
         PSData = @{
             # Tags applied to this module. These help with module discovery in online galleries.
@@ -30,6 +37,17 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
+## Turtle 0.1.2:
+
+* `Get-Turtle/Turtle` can now get or set properties or methods
+* New Methods:
+  * `Turtle.Distance()` determines the distance to a point
+  * `Turtle.Towards()` determines the angle to a point
+  * `Turtle.Home()` sends the turtle to 0,0
+  * `Turtle.lt/rt` aliases help original Logo compatibility
+  * `Turtle.Save()` calls Save-Turtle
+* Explicitly exporting commands from module
+
 ## Turtle 0.1.1:
 
 * Updates:

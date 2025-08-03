@@ -5,6 +5,8 @@
     down = 'PenDown'
     up = 'PenUp'
     l = 'Left'
+    lt = 'Left'
+    rt = 'Right'
     r = 'Right'
     xPos = 'xcor'
     yPos = 'ycor'

@@ -40,6 +40,10 @@
         <ReferencedMemberName>GoTo</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>lt</Name>
+        <ReferencedMemberName>Left</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>MoveTo</Name>
         <ReferencedMemberName>Teleport</ReferencedMemberName>
       </AliasProperty>
@@ -53,6 +57,10 @@
       </AliasProperty>
       <AliasProperty>
         <Name>r</Name>
+        <ReferencedMemberName>Right</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>rt</Name>
         <ReferencedMemberName>Right</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
@@ -246,6 +254,30 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Distance</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Determines the distance to a point
+.DESCRIPTION
+    Determines the distance from the turtle's current position to a point.
+#&gt;
+param(
+# The X-coordinate
+[double]$X = 0,
+# The Y-coordinate
+[double]$Y = 0
+)
+
+# Determine the delta from the turtle's current position to the specified point
+$deltaX = $this.Position.X - $X
+$deltaY = $this.Position.Y - $Y
+# Calculate the distance using the Pythagorean theorem
+return [Math]::Sqrt($deltaX * $deltaX + $deltaY * $deltaY)
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>FillColor</Name>
         <Script>
                         param($fill = 'transparent')
@@ -413,6 +445,15 @@ return $this.LSystem('A',  [Ordered]@{
     '\+'    = { $this.Rotate($Angle) }
     '\-'    = { $this.Rotate($Angle * -1) }
 })
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Home</Name>
+        <Script>
+                        param()
+
+return $this.Teleport(0,0)
 
                     </Script>
       </ScriptMethod>
@@ -909,6 +950,35 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Save</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Saves the turtle.
+.DESCRIPTION
+    Saves the current turtle to a file.
+.LINK
+    Save-Turtle
+#&gt;
+param(
+[Parameter(Mandatory)]
+[string]
+$FilePath,
+
+[string]
+$Property
+)
+
+$saveSplat = [Ordered]@{FilePath = $FilePath}
+if ($Property) {
+    $saveSplat.Property = $property
+}
+
+return $this | Save-Turtle @saveSplat
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>SierpinskiArrowheadCurve</Name>
         <Script>
                         &lt;#
@@ -1187,6 +1257,32 @@ return $this.LSystem('F',  [Ordered]@{
                         param()
 
 return "$($this.SVG.OuterXml)"
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Towards</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Determines the angle towards a point
+.DESCRIPTION
+    Determines the angle from the turtle's current position towards a point.
+#&gt;
+param(
+# The X-coordinate
+[double]$X = 0,
+# The Y-coordinate
+[double]$Y = 0
+)
+
+# Determine the delta from the turtle's current position to the specified point
+$deltaX = $this.Position.X - $X
+$deltaY = $this.Position.Y - $Y
+# Calculate the angle in radians and convert to degrees
+$angle = [Math]::Atan2($deltaY, $deltaX) * 180 / [Math]::PI
+# Return the angle rotate by 90 to account for the turtle's coordinate system
+return $angle + 90
+
                     </Script>
       </ScriptMethod>
       <ScriptMethod>

@@ -16,11 +16,18 @@
     Copyright = '2025 Start-Automating'
     # Type files (.ps1xml) to be loaded when importing this module
     TypesToProcess = @('Turtle.types.ps1xml')
+
+    FunctionsToExport = 
+        'Get-Turtle',
+        'Move-Turtle',
+        'New-Turtle',
+        'Set-Turtle',
+        'Save-Turtle'
     # Format files (.ps1xml) to be loaded when importing this module
     # FormatsToProcess = @()
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     VariablesToExport = '*'
-    AliasesToExport = '*'
+    AliasesToExport = 'Turtle'
     PrivateData = @{
         PSData = @{
             # Tags applied to this module. These help with module discovery in online galleries.

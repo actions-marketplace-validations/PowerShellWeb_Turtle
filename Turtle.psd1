@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.1'
+    ModuleVersion = '0.1.2'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -37,6 +37,17 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
+## Turtle 0.1.2:
+
+* `Get-Turtle/Turtle` can now get or set properties or methods
+* New Methods:
+  * `Turtle.Distance()` determines the distance to a point
+  * `Turtle.Towards()` determines the angle to a point
+  * `Turtle.Home()` sends the turtle to 0,0
+  * `Turtle.lt/rt` aliases help original Logo compatibility
+  * `Turtle.Save()` calls Save-Turtle
+* Explicitly exporting commands from module
+
 ## Turtle 0.1.1:
 
 * Updates:

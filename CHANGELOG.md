@@ -1,3 +1,14 @@
+## Turtle 0.1.2:
+
+* `Get-Turtle/Turtle` can now get or set properties or methods
+* New Methods:
+  * `Turtle.Distance()` determines the distance to a point
+  * `Turtle.Towards()` determines the angle to a point
+  * `Turtle.Home()` sends the turtle to 0,0
+  * `Turtle.lt/rt` aliases help original Logo compatibility
+  * `Turtle.Save()` calls Save-Turtle
+* Explicitly exporting commands from module
+
 ## Turtle 0.1.1:
 
 * Updates:

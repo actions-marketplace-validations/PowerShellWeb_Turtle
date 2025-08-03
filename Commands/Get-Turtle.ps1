@@ -1,5 +1,13 @@
 function Get-Turtle {
     <#
+    .SYNOPSIS
+        Gets Turtle in PowerShell
+    .DESCRIPTION
+        Gets, sets, and moves a turtle object in PowerShell.
+    .NOTES
+        Each argument can be the name of a member of the turtle object.
+
+        After a member name is encountered, subsequent arguments will be passed to the member as parameters.        
     .EXAMPLE
         turtle square 50
     .EXAMPLE
@@ -8,6 +16,7 @@ function Get-Turtle {
         turtle polygon 10 6
     .EXAMPLE
         turtle ('forward', 10, 'rotate', 120 * 3)
+
     #>
     [CmdletBinding(PositionalBinding=$false)]
     [Alias('turtle')]
@@ -79,6 +88,7 @@ function Get-Turtle {
         # We want to keep track of the current member, 
         # and continue to the next word until we find a member name.        
         $currentMember = $null
+        $outputTurtle = $false
 
         # To do this in one pass, we will iterate through the words and arguments.
         # We use an indexed loop so we can skip past claimed arguments.
@@ -159,12 +169,21 @@ function Get-Turtle {
             # Luckily, this should be one of the few cases where this does not annoy too much.
             # Properties being returned will largely be strings or numbers.
             if (-not ($stepOutput.pstypenames -eq 'Turtle')) {
-                $stepOutput
+                # Output the step
+                $stepOutput 
+                # and set the output turtle to false.
+                $outputTurtle = $false                
             } else {
+                # Set the current turtle to the step output.
                 $currentTurtle = $stepOutput
+                # and output it later (presumably).
+                $outputTurtle = $true                
             }
         }
-        
-        return $currentTurtle
+
+        # If the last members returned a turtle object, we can output it.
+        if ($outputTurtle) {
+            return $currentTurtle
+        }        
     }
 }

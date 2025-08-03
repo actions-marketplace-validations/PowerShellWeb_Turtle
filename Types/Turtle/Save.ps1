@@ -7,6 +7,7 @@
     Save-Turtle
 #>
 param(
+[Parameter(Mandatory)]
 [string]
 $FilePath,
 
@@ -14,4 +15,9 @@ $FilePath,
 $Property
 )
 
-return $this | Save-Turtle $FilePath -Property $Property
+$saveSplat = [Ordered]@{FilePath = $FilePath}
+if ($Property) {
+    $saveSplat.Property = $property
+}
+
+return $this | Save-Turtle @saveSplat

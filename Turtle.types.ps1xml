@@ -1489,6 +1489,28 @@ if (-not $this.'.Fill') {
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>FillRule</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.PathAttribute') {
+    $this | Add-Member -MemberType NoteProperty -Name '.PathAttribute' -Value ([Ordered]@{}) -Force
+}
+if ($this.'.PathAttribute'.'fill-rule') {
+    return $this.'.PathAttribute'.'fill-rule'
+} else {
+    'nonzero'
+}
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[ValidateSet('nonzero', 'evenodd')]
+[string]
+$fillRule = 'nonzero'
+)
+$this.PathAttribute = [Ordered]@{'fill-rule' = $fillRule.ToLower()}
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Heading</Name>
         <GetScriptBlock>
                         &lt;#

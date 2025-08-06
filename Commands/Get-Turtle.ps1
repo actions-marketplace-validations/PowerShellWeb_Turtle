@@ -165,19 +165,19 @@ function Get-Turtle {
                 }
 
             # If the output is not a turtle object, we can output it.
-            # NOTE: This will lead to multiple types of output in the pipeline.
+            # NOTE: This may lead to multiple types of output in the pipeline.
             # Luckily, this should be one of the few cases where this does not annoy too much.
-            # Properties being returned will largely be strings or numbers.
-            if (-not ($stepOutput.pstypenames -eq 'Turtle')) {
+            # Properties being returned will largely be strings or numbers, and these will always output directly.
+            if ($null -ne $stepOutput -and -not ($stepOutput.pstypenames -eq 'Turtle')) {
                 # Output the step
                 $stepOutput 
                 # and set the output turtle to false.
                 $outputTurtle = $false                
-            } else {
+            } elseif ($null -ne $stepOutput) {
                 # Set the current turtle to the step output.
                 $currentTurtle = $stepOutput
                 # and output it later (presumably).
-                $outputTurtle = $true                
+                $outputTurtle = $true
             }
         }
 

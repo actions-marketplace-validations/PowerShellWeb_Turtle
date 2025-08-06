@@ -1,4 +1,12 @@
-## Turtle 0.1.2:
+## Turtle 0.1.3
+
+* Fixing `Get-Turtle` inline sets (#108, #107)
+* Fixing `.PNG/JPEG/WEBP` to no longer try to use msedge (#110)
+* Adding `Turtle.get/set_FillRule` to get or set the fill rule for the turtle. (#109)
+
+---
+
+## Turtle 0.1.2
 
 * `Get-Turtle/Turtle` can now get or set properties or methods
 * New Methods:
@@ -9,7 +17,9 @@
   * `Turtle.Save()` calls Save-Turtle
 * Explicitly exporting commands from module
 
-## Turtle 0.1.1:
+---
+
+## Turtle 0.1.1
 
 * Updates:
   * `Turtle.get/set_ID` allows for turtle identifiers
@@ -28,7 +38,7 @@
 
 ---
 
-## Turtle 0.1:
+## Turtle 0.1
 
 * Initial Release
 * Builds a Turtle Graphics engine in PowerShell

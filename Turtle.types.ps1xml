@@ -1570,7 +1570,7 @@ if ($VerbosePreference -ne 'SilentlyContinue') {
       <ScriptProperty>
         <Name>JPEG</Name>
         <GetScriptBlock>
-                        $chromiumNames = 'chromium','chrome','msedge'
+                        $chromiumNames = 'chromium','chrome'
 foreach ($browserName in $chromiumNames) {
     $chromiumCommand = 
         $ExecutionContext.SessionState.InvokeCommand.GetCommand($browserName,'Application')
@@ -1881,7 +1881,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.PatternTransform' -Va
       <ScriptProperty>
         <Name>PNG</Name>
         <GetScriptBlock>
-                        $chromiumNames = 'chromium','chrome','msedge'
+                        $chromiumNames = 'chromium','chrome'
 foreach ($browserName in $chromiumNames) {
     $chromiumCommand = 
         $ExecutionContext.SessionState.InvokeCommand.GetCommand($browserName,'Application')
@@ -2136,7 +2136,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.ViewBox' -Value $view
       <ScriptProperty>
         <Name>WEBP</Name>
         <GetScriptBlock>
-                        $chromiumNames = 'chromium','chrome','msedge'
+                        $chromiumNames = 'chromium','chrome'
 foreach ($browserName in $chromiumNames) {
     $chromiumCommand = 
         $ExecutionContext.SessionState.InvokeCommand.GetCommand($browserName,'Application')

@@ -1688,6 +1688,42 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Opacity</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the turtle opacity
+.DESCRIPTION
+    Gets the opacity of the turtle path.
+#&gt;
+if (-not $this.'.PathAttribute') {
+    $this | Add-Member -MemberType NoteProperty -Name '.PathAttribute' -Value ([Ordered]@{}) -Force
+}
+if ($this.'.PathAttribute'.'opacity') {
+    return $this.'.PathAttribute'.'opacity'
+} else {
+    return 1.0
+}
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the opacity
+.DESCRIPTION
+    Sets the opacity of the path
+.EXAMPLE
+    turtle forward 100 opacity 0.5 save ./dimLine.svg
+#&gt;
+param(
+[double]
+$Opacity = 'nonzero'
+)
+
+$this.PathAttribute = [Ordered]@{'opacity' = $Opacity}
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>PathAttribute</Name>
         <GetScriptBlock>
                         if ($this.'.PathAttribute') { 

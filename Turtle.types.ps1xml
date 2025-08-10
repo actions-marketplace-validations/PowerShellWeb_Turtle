@@ -1756,6 +1756,53 @@ $this.PathAttribute = [Ordered]@{'opacity' = $Opacity}
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>PathAnimation</Name>
+        <GetScriptBlock>
+                        if ($this.'.PathAnimation') {
+    return $this.'.PathAnimation'
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[PSObject]
+$PathAnimation
+)
+
+$newAnimation = @(foreach ($animation in $PathAnimation) {
+    if ($animation -is [Collections.IDictionary]) {
+        $animationCopy = [Ordered]@{} + $animation
+        if (-not $animationCopy['attributeType']) {
+            $animationCopy['attributeType'] = 'XML'
+        }
+        if (-not $animationCopy['attributeName']) {
+            $animationCopy['attributeName'] = 'transform'
+        }
+        if ($animationCopy.values -is [object[]]) {
+            $animationCopy['values'] = $animationCopy['values'] -join ';'
+        }
+
+        $elementName = 'animate'
+        if ($animationCopy['attributeName'] -eq 'transform') {
+            $elementName = 'animateTransform'
+        }
+        
+        "&lt;$elementName $(
+            @(foreach ($key in $animationCopy.Keys) {
+                " $key='$([Web.HttpUtility]::HtmlAttributeEncode($animationCopy[$key]))'"
+            }) -join ''
+        )/&gt;"
+    }
+    if ($animation -is [string]) {
+        $animation
+    }
+})
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.PathAnimation' -Value $newAnimation
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>PathAttribute</Name>
         <GetScriptBlock>
                         if ($this.'.PathAttribute') { 
@@ -1837,11 +1884,13 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @(
     if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
 )' fill='$($this.Fill)' class='$(
     $this.PathClass -join ' '
-)' $(
+)' transform-origin='50% 50%' $(
     foreach ($pathAttributeName in $this.PathAttribute.Keys) {
         " $pathAttributeName='$($this.PathAttribute[$pathAttributeName])'"
     }
-) /&gt;"
+)&gt;"
+if ($this.PathAnimation) {$this.PathAnimation}
+"&lt;/path&gt;"
 ) -as [xml]
                     </GetScriptBlock>
       </ScriptProperty>

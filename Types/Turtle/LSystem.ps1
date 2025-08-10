@@ -104,20 +104,25 @@ F+F+F+F +JJJJ+ F+F+F+F ++ JJJJ' },
     
 #>
 param(
+# The axiom, or starting string.
 [Alias('Start', 'StartString', 'Initiator')]
 [string]
 $Axiom,
 
+# The rules for expanding each iteration of the axiom.
 [Alias('Rules', 'ProductionRules')]
 [Collections.IDictionary]
 $Rule = [Ordered]@{},
 
+# The order of magnitude (or number of iterations)
 [Alias('Iterations', 'IterationCount', 'N', 'Steps', 'N','StepCount')]
 [int]
 $Order = 2,
 
+# The ways each variable will be expanded.
 [Collections.IDictionary]
 $Variable = @{}
+
 )
 
 # First, let us expand our axiom
@@ -172,7 +177,9 @@ $allMatches = @([Regex]::Matches($finalState, $MatchesAny, 'IgnoreCase,IgnorePat
 $matchCache = @{}
 :nextMatch foreach ($match in $allMatches) {
     $m = "$match"
+    # If we have not mapped the match to a script,
     if (-not $matchCache[$m]) {
+        # find the matching replacement.
         foreach ($key in $Variable.Keys) {
             if (-not ($match -match $key)) { continue }     
             $matchCache[$m] = $localReplacement[$key]
@@ -180,10 +187,14 @@ $matchCache = @{}
         }    
     }
     
+    # If we have a script to run
     if ($matchCache[$m] -is [ScriptBlock]) {
+        # run it
         $null =  . $matchCache[$m] $match
+        # and continue to the next match.
         continue nextMatch
     }
 }
 
+# return this so we can pipe and chain this method.
 return $this

@@ -716,28 +716,28 @@ $Axiom,
 [Collections.IDictionary]
 $Rule = [Ordered]@{},
 
-[Alias('Iterations', 'Steps', 'IterationCount','StepCount')]
+[Alias('Iterations', 'IterationCount', 'N', 'Steps','StepCount')]
 [int]
-$N = 2,
+$Order = 2,
 
 [Collections.IDictionary]
 $Variable = @{}
 )
 
-if ($n -lt 1) { return $Axiom}
-
 $currentState = "$Axiom"
-$combinedPattern = "(?&gt;$($Rule.Keys -join '|'))"    
-foreach ($iteration in 1..$n) {
-    $currentState = $currentState -replace $combinedPattern, {
-        $match = $_
-        $matchingRule = $rule["$match"]
-        if ($matchingRule -is [ScriptBlock]) {                        
-            return "$(&amp; $matchingRule $match)"
-        } else {
-            return $matchingRule
-        }
-    }    
+if ($Order -ge 1) {
+    $combinedPattern = "(?&gt;$($Rule.Keys -join '|'))"
+    foreach ($iteration in 1..$Order) {
+        $currentState = $currentState -replace $combinedPattern, {
+            $match = $_
+            $matchingRule = $rule["$match"]
+            if ($matchingRule -is [ScriptBlock]) {
+                return "$(. $matchingRule $match)"
+            } else {
+                return $matchingRule
+            }
+        }    
+    }        
 }
 
 $localReplacement = [Ordered]@{}
@@ -751,24 +751,34 @@ foreach ($key in $variable.Keys) {
 }
 
 $finalState = $currentState
-$null = foreach ($character in $finalState.ToCharArray()) {
-    foreach ($key in $Variable.Keys) {
-        if ($character -match $key) {
-            $action = $localReplacement[$key]
-            if ($action -is [ScriptBlock]) {
-                . $action $character
-            } else {
-                $action
-            } 
-        }
-    }
-}
+
 $this.PathAttribute = [Ordered]@{
-    "data-l-order" = $N
+    "data-l-order" = $Order
     "data-l-axiom" = $Axiom
     "data-l-rules" = ConvertTo-Json $Rule 
     "data-l-expanded" = $finalState
 }
+
+$MatchesAny = "(?&gt;$($variable.Keys -join '|'))"
+$allMatches = @([Regex]::Matches($finalState, $MatchesAny, 'IgnoreCase,IgnorePatternWhitespace'))
+$matchCache = @{}
+:nextMatch foreach ($match in $allMatches) {
+    $m = "$match"
+    if (-not $matchCache[$m]) {
+        foreach ($key in $Variable.Keys) {
+            if (-not ($match -match $key)) { continue }
+            # if ($variable[$key] -isnot [ScriptBlock]) { continue }
+            $matchCache[$m] = $localReplacement[$key]
+            break
+        }    
+    }
+    
+    if ($matchCache[$m] -is [ScriptBlock]) {
+        $Orderull =  . $matchCache[$m] $match
+        continue nextMatch
+    }
+}
+
 return $this
 
                     </Script>

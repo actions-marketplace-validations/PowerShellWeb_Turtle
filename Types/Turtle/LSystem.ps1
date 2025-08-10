@@ -112,7 +112,7 @@ $Axiom,
 [Collections.IDictionary]
 $Rule = [Ordered]@{},
 
-[Alias('Iterations', 'IterationCount', 'N', 'Steps','StepCount')]
+[Alias('Iterations', 'IterationCount', 'N', 'Steps', 'N','StepCount')]
 [int]
 $Order = 2,
 
@@ -170,7 +170,7 @@ $matchCache = @{}
     }
     
     if ($matchCache[$m] -is [ScriptBlock]) {
-        $Orderull =  . $matchCache[$m] $match
+        $null =  . $matchCache[$m] $match
         continue nextMatch
     }
 }

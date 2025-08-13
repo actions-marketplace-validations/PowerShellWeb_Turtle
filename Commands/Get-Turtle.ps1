@@ -117,15 +117,13 @@ function Get-Turtle {
             }
             # Now we know how long it took to get to the next member name.
 
-            # And we can determine if we have any parameters                
+            # And we can determine if we have any parameters.
+            # (it is important that we always force any parameters into an array)
             $argList = 
-                if ($methodArgIndex -eq ($argIndex + 1)) {
-                    @()
-                }
-                else {
+                @(if ($methodArgIndex -ne ($argIndex + 1)) {
                     $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)]
                     $argIndex = $methodArgIndex - 1
-                }
+                })
 
             # Look up the member information for the current member.
             $memberInfo = $turtleType.Members[$currentMember]

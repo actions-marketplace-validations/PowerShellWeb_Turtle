@@ -88,7 +88,8 @@ function Get-Turtle {
         # We want to keep track of the current member, 
         # and continue to the next word until we find a member name.        
         $currentMember = $null
-        $outputTurtle = $false
+        # We want to output the turtle by default, in case we were called with no parameters.
+        $outputTurtle = $true
 
         # To do this in one pass, we will iterate through the words and arguments.
         # We use an indexed loop so we can skip past claimed arguments.

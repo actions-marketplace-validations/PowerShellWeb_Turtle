@@ -16,4 +16,6 @@
     MoveTo = 'Teleport'
     Back = 'Backward'
     bk = 'Backward'
+    ArcR = 'ArcRight'
+    ArcL = 'ArcLeft'
 }

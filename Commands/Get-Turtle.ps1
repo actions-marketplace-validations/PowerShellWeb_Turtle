@@ -145,8 +145,18 @@ function Get-Turtle {
                 ) {                    
                     # If we have arguments,
                     if ($argList) {
-                        # pass them to the method.
-                        $currentTurtle.$currentMember.Invoke($argList)
+                        # and we have a script method
+                        if ($memberInfo -is [Management.Automation.Runspaces.ScriptMethodData]) {
+                            # set this to the current turtle
+                            $this = $currentTurtle
+                            # and call the script, splatting positional parameters
+                            # (this allows more complex binding, like ValueFromRemainingArguments)
+                            . $currentTurtle.$currentMember.Script @argList
+                        } else {
+                            # Otherwise, we pass the parameters directly to the method                            
+                            $currentTurtle.$currentMember.Invoke($argList)
+                        }
+                        
                     } else {
                         # otherwise, just invoke the method with no arguments.
                         $currentTurtle.$currentMember.Invoke()

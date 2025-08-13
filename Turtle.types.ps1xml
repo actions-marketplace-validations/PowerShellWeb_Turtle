@@ -16,6 +16,14 @@
         </Members>
       </MemberSet>
       <AliasProperty>
+        <Name>ArcL</Name>
+        <ReferencedMemberName>ArcLeft</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ArcR</Name>
+        <ReferencedMemberName>ArcRight</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Back</Name>
         <ReferencedMemberName>Backward</ReferencedMemberName>
       </AliasProperty>
@@ -83,6 +91,74 @@
         <Name>yPos</Name>
         <ReferencedMemberName>ycor</ReferencedMemberName>
       </AliasProperty>
+      <ScriptMethod>
+        <Name>ArcLeft</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Arcs the turtle to the left
+.DESCRIPTION
+    Arcs the turtle to the left (counter-clockwise) a number of degrees.
+
+    For each degree, the turtle will move forward and rotate.
+.NOTES
+    The amount moved forward will be the portion of the circumference.
+#&gt;
+param(
+# The radius of a the circle, were it to complete the arc.
+[double]
+$Radius = 10,
+
+# The angle of the arc
+[double]
+$Angle = 60
+)
+
+# Rather than duplicate logic, we will simply reverse the angle
+$angle *= -1
+# and arc to the "right".
+return $this.ArcRight($Radius, $Angle)
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>ArcRight</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Arcs the turtle to the right
+.DESCRIPTION
+    Arcs the turtle to the right (clockwise) a number of degrees.
+
+    For each degree, the turtle will move forward and rotate.
+.NOTES
+    The amount moved forward will be the portion of the circumference.
+#&gt;
+param(
+# The radius of a the circle, were it to complete the arc.
+[double]
+$Radius = 10,
+
+# The angle of the arc
+[double]
+$Angle = 60
+)
+
+
+# Determine the absolute angle, for this
+$absAngle = [Math]::Abs($angle)
+$circumferenceStep = ([Math]::PI * 2 * $Radius) / $absAngle
+
+$iteration = $angle / [Math]::Floor($absAngle)
+$angleDelta = 0 
+$null = while ([Math]::Abs($angleDelta) -lt $absAngle) {
+    $this.Forward($circumferenceStep)
+    $this.Rotate($iteration)
+    $angleDelta+=$iteration
+}
+
+return $this
+                    </Script>
+      </ScriptMethod>
       <ScriptMethod>
         <Name>Backward</Name>
         <Script>

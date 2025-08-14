@@ -1,4 +1,20 @@
+<#
+.SYNOPSIS
+    Sets the Turtle Path Animation
+.DESCRIPTION
+    Sets an animation for the Turtle path.
+.EXAMPLE
+    turtle flower PathAnimation ([Ordered]@{
+        attributeName = 'fill'   ; values = "#4488ff;#224488;#4488ff" ; repeatCount = 'indefinite'; dur = "4.2s" # ; additive = 'sum'
+    }, [Ordered]@{
+        attributeName = 'stroke'   ; values = "#224488;#4488ff;#224488" ; repeatCount = 'indefinite'; dur = "2.1s" # ; additive = 'sum'
+    }, [Ordered]@{
+        type = 'rotate'   ; values = 0, 360 ;repeatCount = 'indefinite'; dur = "41s"
+    }) save ./AnimatedFlower.svg
+#>
 param(
+# The path animation object.
+# This may be a string containing animation XML, XML, or a dictionary containing animation settings.
 [PSObject]
 $PathAnimation
 )
@@ -29,6 +45,9 @@ $newAnimation = @(foreach ($animation in $PathAnimation) {
     }
     if ($animation -is [string]) {
         $animation
+    }
+    if ($animation.OuterXml) {
+        $animation.OuterXml
     }
 })
 

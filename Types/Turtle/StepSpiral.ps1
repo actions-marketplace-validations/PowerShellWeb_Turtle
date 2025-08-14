@@ -9,6 +9,12 @@
     By default, this creates an outward spiral.
 
     To create an inward spiral, use a negative StepSize or StepCount.
+.EXAMPLE
+    turtle StepSpiral save ./StepSpiral.svg
+.EXAMPLE
+    turtle @('StepSpiral',3, 120, 'rotate',120 * 3) save ./StepSpiralx3.svg
+.EXAMPLE
+    turtle @('StepSpiral',3, 90, 'rotate',90 * 3) save ./StepSpiralx4.svg
 #>
 param(
 # The length of the first step

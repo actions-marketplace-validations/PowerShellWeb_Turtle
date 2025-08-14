@@ -1398,23 +1398,27 @@ $LeftTurnSteps
 
 $stepNumber = 1
 $majorStepCount = 0
+$totalTurn = 0
 do {
     $null = for ($stepNumber = 1; $stepNumber -le [Math]::Abs($StepCount); $stepNumber++) {
         $null = $this.Forward($side * $stepNumber)
         if ($LeftTurnSteps) {
             if ($LeftTurnSteps -contains $stepNumber) {
+                $totalTurn -= $angle
                 $this.Left($angle)
             } else {
+                $totalTurn += $angle
                 $this.Right($angle)
             }
         } else {
+            $totalTurn += $angle
             $this.Right($angle)
         }
     }
     $majorStepCount++
 } until (
-    (-not ([Math]::Round($this.Heading, 5) % 360 )) -or 
-    $majorStepCount -gt $StepCount
+    (-not ([Math]::Round($totalTurn, 5) % 360 )) -and 
+    $majorStepCount -le [Math]::Abs($StepCount)
 )
 
 return $this

@@ -12,7 +12,8 @@ param(
 )
 
 # Determine the delta from the turtle's current position to the specified point
-$deltaX = $this.Position.X - $X
-$deltaY = $this.Position.Y - $Y
+$deltaX = $X - $this.Position.X
+$deltaY = $Y - $this.Position.Y
+
 # Calculate the distance using the Pythagorean theorem
-return [Math]::Sqrt($deltaX * $deltaX + $deltaY * $deltaY)
+return [Math]::Sqrt($deltaX*$deltaX + $deltaY*$deltaY)

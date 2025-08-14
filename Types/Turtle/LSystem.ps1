@@ -104,41 +104,65 @@ F+F+F+F +JJJJ+ F+F+F+F ++ JJJJ' },
     
 #>
 param(
+# The axiom, or starting string.
 [Alias('Start', 'StartString', 'Initiator')]
 [string]
 $Axiom,
 
+# The rules for expanding each iteration of the axiom.
 [Alias('Rules', 'ProductionRules')]
 [Collections.IDictionary]
 $Rule = [Ordered]@{},
 
-[Alias('Iterations', 'Steps', 'IterationCount','StepCount')]
+# The order of magnitude (or number of iterations)
+[Alias('Iterations', 'IterationCount', 'N', 'Steps', 'N','StepCount')]
 [int]
-$N = 2,
+$Order = 2,
 
+# The ways each variable will be expanded.
 [Collections.IDictionary]
 $Variable = @{}
+
 )
 
-if ($n -lt 1) { return $Axiom}
-
+# First, let us expand our axiom
 $currentState = "$Axiom"
-$combinedPattern = "(?>$($Rule.Keys -join '|'))"    
-foreach ($iteration in 1..$n) {
-    $currentState = $currentState -replace $combinedPattern, {
-        $match = $_
-        $matchingRule = $rule["$match"]
-        if ($matchingRule -is [ScriptBlock]) {                        
-            return "$(& $matchingRule $match)"
-        } else {
-            return $matchingRule
-        }
-    }    
+# (at least, as long as we're supposed to)
+if ($Order -ge 1) {
+    $combinedPattern = "(?>$($Rule.Keys -join '|'))"
+    foreach ($iteration in 1..$Order) {
+        # To expand each iteration, we replace any matching characters
+        $currentState = $currentState -replace $combinedPattern, {
+            $match = $_
+            $matchingRule = $rule["$match"]
+            # a matching rule could be dynamically specified with a script block
+            if ($matchingRule -is [ScriptBlock]) {
+                return "$(. $matchingRule $match)"
+            } else {
+                # but is often statically expanded with a string.
+                return $matchingRule
+            }
+        }    
+    }        
 }
 
+# Now we know our final state
+$finalState = $currentState
+
+# and can add the appropriate data attributes.
+$this.PathAttribute = [Ordered]@{
+    "data-l-order" = $Order
+    "data-l-axiom" = $Axiom
+    "data-l-rules" = ConvertTo-Json $Rule 
+    "data-l-expanded" = $finalState
+}
+
+# Next, prepare our replacements.
+# The provided script block will almost always be scoped differently
+# so we need to recreate it.
 $localReplacement = [Ordered]@{}
 foreach ($key in $variable.Keys) {
-    $localReplacement[$key] = 
+    $localReplacement[$key] =
         if ($variable[$key] -is [ScriptBlock]) {
             [ScriptBlock]::Create($variable[$key])
         } else {
@@ -146,23 +170,31 @@ foreach ($key in $variable.Keys) {
         }
 }
 
-$finalState = $currentState
-$null = foreach ($character in $finalState.ToCharArray()) {
-    foreach ($key in $Variable.Keys) {
-        if ($character -match $key) {
-            $action = $localReplacement[$key]
-            if ($action -is [ScriptBlock]) {
-                . $action $character
-            } else {
-                $action
-            } 
-        }
+# Now we need to find all potential matches
+$MatchesAny = "(?>$($variable.Keys -join '|'))"
+$allMatches = @([Regex]::Matches($finalState, $MatchesAny, 'IgnoreCase,IgnorePatternWhitespace'))
+# we want to minimize rematching, so create a temporary cache.
+$matchCache = @{}
+:nextMatch foreach ($match in $allMatches) {
+    $m = "$match"
+    # If we have not mapped the match to a script,
+    if (-not $matchCache[$m]) {
+        # find the matching replacement.
+        foreach ($key in $Variable.Keys) {
+            if (-not ($match -match $key)) { continue }     
+            $matchCache[$m] = $localReplacement[$key]
+            break
+        }    
+    }
+    
+    # If we have a script to run
+    if ($matchCache[$m] -is [ScriptBlock]) {
+        # run it
+        $null =  . $matchCache[$m] $match
+        # and continue to the next match.
+        continue nextMatch
     }
 }
-$this.PathAttribute = [Ordered]@{
-    "data-l-order" = $N
-    "data-l-axiom" = $Axiom
-    "data-l-rules" = ConvertTo-Json $Rule 
-    "data-l-expanded" = $finalState
-}
+
+# return this so we can pipe and chain this method.
 return $this

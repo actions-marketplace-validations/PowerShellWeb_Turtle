@@ -88,7 +88,8 @@ function Get-Turtle {
         # We want to keep track of the current member, 
         # and continue to the next word until we find a member name.        
         $currentMember = $null
-        $outputTurtle = $false
+        # We want to output the turtle by default, in case we were called with no parameters.
+        $outputTurtle = $true
 
         # To do this in one pass, we will iterate through the words and arguments.
         # We use an indexed loop so we can skip past claimed arguments.
@@ -116,15 +117,13 @@ function Get-Turtle {
             }
             # Now we know how long it took to get to the next member name.
 
-            # And we can determine if we have any parameters                
+            # And we can determine if we have any parameters.
+            # (it is important that we always force any parameters into an array)
             $argList = 
-                if ($methodArgIndex -eq ($argIndex + 1)) {
-                    @()
-                }
-                else {
+                @(if ($methodArgIndex -ne ($argIndex + 1)) {
                     $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)]
                     $argIndex = $methodArgIndex - 1
-                }
+                })
 
             # Look up the member information for the current member.
             $memberInfo = $turtleType.Members[$currentMember]
@@ -145,8 +144,18 @@ function Get-Turtle {
                 ) {                    
                     # If we have arguments,
                     if ($argList) {
-                        # pass them to the method.
-                        $currentTurtle.$currentMember.Invoke($argList)
+                        # and we have a script method
+                        if ($memberInfo -is [Management.Automation.Runspaces.ScriptMethodData]) {
+                            # set this to the current turtle
+                            $this = $currentTurtle
+                            # and call the script, splatting positional parameters
+                            # (this allows more complex binding, like ValueFromRemainingArguments)
+                            . $currentTurtle.$currentMember.Script @argList
+                        } else {
+                            # Otherwise, we pass the parameters directly to the method                            
+                            $currentTurtle.$currentMember.Invoke($argList)
+                        }
+                        
                     } else {
                         # otherwise, just invoke the method with no arguments.
                         $currentTurtle.$currentMember.Invoke()

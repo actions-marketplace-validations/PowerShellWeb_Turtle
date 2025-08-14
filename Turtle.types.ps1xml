@@ -40,6 +40,10 @@
         <ReferencedMemberName>Forward</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>HLineBy</Name>
+        <ReferencedMemberName>HorizontalLine</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>l</Name>
         <ReferencedMemberName>Left</ReferencedMemberName>
       </AliasProperty>
@@ -82,6 +86,10 @@
       <AliasProperty>
         <Name>up</Name>
         <ReferencedMemberName>PenUp</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>VLineBy</Name>
+        <ReferencedMemberName>VerticalLine</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>xPos</Name>
@@ -569,6 +577,27 @@ return $this.LSystem('A',  [Ordered]@{
                         param()
 
 return $this.Teleport(0,0)
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>HorizontalLine</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a horizontal line
+.DESCRIPTION
+    Draws a horizontal line.  
+    
+    The heading will not be changed.
+#&gt;
+param(
+[double]
+$Distance
+)
+
+
+$this.GoTo($this.Position.X + $Distance, $this.Position.Y)
 
                     </Script>
       </ScriptMethod>
@@ -1625,6 +1654,26 @@ return $this.LSystem('FX+FX+',  [Ordered]@{
     '-'     = { $this.Rotate($Angle * -1) }
     '[F]'  = { $this.Forward($Size) }
 })
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>VerticalLine</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a vertical line
+.DESCRIPTION
+    Draws a vertical line.  
+    
+    The heading will not be changed.
+#&gt;
+param(
+[double]
+$Distance
+)
+
+$this.GoTo($this.Position.X, $this.Position.Y + $Distance)
 
                     </Script>
       </ScriptMethod>

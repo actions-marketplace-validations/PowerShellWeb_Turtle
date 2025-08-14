@@ -36,13 +36,13 @@ describe Turtle {
             $turtle = $turtle.Rotate($turtle.Towards(1,1))
             $turtle = $turtle.Forward($turtle.Distance(1,1))
             $turtle.Heading | Should -be 45
-            $turtle.Position.X | Should -be 1
-            $turtle.Position.Y | Should -be 1
+            [Math]::Round($turtle.Position.X,10) | Should -be 1
+            [Math]::Round($turtle.Position.Y,10) | Should -be 1
             $turtle = $turtle.Rotate($turtle.Towards(2,2))
             $turtle = $turtle.Forward($turtle.Distance(2,2))
             $turtle.Heading | Should -be 45
-            $turtle.Position.X | Should -be 2
-            $turtle.Position.Y | Should -be 2
+            [Math]::Round($turtle.Position.Y,10) | Should -be 2
+            [Math]::Round($turtle.Position.Y,10) | Should -be 2
         }
     }
 

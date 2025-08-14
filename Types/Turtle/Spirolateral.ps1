@@ -15,6 +15,8 @@
     turtle spirolateral 50 120 6 @(1,3) save ./Spirolateral-120-6-1_3.svg
 .EXAMPLE
     turtle spirolateral 50 90 11 @(3,4,5) save ./Spirolateral-90-11-3_4_5.svg
+.EXAMPLE
+    turtle @('spirolateral',50,60,6,@(1,3),'rotate', 60 * 6 ) save ./Spirolateral-x6.svg
 #>
 param(
 # The base length of each side (this will be multiplied by the step number)

@@ -1854,6 +1854,50 @@ if ($VerbosePreference -ne 'SilentlyContinue') {
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Height</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the Turtle height
+.DESCRIPTION
+    Gets the Turtle's ViewBox height.
+.NOTES
+    If this has not been set, it will be automatically computed from the distance between the minimum and maximum.
+.EXAMPLE
+    turtle rotate 90 forward 100 width
+#&gt;
+param()
+if ($this.'.ViewBox') { 
+    return @($this.'.ViewBox')[-1]
+}
+
+$viewY = $this.Maximum.Y + ($this.Minimum.Y * -1)
+return $viewY
+
+
+
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the turtle height
+.DESCRIPTION
+    Sets the Turtle viewbox height.
+.NOTES
+    Once set, it will no longer be automatically computed.
+#&gt;
+param(
+[double]
+$height
+)
+
+$viewBox = $this.ViewBox
+$this.ViewBox = $viewBox[0],$viewBox[1],$viewbox[-2], $height
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ID</Name>
         <GetScriptBlock>
                         if ($this.'.ID') { return $this.'.ID'}
@@ -2608,6 +2652,49 @@ if ($chromeOutput -match '&lt;img\ssrc="data:image/\w+;base64,(?&lt;b64&gt;[^"]+
 }
 
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Width</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the Turtle width
+.DESCRIPTION
+    Gets the Turtle's ViewBox width.
+.NOTES
+    If this has not been set, it will be automatically computed from the distance between the minimum and maximum.
+.EXAMPLE
+    turtle forward 100 width
+#&gt;
+if ($this.'.ViewBox') { 
+    return @($this.'.ViewBox')[-2]
+}
+
+$viewX = $this.Maximum.X + ($this.Minimum.X * -1)
+return $viewX
+
+
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the turtle width
+.DESCRIPTION
+    Sets the Turtle viewbox width.
+.NOTES
+    Once set, it will no longer be automatically computed.
+#&gt;
+param(
+# The new viewbox width.
+[double]
+$Width
+)
+
+$viewBox = $this.ViewBox
+$this.ViewBox = $viewBox[0],$viewBox[1],$width, $viewBox[-1]
+
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>X</Name>

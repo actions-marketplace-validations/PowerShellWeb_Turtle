@@ -1189,6 +1189,39 @@ return $this | Save-Turtle @saveSplat
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Scissor</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Scissor
+.DESCRIPTION
+    Draws a Scissor in turtle.
+
+    A Scissor is a pair of intersecting lines, drawn at an angle.
+.EXAMPLE
+    Turtle Scissor Save ./Scissor.svg
+#&gt;
+param(
+# The distance to travel
+[double]
+$Distance = 10,
+
+# The interior angle of the scissors
+[double]
+$Angle = 60
+)
+
+
+$this.
+    Rotate($angle). # Rotate 
+    Forward($distance). # Move Forward
+    Rotate($angle * -2). # Rotate Back
+    Forward($Distance). # Move Forward
+    Rotate($Angle) # Rotate
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>SierpinskiArrowheadCurve</Name>
         <Script>
                         &lt;#

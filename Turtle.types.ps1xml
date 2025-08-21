@@ -2088,7 +2088,16 @@ return ([pscustomobject]@{ X = 0; Y = 0 })
       <ScriptProperty>
         <Name>OffsetPath</Name>
         <GetScriptBlock>
-                        "offset-path: $($this.PathData);"
+                        &lt;#
+.SYNOPSIS
+    Gets the Turtle as an OffsetPath
+.DESCRIPTION
+    Gets the Turtle as an offset path.
+.LINK
+    https://developer.mozilla.org/en-US/docs/Web/CSS/offset-path
+#&gt;
+param()
+"offset-path: path('$($this.PathData)');"
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>

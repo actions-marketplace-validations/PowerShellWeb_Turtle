@@ -18,17 +18,31 @@ $Radius = 10,
 $Angle = 60
 )
 
-
-# Determine the absolute angle, for this
+# Determine the absolute angle, for this operation
 $absAngle = [Math]::Abs($angle)
-$circumferenceStep = ([Math]::PI * 2 * $Radius) / $absAngle
 
-$iteration = $angle / [Math]::Floor($absAngle)
-$angleDelta = 0 
-$null = while ([Math]::Abs($angleDelta) -lt $absAngle) {
-    $this.Forward($circumferenceStep)
-    $this.Rotate($iteration)
+if ($absAngle -eq 0) { return $this }
+
+# Determine the circumference of a circle of this radius
+$Circumference = ((2 * $Radius) * [Math]::PI)
+
+# Clamp the angle, as arcs beyond 360 just continue to circle
+$ClampedAngle = 
+    if ($absAngle -gt 360) { 360 }
+    elseif ($absAngle -lt -360) { -360}
+    else { $absAngle }
+# The circumference step is the circumference divided by our clamped angle
+$CircumferenceStep = $Circumference / [Math]::Floor($ClampedAngle)
+# The iteration is as close to one or negative one as possible
+$iteration  = $angle / [Math]::Floor($absAngle)
+# Start off at iteration 1
+$angleDelta = $iteration
+# while we have not reached the angle
+while ([Math]::Abs($angleDelta) -le $absAngle) {
+    # Rotate and move forward
+    $null = $this.Rotate($iteration).Forward($CircumferenceStep)
     $angleDelta+=$iteration
 }
 
+# Return this so we can keep the chain.
 return $this

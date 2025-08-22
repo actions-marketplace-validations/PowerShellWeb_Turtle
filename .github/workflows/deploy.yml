@@ -2,8 +2,10 @@
 name: Deploy
 
 on:
-  # Runs on pushes 
+  # Runs on pushes to main
   push:
+    branches:
+      -  main
   # and optionally run on a schedule
   # schedule: 
     # for those that don't speak cron, this would try to run 42 minutes past the hour, every hour

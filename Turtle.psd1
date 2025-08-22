@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.4'
+    ModuleVersion = '0.1.5'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -37,24 +37,14 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
-## Turtle 0.1.4
+## Turtle 0.1.5:
 
-* `Turtle` Upgrades
-  * `turtle` will return an empty turtle (#112)
-  * `turtle` now splats to script methods, enabling more complex input binding (#121)
-  * `LSystem` is faster and more flexible (#116)
-* New Properties:
-  * `get/set_Opacity` (#115)
-  * `get/set_PathAnimation` (#117)
-  * `get/set_Width/Height` (#125)
-* New Methods:
-  * `HorizontalLine/VerticalLine` (#126)
-  * `Petal` (#119)
-  * `FlowerPetal` (#124)
-  * `Spirolateral` (#120)
-  * `StepSpiral` (#122)
+* New Shapes:
+  * Scissor draws a pair of lines at an angle (#128)
+  * ScissorPoly draws a polygon out of scissors (#129)
 * Fixes:
-  * `Turtle.Towards()` returns a relative angle (#123)
+  * OffsetPath is now quoted (#130)
+  * ArcLeft/Right distance fix (#131)
 
 ---
 

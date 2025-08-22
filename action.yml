@@ -55,17 +55,17 @@ runs:
       id: TurtleAction
       shell: pwsh
       env: 
-        GitHubToken: ${{inputs.GitHubToken}}
-        SkipScriptFile: ${{inputs.SkipScriptFile}}
-        NoPush: ${{inputs.NoPush}}
-        ActionScript: ${{inputs.ActionScript}}
-        InstallModule: ${{inputs.InstallModule}}
-        NoCommit: ${{inputs.NoCommit}}
-        TargetBranch: ${{inputs.TargetBranch}}
-        CommitMessage: ${{inputs.CommitMessage}}
         UserName: ${{inputs.UserName}}
+        CommitMessage: ${{inputs.CommitMessage}}
         Run: ${{inputs.Run}}
         UserEmail: ${{inputs.UserEmail}}
+        SkipScriptFile: ${{inputs.SkipScriptFile}}
+        TargetBranch: ${{inputs.TargetBranch}}
+        ActionScript: ${{inputs.ActionScript}}
+        GitHubToken: ${{inputs.GitHubToken}}
+        NoCommit: ${{inputs.NoCommit}}
+        NoPush: ${{inputs.NoPush}}
+        InstallModule: ${{inputs.InstallModule}}
       run: |
         $Parameters = @{}
         $Parameters.Run = ${env:Run}
@@ -308,6 +308,7 @@ runs:
                         "### $($scriptFile.Fullname -replace [Regex]::Escape($env:GITHUB_WORKSPACE))" |
                             Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
                     }
+                    
                     $scriptCmd = $ExecutionContext.SessionState.InvokeCommand.GetCommand($scriptFile.FullName, 'ExternalScript')
                     foreach ($requiredModule in $CommandInfo.ScriptBlock.Ast.ScriptRequirements.RequiredModules) {
                         if ($requiredModule.Name -and 
@@ -421,6 +422,15 @@ runs:
                 } elseif ($outItem) {
                     $outItem.FullName, (git status $outItem.Fullname -s)
                 }
+            if ($fullname -match '\.(svg|png)' -and $env:GITHUB_STEP_SUMMARY) {
+                $leafName = $fullName | Split-Path -Leaf
+                $imageFileDestination = $env:GITHUB_STEP_SUMMARY |
+                    Split-Path |
+                    Join-Path -ChildPath $leafName
+                Copy-Item -LiteralPath $fullName -Destination $imageFileDestination
+                "![$leafName]($leafName)" |
+                    Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+            }
             if ($shouldCommit -and -not $NoCommit) {
                 "$fullName has changed, and should be committed" | Out-Host
                 git add $fullName

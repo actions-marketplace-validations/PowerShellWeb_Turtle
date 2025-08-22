@@ -4,8 +4,8 @@ name: Deploy
 on:
   # Runs on pushes 
   push:
-  # and run on a schedule
-  schedule: 
+  # and optionally run on a schedule
+  # schedule: 
     # for those that don't speak cron, this would try to run 42 minutes past the hour, every hour
     # - cron: '42 0-23 * * *'
   # Allows you to run this workflow manually from the Actions tab

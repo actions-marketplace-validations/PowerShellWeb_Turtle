@@ -1,3 +1,14 @@
+## Turtle 0.1.5:
+
+* New Shapes:
+  * Scissor draws a pair of lines at an angle (#128)
+  * ScissorPoly draws a polygon out of scissors (#129)
+* Fixes:
+  * OffsetPath is now quoted (#130)
+  * ArcLeft/Right distance fix (#131)
+
+---
+
 ## Turtle 0.1.4
 
 * `Turtle` Upgrades

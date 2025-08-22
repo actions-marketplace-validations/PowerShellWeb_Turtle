@@ -422,15 +422,6 @@ runs:
                 } elseif ($outItem) {
                     $outItem.FullName, (git status $outItem.Fullname -s)
                 }
-            if ($fullname -match '\.(svg|png)' -and $env:GITHUB_STEP_SUMMARY) {
-                $leafName = $fullName | Split-Path -Leaf
-                $imageFileDestination = $env:GITHUB_STEP_SUMMARY |
-                    Split-Path |
-                    Join-Path -ChildPath $leafName
-                Copy-Item -LiteralPath $fullName -Destination $imageFileDestination
-                "![$leafName]($leafName)" |
-                    Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
-            }
             if ($shouldCommit -and -not $NoCommit) {
                 "$fullName has changed, and should be committed" | Out-Host
                 git add $fullName

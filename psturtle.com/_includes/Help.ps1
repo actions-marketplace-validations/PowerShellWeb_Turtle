@@ -49,8 +49,7 @@ if ($notes) {
     margin-right: auto;
     text-align: center;
 }"
-".example {
-    max-width: 100%;
+".example {    
     text-align: center;    
 }"
 ".sampleCode {
@@ -67,7 +66,7 @@ if ($notes) {
     gap: 1.5rem;
     margin: 0.8rem;
     padding: 0.4rem;
-    width: 80%;
+    width: 90vw;
 }"
 ".example-output { text-align: center }"
 "</style>"

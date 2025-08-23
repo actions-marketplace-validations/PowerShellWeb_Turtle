@@ -44,9 +44,10 @@ if ($notes) {
 #region Grid Styles
 "<style>"
 ".example-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 66%);
-    place-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     gap: 2.3em;
     padding: 1.5em;
     margin: 1.6em

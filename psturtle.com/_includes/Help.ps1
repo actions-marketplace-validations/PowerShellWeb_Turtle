@@ -54,11 +54,20 @@ if ($notes) {
 }"
 ".example {
     width: 66%;
-    text-align: center    
+    text-align: center;    
 }"
 ".sampleCode {
     text-align: left;
     max-width: 66%;
+}"
+".example-outputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.6em;
+    margin: 0.8em;
+    padding: 0.4em;
 }"
 ".exampleOutput { text-align: center }"
 "
@@ -122,58 +131,60 @@ foreach ($example in $CommandHelp.examples.example) {
             "</pre>"
         "</div>"    
     
-    # If we do not want to invoke examples, we can continue to the next example.
-    if (-not $InvokeExample) { 
-        "</div>"
-        continue
-    }
-
-    # Otherwise, try to make our example a script block
-    $exampleCode = 
-        try {
-            [scriptblock]::Create($codeBlock)
-        } catch {
-            Write-Warning "Unable to convert $($example.code) to a script"
+        # If we do not want to invoke examples, we can continue to the next example.
+        if (-not $InvokeExample) { 
+            "</div>"
             continue
         }
-    
-    # then run it and capture the output
-    $exampleOutputs = @(. $exampleCode)
-    
-    # Keep track of our example output count
-    $exampleOutputNumber = 0
-    # and start walking thru the list
-    foreach ($exampleOutput in $exampleOutputs) {
-        $exampleOutputNumber++
-        # Each output goes in a div
-        "<div class='example-output'>"
-        # if the output was a file
-        if ($exampleOutput -is [IO.FileInfo]) {
-            # and that file is SVG
-            if ($exampleOutput.Extension -eq '.svg') {
-                # include it inline.
-                Get-Content $exampleOutput.FullName -Raw
+
+        # Otherwise, try to make our example a script block
+        $exampleCode = 
+            try {
+                [scriptblock]::Create($codeBlock)
+            } catch {
+                Write-Warning "Unable to convert $($example.code) to a script"
+                continue
             }
-        } else {
-            # If the output was a turtle object
-            if ($exampleOutput.pstypenames -contains 'Turtle') {
-                # set it's ID
-                $exampleOutput.ID = "$($Command)-Example-$exampleCounter"
-                if ($exampleOutputs.Length -gt 1) {
-                    # If we have more than out output,
-                    # attach our example counter
-                    $exampleOutput.ID += "-$($exampleOutputNumber)"
+        
+        # then run it and capture the output
+        $exampleOutputs = @(. $exampleCode)
+        
+        # Keep track of our example output count
+        $exampleOutputNumber = 0
+        # and start walking thru the list
+        "<div class='example-outputs'>"
+        foreach ($exampleOutput in $exampleOutputs) {
+            $exampleOutputNumber++
+            # Each output goes in a div
+            "<div class='example-output'>"
+            # if the output was a file
+            if ($exampleOutput -is [IO.FileInfo]) {
+                # and that file is SVG
+                if ($exampleOutput.Extension -eq '.svg') {
+                    # include it inline.
+                    Get-Content $exampleOutput.FullName -Raw
                 }
-            }            
-            # Include our example output inline
-            if ($exampleOutput.ToHtml.Invoke) {
-                $exampleOutput.ToHtml()
             } else {
-                "$exampleOutput"
-            }            
-        }    
+                # If the output was a turtle object
+                if ($exampleOutput.pstypenames -contains 'Turtle') {
+                    # set it's ID
+                    $exampleOutput.ID = "$($Command)-Example-$exampleCounter"
+                    if ($exampleOutputs.Length -gt 1) {
+                        # If we have more than out output,
+                        # attach our example counter
+                        $exampleOutput.ID += "-$($exampleOutputNumber)"
+                    }
+                }            
+                # Include our example output inline
+                if ($exampleOutput.ToHtml.Invoke) {
+                    $exampleOutput.ToHtml()
+                } else {
+                    "$exampleOutput"
+                }            
+            }    
+            "</div>"
+        }
         "</div>"
-    }
     "</div>"    
 }
 "</div>"

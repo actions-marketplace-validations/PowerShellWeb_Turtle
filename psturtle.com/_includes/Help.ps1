@@ -48,9 +48,9 @@ if ($notes) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2.3em;
-    padding: 1.5em;
-    margin: 1.6em
+    gap: 1.6em;
+    padding: 0.8em;
+    margin: 1.5em
 }"
 ".example {
     width: 50%;

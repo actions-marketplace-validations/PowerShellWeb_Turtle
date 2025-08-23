@@ -44,15 +44,18 @@ if ($notes) {
 #region Grid Styles
 "<style>"
 ".example-grid {
-    margin: 1em
+    width: 90vh;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }"
 ".example {
-    width: 66%;
+    width: 80%;
     text-align: center;    
 }"
 ".sampleCode {
     text-align: left;
-    max-width: 66%;
+    max-width: 80%;
 }"
 
 ".example-outputs {

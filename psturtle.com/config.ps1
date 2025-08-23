@@ -300,4 +300,13 @@ $site.Background = . $siteBackground|
     Set-Turtle PatternAnimation $backgroundPatternAnimations |
     Set-Turtle PathAttribute @{opacity=.2} |
     Select-Object -ExpandProperty Pattern
+
+$pngPreviewFile = 'Preview.png'
+$siteBackground |
+    Set-Turtle Stroke '#4488ff' |
+    Save-Turtle -FilePath "./$pngPreviewFile"
+
+$site.Image = "$($site.RootUrl)$pngPreviewFile"
+
+
 #endregion Site Background

@@ -276,6 +276,22 @@ $sitebackgrounds = @(
     {
         turtle @('ArcRight', 23, 60, 'ArcLeft', 23, 160 * 24)
     }
+
+    {
+        turtle Pentaplexity 23 4
+    }
+
+    {
+        turtle BoardFractal 23 4        
+    }
+
+    {
+        turtle CrystalFractal 23 4
+    }
+
+    {
+        turtle FlowerPetal 
+    }
 )
 
 $siteBackground = $sitebackgrounds | Get-Random

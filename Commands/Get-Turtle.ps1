@@ -66,7 +66,7 @@ function Get-Turtle {
         turtle ('forward', 10, 'rotate', 120 * 3)
     .EXAMPLE
         # Let's make a series of polygons, decreasing in size
-        turtle polygon 10 6 polygon 10 5 polygon 10 4 polygon 10 3
+        turtle polygon 10 6 polygon 10 5 polygon 10 4
     .EXAMPLE
         # We can also use a loop to produce a series of steps
         # Let's extend our previous example and make 9 polygons
@@ -105,10 +105,8 @@ function Get-Turtle {
             'ArcRight', 42, 72, 'ArcLeft', 60, 60 *
                 (320/12)
         )
-    .EXAMPLE    
-        # We can draw a pair of arcs and turn back after each one        
-        turtle ArcRight 42 45 rotate (180 - 45) ArcRight 42 45 rotate (180 - 45)
     .EXAMPLE
+        # We can draw a pair of arcs and turn back after each one
         # We call this a 'petal'
         turtle Petal 42 60
     .EXAMPLE

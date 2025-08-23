@@ -7,9 +7,9 @@ on:
     branches:
       -  main
   # and optionally run on a schedule
-  # schedule: 
-    # for those that don't speak cron, this would try to run 42 minutes past the hour, every hour
-    # - cron: '42 0-23 * * *'
+  schedule: 
+    # for those that don't speak cron, this should try to run 23 minutes past the hour, every 3rd hour of the day.
+    - cron: '23 0,3,6,9,12,15,18,21 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

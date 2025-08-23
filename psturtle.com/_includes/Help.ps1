@@ -60,6 +60,7 @@ if ($notes) {
     text-align: left;
     max-width: 66%;
 }"
+
 ".example-outputs {
     display: flex;
     flex-direction: column;
@@ -68,17 +69,8 @@ if ($notes) {
     gap: 1.6em;
     margin: 0.8em;
     padding: 0.4em;
+    width: 80%;
 }"
-".exampleOutput { text-align: center }"
-"
-@media (orientation: landscape) {
-    .example-output { width: 66%; }        
-}
-
-@media (orientation: portrait) {
-    .example-output { width: 50%; }
-}
-"
 "</style>"
 #endregion Grid Styles
 

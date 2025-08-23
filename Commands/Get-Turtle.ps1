@@ -100,14 +100,8 @@ function Get-Turtle {
         # Flowers get more dense as we decrease the angle and increase the repetitions.
         turtle Flower 50 5 (3..12 | Get-Random) 72
     .EXAMPLE
-        # We can draw a wavy circle with multiple arcs
-        turtle @(
-            'ArcRight', 42, 72, 'ArcLeft', 60, 60 *
-                (320/12)
-        )
-    .EXAMPLE
-        # We can draw a pair of arcs and turn back after each one
-        # We call this a 'petal'
+        # We can draw a pair of arcs and turn back after each one.        
+        # We call this a 'petal'.
         turtle Petal 42 60
     .EXAMPLE
         # We can construct a flower out of petals

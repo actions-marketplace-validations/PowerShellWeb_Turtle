@@ -44,18 +44,18 @@ if ($notes) {
 #region Grid Styles
 "<style>"
 ".example-grid {
-    width: 90vh;
+    width: 90vw;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
 }"
 ".example {
-    width: 80%;
+    width: 90vw;
     text-align: center;    
 }"
 ".sampleCode {
     text-align: left;
-    max-width: 80%;
+    width: 60ch;
 }"
 
 ".example-outputs {
@@ -66,7 +66,7 @@ if ($notes) {
     gap: 1.6em;
     margin: 0.8em;
     padding: 0.4em;
-    width: 80%;
+    width: 90vw;
 }"
 "</style>"
 #endregion Grid Styles

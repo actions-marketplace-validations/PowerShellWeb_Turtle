@@ -50,12 +50,13 @@ if ($notes) {
     text-align: center;
 }"
 ".example {
-    width: 90vw;
+    width: 100%;
     text-align: center;    
 }"
 ".sampleCode {
     text-align: left;
     width: 60ch;
+    font-size: .8rem;
 }"
 
 ".example-outputs {
@@ -66,7 +67,7 @@ if ($notes) {
     gap: 1.6em;
     margin: 0.8em;
     padding: 0.4em;
-    width: 90vw;
+    width: 90%;
 }"
 "</style>"
 #endregion Grid Styles

@@ -102,7 +102,7 @@ function Get-Turtle {
     .EXAMPLE
         # We can draw a pair of arcs and turn back after each one.        
         # We call this a 'petal'.
-        turtle Petal 42 60
+        turtle rotate -30 Petal 42 60
     .EXAMPLE
         # We can construct a flower out of petals
         turtle FlowerPetal

@@ -52,6 +52,9 @@ if ($notes) {
     padding: 1.5em;
     margin: 1.6em
 }"
+".example {
+    width: 66%;
+}"
 "</style>"
 #endregion Grid Styles
 

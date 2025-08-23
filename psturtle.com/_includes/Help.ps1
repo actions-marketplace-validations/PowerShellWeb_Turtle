@@ -124,6 +124,7 @@ foreach ($example in $CommandHelp.examples.example) {
         # If we do not want to invoke examples, we can continue to the next example.
         if (-not $InvokeExample) { 
             "</div>"
+            "<hr/>"
             continue
         }
 
@@ -175,6 +176,7 @@ foreach ($example in $CommandHelp.examples.example) {
             "</div>"
         }
         "</div>"
+        "<hr/>"
     "</div>"    
 }
 "</div>"

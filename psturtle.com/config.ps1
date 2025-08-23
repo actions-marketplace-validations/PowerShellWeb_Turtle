@@ -118,9 +118,9 @@ $Site.Logo =
 $site.Logo = . ($site.Logo | Get-Random)
 $Site.Logo.ID = 'Turtle-Logo' 
 
-$Site.Logo = $Site.Logo | Set-Turtle PathAnimation @{
+<# $Site.Logo = $Site.Logo | Set-Turtle PathAnimation @{
     type = 'rotate'   ; values = 0, 360 ;repeatCount = 'indefinite'; dur = "31s"; additive = 'sum'; id ='rotate-logo'
-}
+} #>
 
 $site.Taskbar = [Ordered]@{
     # 'BlueSky' = 'https://bsky.app/profile/mrpowershell.com'
@@ -146,11 +146,9 @@ $doodle = @(
 # Randomizing site background a bit
 $backgroundPatternAnimations = 
     [Ordered]@{
-        type = 'scale'    ; values = 0.66,0.33, 0.66 ; repeatCount = 'indefinite' ;dur = "23s"; additive = 'sum';id ='scale-pattern'
+        type = 'scale'    ; values = 0.66,0.33, 0.66 ; repeatCount = 'indefinite' ;dur = "277s"; additive = 'sum';id ='scale-pattern'
     }, [Ordered]@{
-        type = 'rotate'   ; values = 0, 360 ;repeatCount = 'indefinite'; dur = "41s"; additive = 'sum'; id ='rotate-pattern'
-    }, [Ordered]@{
-        type = 'translate'   ; values = "0 0;"; dur = "41s"; additive = 'sum'; id ='translate-pattern'
+        type = 'rotate'   ; values = 0, 360 ;repeatCount = 'indefinite'; dur = "317s"; additive = 'sum'; id ='rotate-pattern'
     }
 
 $sitebackgrounds = @(

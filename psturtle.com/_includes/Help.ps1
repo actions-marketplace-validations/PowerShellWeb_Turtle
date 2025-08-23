@@ -50,13 +50,13 @@ if ($notes) {
     text-align: center;
 }"
 ".example {
-    width: 100%;
+    max-width: 100%;
     text-align: center;    
 }"
 ".sampleCode {
     text-align: left;
     width: 60ch;
-    font-size: .8rem;
+    font-size: .9rem;
 }"
 
 ".example-outputs {
@@ -64,10 +64,10 @@ if ($notes) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.6em;
-    margin: 0.8em;
-    padding: 0.4em;
-    width: 90%;
+    gap: 1.5rem;
+    margin: 0.8rem;
+    padding: 0.4rem;
+    width: 80%;
 }"
 "</style>"
 #endregion Grid Styles

@@ -56,6 +56,9 @@ if ($notes) {
     width: 50%;
     text-align: center;
 }"
+".sampleCode {
+    text-align :center;
+}"
 "
 @media (orientation: landscape) {
     .example { width: 60%; }        

@@ -295,18 +295,16 @@ $sitebackgrounds = @(
 )
 
 $siteBackground = $sitebackgrounds | Get-Random
-        
-$site.Background = . $siteBackground|
+$backgroundTurtle = . $siteBackground
+$site.Background = $backgroundTurtle |
     Set-Turtle PatternAnimation $backgroundPatternAnimations |
     Set-Turtle PathAttribute @{opacity=.2} |
     Select-Object -ExpandProperty Pattern
 
 $pngPreviewFile = 'Preview.png'
-$siteBackground |
+$backgroundTurtle |
     Set-Turtle Stroke '#4488ff' |
     Save-Turtle -FilePath "./$pngPreviewFile"
 
 $site.Image = "$($site.RootUrl)$pngPreviewFile"
-
-
 #endregion Site Background

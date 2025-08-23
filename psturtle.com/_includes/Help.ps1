@@ -45,7 +45,7 @@ if ($notes) {
 "<style>"
 ".example-grid {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2.3em;

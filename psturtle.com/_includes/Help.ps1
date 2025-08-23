@@ -57,7 +57,8 @@ if ($notes) {
     text-align: center;
 }"
 ".sampleCode {
-    text-align :center;
+    text-align: left;
+    max-width: 66%;
 }"
 "
 @media (orientation: landscape) {

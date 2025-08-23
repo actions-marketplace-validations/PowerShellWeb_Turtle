@@ -53,8 +53,18 @@ if ($notes) {
     margin: 1.6em
 }"
 ".example {
-    width: 66%;
+    width: 50%;
+    text-align: center;
 }"
+"
+@media (orientation: landscape) {
+    .example { width: 60%; }        
+}
+
+@media (orientation: portrait) {
+    .example { width: 42%; }
+}
+"
 "</style>"
 #endregion Grid Styles
 

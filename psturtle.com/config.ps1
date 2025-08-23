@@ -302,7 +302,20 @@ $site.Background = $backgroundTurtle |
     Select-Object -ExpandProperty Pattern
 
 $pngPreviewFile = 'Preview.png'
-$backgroundTurtle |
+$previewImages = @(
+    { turtle KochSnowflake 42 }
+    { turtle @('rotate', 45, 'SierpinskiTriangle',42,4 * 24) }
+    { turtle Pentaplexity 42 3 }
+    { turtle RingFractal 42 4 }
+    { turtle BoardFractal 42 4 }
+    { turtle Flower 50 15 (3..12 | Get-Random) 24 }
+    { turtle spirolateral 100 120 50 @(1,3) }
+    { turtle FlowerPetal 100 20 (20..72 | Get-Random) 18 }
+    { turtle @('circle',100,0.5,'rotate',90 * 8)}
+)
+
+$previewImage = $previewImages  |Get-Random 
+. $previewImage |
     Set-Turtle Stroke '#4488ff' |
     Save-Turtle -FilePath "./$pngPreviewFile"
 

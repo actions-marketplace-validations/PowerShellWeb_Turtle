@@ -718,7 +718,13 @@ $this.PenUp().Forward($Distance).PenDown()
       <ScriptMethod>
         <Name>KochCurve</Name>
         <Script>
-                        param(
+                        &lt;#
+.SYNOPSIS
+    Draws a Koch Curve
+.DESCRIPTION
+    Draws a Koch Curve, using an L-System.
+#&gt;
+param(
     [double]$Size = 10,
     [double]$Rotation = 90,
     [int]$Order = 4

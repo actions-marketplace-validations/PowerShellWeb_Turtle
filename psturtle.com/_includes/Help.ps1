@@ -43,7 +43,14 @@ if ($notes) {
 
 #region Grid Styles
 "<style>"
-".example-grid { display: grid; place-items: center; gap: 2em; padding: 1em; margin: 2.5em}"
+".example-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
+    place-items: center;
+    gap: 2.3em;
+    padding: 1.5em;
+    margin: 1.6em
+}"
 "</style>"
 #endregion Grid Styles
 

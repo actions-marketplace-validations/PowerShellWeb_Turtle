@@ -69,6 +69,7 @@ if ($notes) {
     padding: 0.4rem;
     width: 80%;
 }"
+".example-output { text-align: center }"
 "</style>"
 #endregion Grid Styles
 

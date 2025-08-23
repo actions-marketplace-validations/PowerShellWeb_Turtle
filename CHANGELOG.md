@@ -1,3 +1,17 @@
+## Turtle 0.1.6:
+
+* Vastly expanded Get-Turtle examples (#149)
+* Check out https://psturtle.com/Commands/Get-Turtle
+* New L-Systems:
+  * BoardFractal (#142)
+  * CrystalFractal (#143)
+  * RingFractal (#144)
+  * TileFractal (#145)
+  * Pentaplexity (#146)
+* Fixing KochCurve parameter order (#147)
+* Added New-Turtle docs (#148)
+
+
 ## Turtle 0.1.5:
 
 * New Shapes:

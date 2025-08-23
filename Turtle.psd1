@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.5'
+    ModuleVersion = '0.1.6'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -37,14 +37,18 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
-## Turtle 0.1.5:
+## Turtle 0.1.6:
 
-* New Shapes:
-  * Scissor draws a pair of lines at an angle (#128)
-  * ScissorPoly draws a polygon out of scissors (#129)
-* Fixes:
-  * OffsetPath is now quoted (#130)
-  * ArcLeft/Right distance fix (#131)
+* Vastly expanded Get-Turtle examples (#149)
+* Check out https://psturtle.com/Commands/Get-Turtle
+* New L-Systems:
+  * BoardFractal (#142)
+  * CrystalFractal (#143)
+  * RingFractal (#144)
+  * TileFractal (#145)
+  * Pentaplexity (#146)
+* Fixing KochCurve parameter order (#147)
+* Added New-Turtle docs (#148)
 
 ---
 

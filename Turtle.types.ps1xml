@@ -227,6 +227,42 @@ return $this.Rotate(-90).LSystem('0',  [Ordered]@{
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>BoardFractal</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Board
+.DESCRIPTION
+    Draws a Board, using an L-System
+.LINK
+    https://paulbourke.net/fractals/lsys/
+.EXAMPLE
+    turtle BoardFractal 42 1
+.EXAMPLE
+    turtle BoardFractal 42 2
+.EXAMPLE
+    turtle BoardFractal 42 3
+.EXAMPLE
+    turtle BoardFractal 42 4
+#&gt;
+param(
+# The size of each segment
+[double]$Size = 200,
+# The order of magnitude (the number of expansions)
+[int]$Order = 4,
+# The default angle.
+[double]$Angle = 90
+)
+return $this.LSystem('F+F+F+F',  [Ordered]@{
+    F = 'FF+F+F+F+FF'
+}, $Order, [Ordered]@{
+    '\+'    = { $this.Rotate($Angle) }
+    'F'     = { $this.Forward($Size) }
+})
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>BoxFractal</Name>
         <Script>
                         &lt;#
@@ -349,6 +385,42 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.Minimum' -Value ([psc
 $this | Add-Member -MemberType NoteProperty -Force -Name '.Maximum' -Value ([pscustomobject]@{ X = 0; Y = 0 })
 $this.ViewBox = 0
 return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>CrystalFractal</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Crystal Fractal
+.DESCRIPTION
+    Draws a Crystal Fractal, using an L-System
+.LINK
+    https://paulbourke.net/fractals/lsys/
+.EXAMPLE
+    turtle CrystalFractal 42 1
+.EXAMPLE
+    turtle CrystalFractal 42 2
+.EXAMPLE
+    turtle CrystalFractal 42 3
+.EXAMPLE
+    turtle CrystalFractal 42 4
+#&gt;
+param(
+# The size of each segment
+[double]$Size = 200,
+# The order of magnitude (the number of expansions)
+[int]$Order = 4,
+# The default angle.
+[double]$Angle = 90
+)
+return $this.LSystem('F+F+F+F',  [Ordered]@{
+    F = 'FF+F++F+F'
+}, $Order, [Ordered]@{
+    '\+'    = { $this.Rotate($Angle) }
+    'F'     = { $this.Forward($Size) }
+})
+
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -646,7 +718,13 @@ $this.PenUp().Forward($Distance).PenDown()
       <ScriptMethod>
         <Name>KochCurve</Name>
         <Script>
-                        param(
+                        &lt;#
+.SYNOPSIS
+    Draws a Koch Curve
+.DESCRIPTION
+    Draws a Koch Curve, using an L-System.
+#&gt;
+param(
     [double]$Size = 10,
     [double]$Rotation = 90,
     [int]$Order = 4
@@ -1056,6 +1134,43 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Pentaplexity</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Pentaplexity
+.DESCRIPTION
+    Draws a Pentaplexity Fractal, using an L-System
+.LINK
+    https://paulbourke.net/fractals/lsys/
+.EXAMPLE
+    turtle Pentaplexity 42 1
+.EXAMPLE
+    turtle Pentaplexity 42 2
+.EXAMPLE
+    turtle Pentaplexity 42 3
+.EXAMPLE
+    turtle Pentaplexity 42 4
+#&gt;
+param(
+# The size of each segment
+[double]$Size = 200,
+# The order of magnitude (the number of expansions)
+[int]$Order = 4,
+# The default angle.
+[double]$Angle = 36
+)
+return $this.LSystem('F++F++F++F++F',  [Ordered]@{
+    F = 'F++F++F+++++F-F++F'
+}, $Order, [Ordered]@{
+    '\+'    = { $this.Rotate($Angle) }
+    '-'     = { $this.Rotate($Angle*-1)}
+    'F'     = { $this.Forward($Size) }
+})
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>PenUp</Name>
         <Script>
                         $this.IsPenDown = $false
@@ -1157,6 +1272,43 @@ param(
 )
 
 $this.Rotate($Angle)
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>RingFractal</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Ring Fractal
+.DESCRIPTION
+    Draws a Ring Fractal, using an L-System
+.LINK
+    https://paulbourke.net/fractals/lsys/
+.EXAMPLE
+    turtle RingFractal 42 1
+.EXAMPLE
+    turtle RingFractal 42 2
+.EXAMPLE
+    turtle RingFractal 42 3
+.EXAMPLE
+    turtle RingFractal 42 4
+#&gt;
+param(
+# The size of each segment
+[double]$Size = 200,
+# The order of magnitude (the number of expansions)
+[int]$Order = 4,
+# The default angle.
+[double]$Angle = 90
+)
+return $this.LSystem('F+F+F+F',  [Ordered]@{
+    F = 'FF+F+F+F+F+F-F'
+}, $Order, [Ordered]@{
+    '\+'    = { $this.Rotate($Angle) }
+    '-'     = { $this.Rotate($Angle * -1)}
+    'F'     = { $this.Forward($Size) }
+})
+
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -1706,6 +1858,43 @@ return $this.LSystem('F',  [Ordered]@{
     '\+'    = { $this.Rotate($Angle) }
     '-'     = { $this.Rotate($Angle * -1) }
     '[F]'  = { $this.Forward($Size) }
+})
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>TileFractal</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Tile Fractal
+.DESCRIPTION
+    Draws a Tile Fractal, using an L-System
+.LINK
+    https://paulbourke.net/fractals/lsys/
+.EXAMPLE
+    turtle TileFractal 42 1
+.EXAMPLE
+    turtle TileFractal 42 2
+.EXAMPLE
+    turtle TileFractal 42 3
+.EXAMPLE
+    turtle TileFractal 42 4
+#&gt;
+param(
+# The size of each segment
+[double]$Size = 200,
+# The order of magnitude (the number of expansions)
+[int]$Order = 4,
+# The default angle.
+[double]$Angle = 90
+)
+return $this.LSystem('F+F+F+F',  [Ordered]@{
+    F = 'FF+F-F+F+FF'
+}, $Order, [Ordered]@{
+    '\+'    = { $this.Rotate($Angle) }
+    '-'     = { $this.Rotate($Angle * -1)}
+    'F'     = { $this.Forward($Size) }
 })
 
                     </Script>

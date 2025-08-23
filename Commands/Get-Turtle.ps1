@@ -1,22 +1,204 @@
 function Get-Turtle {
     <#
     .SYNOPSIS
-        Gets Turtle in PowerShell
+        Gets Turtles
     .DESCRIPTION
-        Gets, sets, and moves a turtle object in PowerShell.
+        Gets turtles in a PowerShell.
     .NOTES
-        Each argument can be the name of a member of the turtle object.
+        Turtle Graphics are pretty groovy.
+        
+        They have been kicking it since 1966, and they are how computers first learned to draw.
 
-        After a member name is encountered, subsequent arguments will be passed to the member as parameters.        
+        They kicked off the first computer-aided design boom and inspired generations of artists, engineers, mathematicians, and physicists.
+
+        They are also _incredibly_ easy to build.
+
+        A Turtle graphic is described with a series of moves.
+
+        Let's start with the core three moves:
+        
+        Imagine you are a Turtle holding a pen.
+
+        * You can turn `rotate`
+        * You can move `forward`
+        * You can lift the pen
+
+        These are the three basic moves a turtle can make.
+        
+        We can describe more complex moves by combining these steps.
+
+        Each argument can be the name of a move of the turtle object.
+
+        After a member name is encountered, subsequent arguments will be passed to the member as parameters.
     .EXAMPLE
-        turtle square 50
+        # We can write shapes as a series of steps
+        turtle rotate 120 forward 42 rotate 120 forward 42 rotate 120 forward 42
     .EXAMPLE
+        # We can also use a method.
+        # Polygon will draw an an N-sided polygon.
+        turtle polygon 10 5
+    .EXAMPLE
+        # A simple case of this is a square
+        turtle square 42
+    .EXAMPLE
+        # If we rotate 45 degrees first, our square becomes a rhombus
+        turtle rotate 45 square 42
+    .EXAMPLE
+        # We can draw a circle 
         turtle circle 10
     .EXAMPLE
-        turtle polygon 10 6
+        # Or a pair of half-circles
+        turtle circle 10 0.5 rotate 90 circle 10 0.5
     .EXAMPLE
+        # We can multiply arrays in PowerShell
+        # this can make composing complex shapes easier.
+        # Let's take the previous example and repeat it 8 times.
+        turtle @('circle',42,0.5,'rotate',90 * 8)
+    .EXAMPLE
+        # Let's make a triangle by multiplying steps
         turtle ('forward', 10, 'rotate', 120 * 3)
-
+    .EXAMPLE
+        # Let's make a series of polygons, decreasing in size
+        turtle polygon 10 6 polygon 10 5 polygon 10 4 polygon 10 3
+    .EXAMPLE
+        # We can also use a loop to produce a series of steps
+        # Let's extend our previous example and make 9 polygons
+        turtle @(
+            foreach ($n in 12..3) {
+                'polygon'
+                42
+                $n
+            }
+        )
+    .EXAMPLE
+        # We can use the same trick to make successively larger polygons
+        turtle @(
+            $sideCount = 3..8 | Get-Random 
+            foreach ($n in 1..5) {
+                'polygon'
+                $n * 10
+                $sideCount
+            }
+        )
+    .EXAMPLE
+        # A flower is a series of repeated polygons and rotations
+        turtle Flower    
+    .EXAMPLE
+        # Flowers look pretty with any number of polygons
+        turtle Flower 50 10 (3..12 | Get-Random) 36
+    .EXAMPLE
+        # Flowers get less dense as we increase the angle and decrease the repetitions
+        turtle Flower 50 15 (3..12 | Get-Random) 24
+    .EXAMPLE
+        # Flowers get more dense as we decrease the angle and increase the repetitions.
+        turtle Flower 50 5 (3..12 | Get-Random) 72
+    .EXAMPLE
+        # We can draw a pair of arcs and turn back after each one        
+        turtle ArcRight 42 45 rotate (180 - 45) ArcRight 42 45 rotate (180 - 45)
+    .EXAMPLE
+        # We call this a 'petal'
+        turtle Petal 42 60
+    .EXAMPLE
+        # We can construct a flower out of petals
+        turtle FlowerPetal
+    .EXAMPLE
+        # Adjusting the angle of the petal makes our petal wider or thinner
+        turtle FlowerPetal 42 15 (20..60 | Get-Random) 24
+    .EXAMPLE
+        # Flower Petals get more dense as we decrease the angle and increase repetitions 
+        turtle FlowerPetal 42 10 (10..50 | Get-Random) 36
+    .EXAMPLE
+        # Flower Petals get less dense as we increase the angle and decrease repetitions
+        turtle FlowerPetal 50 20 (20..72 | Get-Random) 18    
+    .EXAMPLE
+        # We can construct a 'scissor' by drawing two lines at an angle
+        turtle Scissor 42 60
+    .EXAMPLE
+        # Drawing a scissor does not change the heading
+        # So we can create a zig-zag pattern by multiply scissors
+        turtle @('Scissor',42,60 * 4)
+    .EXAMPLE
+        # Getting a bit more interesting, we can create a polygon out of scissors
+        # We will continually rotate until we have turned a multiple of 360 degrees.
+        Turtle ScissorPoly 23 90 120
+    .EXAMPLE
+        Turtle ScissorPoly 23 60 72
+    .EXAMPLE
+        # This can get very chaotic, if it takes a while to reach a multiple of 360
+        # Build N scissor polygons
+        foreach ($n in 60..72) {
+            Turtle ScissorPoly 16 $n $n
+        }
+    .EXAMPLE
+        Turtle ScissorPoly 16 69 69
+    .EXAMPLE
+        # We can draw an outward spiral by growing a bit each step
+        turtle StepSpiral
+    .EXAMPLE
+        turtle StepSpiral 42 120 4 18 
+    .EXAMPLE
+        turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
+    .EXAMPLE
+        turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
+    .EXAMPLE
+        turtle spirolateral
+    .EXAMPLE
+        turtle spirolateral 50 60 10
+    .EXAMPLE
+        turtle spirolateral 50 120 6 @(1,3)
+    .EXAMPLE
+        turtle spirolateral 23 144 8
+    .EXAMPLE
+        turtle spirolateral 23 72 8
+    .EXAMPLE
+        turtle @('ArcLeft', 42, 12, 'ArcRight', 72, 60 * 6 )
+    .EXAMPLE
+        # Turtle can draw a number of fractals        
+        turtle BoxFractal 42 4
+    .EXAMPLE
+        # We can make a Board Fractal
+        turtle BoardFractal 42 4
+    .EXAMPLE
+        # We can make a Crystal Fractal
+        turtle CrystalFractal 42 4
+    .EXAMPLE
+        # We can make ring fractals
+        turtle RingFractal 42 4
+    .EXAMPLE
+        # We can make a Pentaplexity
+        turtle Pentaplexity 42 3
+    .EXAMPLE
+        # We can draw the Koch Island 
+        turtle KochIsland 42 4
+    .EXAMPLE
+        # Or we can draw the Koch Curve
+        turtle KochCurve 42 
+    .EXAMPLE
+        # We can make a Koch Snowflake
+        turtle KochSnowflake 42 
+    .EXAMPLE
+        # We can use a Hilbert Curve to fill a space
+        Turtle HilbertCurve 42 4
+    .EXAMPLE
+        # We can use a Moore Curve to fill a space with a bit more density.
+        turtle MooreCurve 42 4
+    .EXAMPLE
+        # We can show a binary tree
+        turtle BinaryTree 42 4
+    .EXAMPLE
+        # We can also mimic plant growth
+        turtle FractalPlant 42 4
+    .EXAMPLE
+        # The SierpinskiArrowHead Curve is pretty          
+        turtle SierpinskiArrowheadCurve 42 4
+    .EXAMPLE
+        # The SierpinskiTriangle is a Fractal classic    
+        turtle SierpinskiTriangle 42 4
+    .EXAMPLE
+        # We can draw a 'Sierpinski Snowflake' by rotating and drawing multiple Sierpinski Triangles
+        turtle @('rotate', 30, 'SierpinskiTriangle',42,4 * 12)
+    .EXAMPLE        
+        turtle @('rotate', 45, 'SierpinskiTriangle',42,4 * 24)
     #>
     [CmdletBinding(PositionalBinding=$false)]
     [Alias('turtle')]

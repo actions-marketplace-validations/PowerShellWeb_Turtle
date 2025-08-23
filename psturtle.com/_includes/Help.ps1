@@ -53,20 +53,21 @@ if ($notes) {
     margin: 1.5em
 }"
 ".example {
-    width: 50%;
-    text-align: center;
+    width: 66%;
+    text-align: center    
 }"
 ".sampleCode {
     text-align: left;
     max-width: 66%;
 }"
+".exampleOutput { text-align: center }"
 "
 @media (orientation: landscape) {
-    .example { width: 60%; }        
+    .example-output { width: 66%; }        
 }
 
 @media (orientation: portrait) {
-    .example { width: 42%; }
+    .example-output { width: 50%; }
 }
 "
 "</style>"

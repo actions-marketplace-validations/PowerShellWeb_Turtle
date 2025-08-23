@@ -45,7 +45,7 @@ if ($notes) {
 "<style>"
 ".example-grid {
     display: grid;
-    grid-template-columns: 42ch;
+    grid-template-columns: 66%;
     place-items: center;
     gap: 2.3em;
     padding: 1.5em;
@@ -101,11 +101,13 @@ foreach ($example in $CommandHelp.examples.example) {
                     [Web.HttpUtility]::HtmlEncode($codeBlock)
                 "</code>"
             "</pre>"
-        "</div>"
-    "</div>"    
+        "</div>"    
     
     # If we do not want to invoke examples, we can continue to the next example.
-    if (-not $InvokeExample) { continue }
+    if (-not $InvokeExample) { 
+        "</div>"
+        continue
+    }
 
     # Otherwise, try to make our example a script block
     $exampleCode = 
@@ -152,6 +154,7 @@ foreach ($example in $CommandHelp.examples.example) {
             }            
         }    
         "</div>"
-    }    
+    }
+    "</div>"    
 }
 "</div>"

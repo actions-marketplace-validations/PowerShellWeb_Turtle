@@ -45,7 +45,7 @@ if ($notes) {
 "<style>"
 ".example-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 42ch;
     place-items: center;
     gap: 2.3em;
     padding: 1.5em;

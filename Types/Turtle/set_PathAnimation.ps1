@@ -36,6 +36,11 @@ $newAnimation = @(foreach ($animation in $PathAnimation) {
         if ($animationCopy['attributeName'] -eq 'transform') {
             $elementName = 'animateTransform'
         }
+
+
+        if (-not $animationCopy['dur'] -and $this.Duration) {
+            $animationCopy['dur'] = "$($this.Duration.TotalSeconds)s"
+        }
         
         "<$elementName $(
             @(foreach ($key in $animationCopy.Keys) {

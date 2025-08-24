@@ -2137,6 +2137,43 @@ $b64 = [Convert]::ToBase64String($OutputEncoding.GetBytes($thisSymbol.outerXml))
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Duration</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the duration
+.DESCRIPTION
+    Gets the default duration of animations and morphs.
+#&gt;
+if ($this.'.Duration') { return $this.'.Duration'}
+return
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the duration
+.DESCRIPTION
+    Sets the default duration used for morphs and other animations.
+#&gt;
+param(
+# The value to set
+$value
+)
+
+foreach ($v in $value) {
+    if ($v -is [Timespan]) {
+        $this | Add-Member NoteProperty '.Duration' $v -Force
+    } elseif ($v -is [double] -or $v -is [int]) {
+        $this | Add-Member NoteProperty '.Duration' ([TimeSpan]::FromSeconds($v)) -Force
+    } else {
+        Write-Warning "'$Value' is not a number or timespan"
+    }
+}
+
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Fill</Name>
         <GetScriptBlock>
                         if ($this.'.Fill') { 
@@ -2490,6 +2527,11 @@ $newAnimation = @(foreach ($animation in $PathAnimation) {
         $elementName = 'animate'
         if ($animationCopy['attributeName'] -eq 'transform') {
             $elementName = 'animateTransform'
+        }
+
+
+        if (-not $animationCopy['dur'] -and $this.Duration) {
+            $animationCopy['dur'] = "$($this.Duration.TotalSeconds)s"
         }
         
         "&lt;$elementName $(

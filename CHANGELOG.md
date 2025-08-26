@@ -1,3 +1,15 @@
+## Turtle 0.1.8:
+
+* Turtle Performance
+  * Improving `.Steps` performance (#159)
+  * Reducing Turtle Verbosity (#160)
+* New Moves:
+  * Step (#161)
+  * Forward,Teleport, and GoTo now use Step (#161)
+* New Reflection Examples (#162)
+
+---
+
 ## Turtle 0.1.7:
 
 * Morphing Turtles

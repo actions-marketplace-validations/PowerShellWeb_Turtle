@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.7'
+    ModuleVersion = '0.1.8'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -37,15 +37,15 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
-## Turtle 0.1.7:
+## Turtle 0.1.8:
 
-* Morphing Turtles
-  * `Turtle.Morph` morphs shapes (#154)
-  * `Turtle.get/set_Duration` control animation durations (#153)
-  * [Lots of new examples](https://psturtle.com/Commands/Get-Turtle)
-* New Fractals:
-  * LevyCurve (#155)
-  * Triplexity (#156)
+* Turtle Performance
+  * Improving `.Steps` performance (#159)
+  * Reducing Turtle Verbosity (#160)
+* New Moves:
+  * Step (#161)
+  * Forward,Teleport, and GoTo now use Step (#161)
+* New Reflection Examples (#162)
 
 ---
 

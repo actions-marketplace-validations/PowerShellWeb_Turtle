@@ -530,20 +530,23 @@ return $this
       <ScriptMethod>
         <Name>Forward</Name>
         <Script>
-                        param(
+                        &lt;#
+.SYNOPSIS
+    Moves the turtle forward
+.DESCRIPTION
+    Moves the turtle forward along the current heading
+.EXAMPLE
+    turtle forward rotate 90 forward rotate 90 forward rotate 90 forward rotate 90
+#&gt;
+param(
+# The distance to move forward
 [double]
 $Distance = 10
 )
 
-$x = $Distance * [math]::round([math]::cos($this.Heading * [Math]::PI / 180),15)
-$y = $Distance * [math]::round([math]::sin($this.Heading * [Math]::PI / 180),15)
-$this.Position = $x, $y
-if ($This.IsPenDown) {
-    $this.Steps += " l $x $y"
-} else {
-    $this.Steps += " m $x $y"
-}
-return $this
+$x = $Distance * ([math]::round([math]::cos($this.Heading * [Math]::PI / 180),15))
+$y = $Distance * ([math]::round([math]::sin($this.Heading * [Math]::PI / 180),15))
+return $this.Step($x, $y)
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -626,15 +629,10 @@ $X,
 $Y
 )
 
-$deltaX = $x - $this.X 
-$deltaY = $y - $this.Y
-if ($this.IsPenDown) {
-    $this.Steps += " l $deltaX $deltaY"
-} else {
-    $this.Steps += " m $deltaX $deltaY"
-}
-$this.Position = $deltaX, $deltaY
-return $this
+return $this.Step(
+    $x - $this.X,
+    $y - $this.Y
+)
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -1868,6 +1866,38 @@ foreach ($n in 1..$Points) {
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>Step</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Takes a Step 
+.DESCRIPTION
+    Makes a relative movement.
+.EXAMPLE
+    turtle step 5 5 step 0 -5 step -5 0 save ./stepTriangle.svg
+#&gt;
+param(
+# The DeltaX
+[double]$DeltaX = 0, 
+# The DeltaY
+[double]$DeltaY = 0
+)
+
+# If both coordinates are empty, there is no step
+if ($DeltaX -or $DeltaY) {
+    $this.Position = $DeltaX, $DeltaY
+    if ($This.IsPenDown) {
+        $this.Steps += " l $DeltaX $DeltaY"
+    } else {
+        $this.Steps += " m $DeltaX $DeltaY"
+    }
+}
+
+return $this
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>StepSpiral</Name>
         <Script>
                         &lt;#
@@ -1946,8 +1976,10 @@ $Y
 
 $deltaX = $x - $this.X 
 $deltaY = $y - $this.Y
-$this.Steps += "m $deltaX $deltaY"
-$this.Position = $deltaX, $deltaY
+$penState = $this.IsPenDown
+$this.IsPenDown = $false
+$null = $this.Step($deltaX, $deltaY)
+$this.IsPenDown = $penState
 return $this
                     </Script>
       </ScriptMethod>
@@ -2396,10 +2428,10 @@ $this.PathAttribute = [Ordered]@{'fill-rule' = $fillRule.ToLower()}
     Gets the current heading of the turtle.
 #&gt;
 param()
-if ($null -ne $this.'.TurtleHeading') {
-    return $this.'.TurtleHeading'
+if ($this -and -not $this.psobject.properties['.TurtleHeading']) {
+    $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', 0.0), $false)
 }
-return 0
+return $this.'.TurtleHeading'
 
 
                     </GetScriptBlock>
@@ -2422,12 +2454,6 @@ if ($this -and -not $this.psobject.properties['.TurtleHeading']) {
     $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', 0), $false)
 }
 $this.'.TurtleHeading' = $Heading
-
-# $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', $Heading), $false)
-# $this |  Add-Member -MemberType NoteProperty -Force -Name '.TurtleHeading' -Value $Heading
-if ($VerbosePreference -ne 'SilentlyContinue') {
-    Write-Verbose "Heading to $Heading"
-}
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -2500,13 +2526,12 @@ return $true
 [bool]
 $IsDown
 )
-
-$this | 
-    Add-Member -MemberType NoteProperty -Force -Name '.IsPenDown' -Value $IsDown
-    
-if ($VerbosePreference -ne 'SilentlyContinue') {
-    Write-Verbose "Turtle is now $($IsDown ? 'down' : 'up')"
+if ($null -eq $this.'.IsPenDown') {
+    $this | Add-Member -MemberType NoteProperty -Force -Name '.IsPenDown' -Value $IsDown
+} else {
+    $this.'.IsPenDown' = $IsDown
 }
+
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -3046,10 +3071,14 @@ $this.'.Stack'
       <ScriptProperty>
         <Name>Steps</Name>
         <GetScriptBlock>
-                        if ($this.'.Steps') {
-    return $this.'.Steps'
+                        if (-not $this.'.Steps') {   
+    $this.psobject.properties.add(
+        [psnoteproperty]::new(
+            '.Steps', [Collections.Generic.List[string]]::new()
+        ), $false
+    )    
 }
-return ,@()
+return ,$this.'.Steps'
 
                     </GetScriptBlock>
         <SetScriptBlock>
@@ -3066,7 +3095,14 @@ param(
 $Steps
 )
 
-$this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @($Steps)
+if (-not $this.'.Steps') {
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @(
+        [Collections.Generic.List[string]]::new($Steps)
+    )
+} else {
+    $this.'.Steps' = $steps
+}
+
 
                     </SetScriptBlock>
       </ScriptProperty>

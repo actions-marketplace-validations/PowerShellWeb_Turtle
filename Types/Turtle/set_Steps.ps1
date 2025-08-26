@@ -11,4 +11,11 @@ param(
 $Steps
 )
 
-$this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @($Steps)
+if (-not $this.'.Steps') {
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @(
+        [Collections.Generic.List[string]]::new($Steps)
+    )
+} else {
+    $this.'.Steps' = $steps
+}
+

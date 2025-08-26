@@ -65,6 +65,9 @@ function Get-Turtle {
         # Let's make a triangle by multiplying steps
         turtle ('forward', 10, 'rotate', 120 * 3)
     .EXAMPLE
+        # We can also write this with a polygon
+        turtle polygon 10 3    
+    .EXAMPLE
         # Let's make a series of polygons, decreasing in size
         turtle polygon 10 6 polygon 10 5 polygon 10 4
     .EXAMPLE
@@ -88,6 +91,12 @@ function Get-Turtle {
             }
         )
     .EXAMPLE
+        # We can reflect a shape by drawing it with a negative number
+        turtle polygon 42 3 polygon -42 3
+    .EXAMPLE
+        # We can change the angle of reflection by rotating first
+        turtle rotate 60 polygon 42 3 polygon -42 3
+    .EXAMPLE
         # We can morph any N shapes with the same number of points.        
         turtle square 42 morph @(
             turtle square 42
@@ -95,14 +104,23 @@ function Get-Turtle {
             turtle square 42
         )
     .EXAMPLE
-        # This animates the path of the turtle.
+        # Reflections always have the same number of points.
+        # 
+        # Morphing a shape into its reflection will zoom out, flip, and zoom back in.
+        turtle polygon 42 6 morph @(
+            turtle polygon -42 6
+            turtle polygon 42 6
+            turtle polygon -42 6
+        )
+    .EXAMPLE    
         # If we want to morph a smaller shape into a bigger shape,
-        # we can duplicate more lines
+        # 
+        # we can duplicate lines
         turtle polygon 21 6 morph @(
             turtle @('forward', 21,'backward', 21 * 3)
             turtle polygon 21 6
             turtle @('forward', 21,'backward', 21 * 3)
-        )
+        )                
     .EXAMPLE
         # We can repeat steps by multiplying arrays.
         # Lets repeat a hexagon three times with a rotation
@@ -304,6 +322,9 @@ function Get-Turtle {
     .EXAMPLE
         # The SierpinskiTriangle is a Fractal classic    
         turtle SierpinskiTriangle 42 4
+    .EXAMPLE
+        # Let's draw two reflected Sierpinski Triangles
+        turtle rotate 60 SierpinskiTriangle 42 4 SierpinskiTriangle -42 4
     .EXAMPLE
         # We can draw a 'Sierpinski Snowflake' with multiple Sierpinski Triangles.
         turtle @('rotate', 30, 'SierpinskiTriangle',42,4 * 12)

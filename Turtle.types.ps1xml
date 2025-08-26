@@ -2726,10 +2726,10 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.PathAnimation' -Value
       <ScriptProperty>
         <Name>PathAttribute</Name>
         <GetScriptBlock>
-                        if ($this.'.PathAttribute') { 
-    return $this.'.PathAttribute'
+                        if (-not $this.'.PathAttribute') { 
+    $this | Add-Member NoteProperty '.PathAttribute' ([Ordered]@{}) -Force    
 }
-return [Ordered]@{}
+return $this.'.PathAttribute'
                     </GetScriptBlock>
         <SetScriptBlock>
                         param(

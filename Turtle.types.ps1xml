@@ -3078,10 +3078,14 @@ $this.'.Stack'
       <ScriptProperty>
         <Name>Steps</Name>
         <GetScriptBlock>
-                        if ($this.'.Steps') {
-    return $this.'.Steps'
+                        if (-not $this.'.Steps') {   
+    $this.psobject.properties.add(
+        [psnoteproperty]::new(
+            '.Steps', [Collections.Generic.List[string]]::new()
+        ), $false
+    )    
 }
-return ,@()
+return ,$this.'.Steps'
 
                     </GetScriptBlock>
         <SetScriptBlock>
@@ -3098,7 +3102,14 @@ param(
 $Steps
 )
 
-$this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @($Steps)
+if (-not $this.'.Steps') {
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @(
+        [Collections.Generic.List[string]]::new($Steps)
+    )
+} else {
+    $this.'.Steps' = $steps
+}
+
 
                     </SetScriptBlock>
       </ScriptProperty>

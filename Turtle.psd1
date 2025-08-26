@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.6'
+    ModuleVersion = '0.1.7'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -37,18 +37,15 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
-## Turtle 0.1.6:
+## Turtle 0.1.7:
 
-* Vastly expanded Get-Turtle examples (#149)
-* Check out https://psturtle.com/Commands/Get-Turtle
-* New L-Systems:
-  * BoardFractal (#142)
-  * CrystalFractal (#143)
-  * RingFractal (#144)
-  * TileFractal (#145)
-  * Pentaplexity (#146)
-* Fixing KochCurve parameter order (#147)
-* Added New-Turtle docs (#148)
+* Morphing Turtles
+  * `Turtle.Morph` morphs shapes (#154)
+  * `Turtle.get/set_Duration` control animation durations (#153)
+  * [Lots of new examples](https://psturtle.com/Commands/Get-Turtle)
+* New Fractals:
+  * LevyCurve (#155)
+  * Triplexity (#156)
 
 ---
 

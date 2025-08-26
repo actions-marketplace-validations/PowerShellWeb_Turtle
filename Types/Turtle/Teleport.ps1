@@ -18,6 +18,8 @@ $Y
 
 $deltaX = $x - $this.X 
 $deltaY = $y - $this.Y
-$this.Steps += "m $deltaX $deltaY"
-$this.Position = $deltaX, $deltaY
+$penState = $this.IsPenDown
+$this.IsPenDown = $false
+$null = $this.Step($deltaX, $deltaY)
+$this.IsPenDown = $penState
 return $this

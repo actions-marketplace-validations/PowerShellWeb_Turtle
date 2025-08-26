@@ -1,3 +1,15 @@
+## Turtle 0.1.7:
+
+* Morphing Turtles
+  * `Turtle.Morph` morphs shapes (#154)
+  * `Turtle.get/set_Duration` control animation durations (#153)
+  * [Lots of new examples](https://psturtle.com/Commands/Get-Turtle)
+* New Fractals:
+  * LevyCurve (#155)
+  * Triplexity (#156)
+
+---
+
 ## Turtle 0.1.6:
 
 * Vastly expanded Get-Turtle examples (#149)

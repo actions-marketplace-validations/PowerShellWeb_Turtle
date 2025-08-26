@@ -1,4 +1,4 @@
-if ($this.'.PathAttribute') { 
-    return $this.'.PathAttribute'
+if (-not $this.'.PathAttribute') { 
+    $this | Add-Member NoteProperty '.PathAttribute' ([Ordered]@{}) -Force    
 }
-return [Ordered]@{}
+return $this.'.PathAttribute'

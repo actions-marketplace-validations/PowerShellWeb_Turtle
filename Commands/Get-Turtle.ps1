@@ -88,6 +88,32 @@ function Get-Turtle {
             }
         )
     .EXAMPLE
+        # We can morph any N shapes with the same number of points.        
+        turtle square 42 morph @(
+            turtle square 42
+            turtle rotate 45 square 42
+            turtle square 42
+        )
+    .EXAMPLE
+        # This animates the path of the turtle.
+        # If we want to morph a smaller shape into a bigger shape,
+        # we can duplicate more lines
+        turtle polygon 21 6 morph @(
+            turtle @('forward', 21,'backward', 21 * 3)
+            turtle polygon 21 6
+            turtle @('forward', 21,'backward', 21 * 3)
+        )
+    .EXAMPLE
+        # We can repeat steps by multiplying arrays.
+        # Lets repeat a hexagon three times with a rotation
+        turtle ('polygon', 23, 6, 'rotate', -120 * 3)
+    .EXAMPLE
+        # Let's change the angle a bit and see how they overlap        
+        turtle ('polygon', 23, 6, 'rotate', -60 * 6)
+    .EXAMPLE
+        # Let's do the same thing, but with a smaller angle
+        turtle ('polygon', 23, 6, 'rotate', -40 * 9)
+    .EXAMPLE
         # A flower is a series of repeated polygons and rotations
         turtle Flower    
     .EXAMPLE
@@ -99,6 +125,14 @@ function Get-Turtle {
     .EXAMPLE
         # Flowers get more dense as we decrease the angle and increase the repetitions.
         turtle Flower 50 5 (3..12 | Get-Random) 72
+    .EXAMPLE        
+        # Flowers look especially beautiful as they morph
+        $sideCount = (3..12 | Get-Random)        
+        turtle Flower 50 15 $sideCount 36 morph @(
+            turtle Flower 50 10 $sideCount 72
+            turtle rotate (Get-Random -Max 360 -Min 180) Flower 50 5 $sideCount 72
+            turtle Flower 50 10 $sideCount 72
+        )        
     .EXAMPLE
         # We can draw a pair of arcs and turn back after each one.        
         # We call this a 'petal'.
@@ -114,7 +148,25 @@ function Get-Turtle {
         turtle FlowerPetal 42 10 (10..50 | Get-Random) 36
     .EXAMPLE
         # Flower Petals get less dense as we increase the angle and decrease repetitions
-        turtle FlowerPetal 50 20 (20..72 | Get-Random) 18    
+        turtle FlowerPetal 50 20 (20..72 | Get-Random) 18
+    .EXAMPLE
+        # Flower Petals look amazing when morphed
+        $Radius = 23..42 | Get-Random
+        $flowerAngle = 30..60 | Get-Random
+        $AngleFactor = 2..6 | Get-Random
+        $flowerPetals = turtle rotate (
+            (Get-Random -Max 180) * -1
+        ) flowerPetal $radius 10 $flowerAngle $stepCount    
+        $flowerPetals2 = turtle rotate (
+            (Get-Random -Max 180)
+        ) flowerPetal $radius (
+            10 * $AngleFactor
+        ) $flowerAngle $stepCount
+        turtle flowerPetal $radius 10 $flowerAngle $stepCount morph (
+            $flowerPetals, 
+            $flowerPetals2,
+            $flowerPetals
+        )
     .EXAMPLE
         # We can construct a 'scissor' by drawing two lines at an angle
         turtle Scissor 42 60
@@ -140,21 +192,69 @@ function Get-Turtle {
         # We can draw an outward spiral by growing a bit each step
         turtle StepSpiral
     .EXAMPLE
-        turtle StepSpiral 42 120 4 18 
+        turtle StepSpiral 42 120 4 18
+    .EXAMPLE
+        # Because Step Spirals are a fixed number of steps,        
+        # they are easy to morph.
+        turtle StepSpiral 42 120 4 18 morph @(
+            turtle StepSpiral 42 90 4 24
+            turtle StepSpiral 42 120 4 24
+            turtle StepSpiral 42 90 4 24            
+        )
     .EXAMPLE
         turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
     .EXAMPLE
         turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
     .EXAMPLE
+        # Step spirals look lovely when morphed
+        #
+        # (especially when reversing angles)
+        turtle @('StepSpiral',3, 120, 'rotate',60 * 6) morph @(
+            turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
+            turtle @('StepSpiral',6, -120, 'rotate',120 * 6)
+            turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
+        )
+    .EXAMPLE        
+        # When we reverse the spiral angle, the step spiral curve flips
+        turtle @('StepSpiral',3, 90, 'rotate',90 * 4) morph @(
+            turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
+            turtle @('StepSpiral',3, -90, 'rotate',90 * 4)
+            turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
+        )
+    .EXAMPLE
+        # When we reverse the rotation, the step spiral curve slides
+        turtle @('StepSpiral',3, 90, 'rotate',90 * 4) morph @(
+            turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
+            turtle @('StepSpiral',3, 90, 'rotate',-90 * 4)
+            turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
+        )
+    .EXAMPLE
+        # We we alternate, it looks amazing
+        turtle @('StepSpiral',3, 90, 'rotate',90 * 4) morph @(
+            turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
+            turtle @('StepSpiral',3, 90, 'rotate',-90 * 4)
+            turtle @('StepSpiral',3, 90, 'rotate',90 * 4)
+            turtle @('StepSpiral',3, -90, 'rotate',90 * 4)
+            turtle @('StepSpiral',3, 90, 'rotate',90 * 4)            
+        )
+    .EXAMPLE        
+        turtle @('StepSpiral',3, 120, 'rotate',60 * 6) morph @(
+            turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
+            turtle @('StepSpiral',6, -120, 'rotate',120 * 6)
+            turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
+            turtle @('StepSpiral',6, 120, 'rotate',-120 * 6)
+            turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
+        )
+    .EXAMPLE
         turtle spirolateral
     .EXAMPLE
         turtle spirolateral 50 60 10
     .EXAMPLE
-        turtle spirolateral 50 120 6 @(1,3)
+        turtle spirolateral 50 120 6 @(1,3)            
     .EXAMPLE
         turtle spirolateral 23 144 8
     .EXAMPLE
-        turtle spirolateral 23 72 8
+        turtle spirolateral 23 72 8    
     .EXAMPLE
         # Turtle can draw a number of fractals        
         turtle BoxFractal 42 4
@@ -171,6 +271,9 @@ function Get-Turtle {
         # We can make a Pentaplexity
         turtle Pentaplexity 42 3
     .EXAMPLE
+        # We can make a Triplexity
+        turtle Triplexity 42 4
+    .EXAMPLE
         # We can draw the Koch Island 
         turtle KochIsland 42 4
     .EXAMPLE
@@ -179,6 +282,9 @@ function Get-Turtle {
     .EXAMPLE
         # We can make a Koch Snowflake
         turtle KochSnowflake 42 
+    .EXAMPLE
+        # We can draw the Levy Curve
+        turtle LevyCurve 42 6
     .EXAMPLE
         # We can use a Hilbert Curve to fill a space
         Turtle HilbertCurve 42 4
@@ -198,7 +304,7 @@ function Get-Turtle {
         # The SierpinskiTriangle is a Fractal classic    
         turtle SierpinskiTriangle 42 4
     .EXAMPLE
-        # We can draw a 'Sierpinski Snowflake' by rotating and drawing multiple Sierpinski Triangles
+        # We can draw a 'Sierpinski Snowflake' with multiple Sierpinski Triangles.
         turtle @('rotate', 30, 'SierpinskiTriangle',42,4 * 12)
     .EXAMPLE        
         turtle @('rotate', 45, 'SierpinskiTriangle',42,4 * 24)
@@ -267,7 +373,7 @@ function Get-Turtle {
                 # otherwise, leave the argument alone.
                 $arg
             }
-        })
+        })    
 
         # Now that we have a series of words, we can process them.
         # We want to keep track of the current member, 
@@ -282,7 +388,7 @@ function Get-Turtle {
             $arg = $wordsAndArguments[$argIndex]
             # If the argument is not in the member names list, we can complain about it.
             if ($arg -notin $memberNames) {                
-                if (-not $currentMember -and $arg -is [string]) {
+                if (-not $currentMember -and $arg -is [string] -and "$arg".Trim()) {
                     Write-Warning "Unknown command '$arg'."
                 }
                 continue

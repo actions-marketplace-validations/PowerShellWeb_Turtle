@@ -88,6 +88,32 @@ function Get-Turtle {
             }
         )
     .EXAMPLE
+        # We can morph any N shapes with the same number of points.        
+        turtle square 42 morph @(
+            turtle square 42
+            turtle rotate 45 square 42
+            turtle square 42
+        )
+    .EXAMPLE
+        # This animates the path of the turtle.
+        # If we want to morph a smaller shape into a bigger shape,
+        # we can duplicate more lines
+        turtle polygon 21 6 morph @(
+            turtle @('forward', 21,'backward', 21 * 3)
+            turtle polygon 21 6
+            turtle @('forward', 21,'backward', 21 * 3)
+        )
+    .EXAMPLE
+        # We can repeat steps by multiplying arrays.
+        # Lets repeat a hexagon three times with a rotation
+        turtle ('polygon', 23, 6, 'rotate', -120 * 3)
+    .EXAMPLE
+        # Let's change the angle a bit and see how they overlap        
+        turtle ('polygon', 23, 6, 'rotate', -60 * 6)
+    .EXAMPLE
+        # Let's do the same thing, but with a smaller angle
+        turtle ('polygon', 23, 6, 'rotate', -40 * 9)
+    .EXAMPLE
         # A flower is a series of repeated polygons and rotations
         turtle Flower    
     .EXAMPLE
@@ -99,9 +125,7 @@ function Get-Turtle {
     .EXAMPLE
         # Flowers get more dense as we decrease the angle and increase the repetitions.
         turtle Flower 50 5 (3..12 | Get-Random) 72
-    .EXAMPLE
-        # We can morph any two similar shapes.
-        #
+    .EXAMPLE        
         # Flowers look especially beautiful as they morph
         $sideCount = (3..12 | Get-Random)        
         turtle Flower 50 15 $sideCount 36 morph @(

@@ -5,8 +5,8 @@
     Gets the current heading of the turtle.
 #>
 param()
-if ($null -ne $this.'.TurtleHeading') {
-    return $this.'.TurtleHeading'
+if ($this -and -not $this.psobject.properties['.TurtleHeading']) {
+    $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', 0.0), $false)
 }
-return 0
+return $this.'.TurtleHeading'
 

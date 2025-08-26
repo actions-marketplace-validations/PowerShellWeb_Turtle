@@ -16,9 +16,3 @@ if ($this -and -not $this.psobject.properties['.TurtleHeading']) {
     $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', 0), $false)
 }
 $this.'.TurtleHeading' = $Heading
-
-# $this.psobject.properties.add([PSNoteProperty]::new('.TurtleHeading', $Heading), $false)
-# $this |  Add-Member -MemberType NoteProperty -Force -Name '.TurtleHeading' -Value $Heading
-if ($VerbosePreference -ne 'SilentlyContinue') {
-    Write-Verbose "Heading to $Heading"
-}

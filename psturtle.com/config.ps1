@@ -153,9 +153,9 @@ $backgroundPatternAnimations =
 
 $sitebackgrounds = @(
 
-    {turtle Flower 30 60 6}
+    {turtle Flower 84 60 6}
 
-    {turtle Flower 30 (360/8) 8}
+    {turtle Flower 84 (360/8) 8}
 
     {turtle SierpinskiTriangle 15 4 }
     
@@ -308,8 +308,8 @@ $previewImages = @(
     { turtle Pentaplexity 42 3 }
     { turtle RingFractal 42 4 }
     { turtle BoardFractal 42 4 }
-    { turtle Flower 50 15 (3..12 | Get-Random) 24 }
-    { turtle spirolateral 100 120 50 @(1,3) }
+    { turtle Flower 84 15 (3..12 | Get-Random) 24 }
+    { turtle spirolateral 200 120 50 @(1,3) }
     { turtle FlowerPetal 100 20 (20..72 | Get-Random) 18 }
     { turtle @('circle',100,0.5,'rotate',90 * 8)}
 )

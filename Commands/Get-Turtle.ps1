@@ -154,6 +154,7 @@ function Get-Turtle {
         $Radius = 23..42 | Get-Random
         $flowerAngle = 30..60 | Get-Random
         $AngleFactor = 2..6 | Get-Random
+        $StepCount = 36
         $flowerPetals = turtle rotate (
             (Get-Random -Max 180) * -1
         ) flowerPetal $radius 10 $flowerAngle $stepCount    

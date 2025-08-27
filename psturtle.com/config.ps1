@@ -99,6 +99,8 @@ $Site.Description = 'Turtles in a PowerShell'
 $Site.Icon  = [Ordered]@{
     'GitHub' = . $site.includes.Feather 'GitHub'
     'RSS' = . $site.includes.Feather 'RSS'
+    'Settings' = . $site.includes.Feather 'Settings'
+    'Help' = . $site.includes.Feather 'Help-Circle'
 }
 #endregion Site Icons
 
@@ -126,6 +128,23 @@ $site.Taskbar = [Ordered]@{
     # 'BlueSky' = 'https://bsky.app/profile/mrpowershell.com'
     'GitHub' = 'https://github.com/PowerShellWeb/Turtle'
     'RSS' = 'https://psturtle.com/RSS/index.rss'
+    'Help' = @(
+if ($site.Module) {
+    "<h3>Installing</h3>"
+    "<pre><code>Install-Module $($site.Module)</code></pre>"
+    "<h3>Updating</h3>"
+    "<pre><code>Install-Module $($site.Module) -Force</code></pre>"
+    "<h3>Importing</h3>"
+    "<pre><code>Import-Module $($site.Module)</code></pre>"
+    "<h3>Basics</h3>"
+    "<pre><code>turtle polygon 42 6</code></pre>"
+    "$(turtle polygon 42 6)"
+    "<h3>Fractals</h3>"
+    "<pre><code>turtle SierpinskiTriangle 42 3</code></pre>"
+    "$(turtle SierpinskiTriangle 42 3)"
+    "<h3><a href='/Commands/Get-Turtle'>More Examples</a></h3>"    
+}
+    ) -join [Environment]::NewLine
 }
 
 <#$site.HeaderMenu = [Ordered]@{
@@ -298,7 +317,7 @@ $siteBackground = $sitebackgrounds | Get-Random
 $backgroundTurtle = . $siteBackground
 $site.Background = $backgroundTurtle |
     Set-Turtle PatternAnimation $backgroundPatternAnimations |
-    Set-Turtle PathAttribute @{opacity=.2} |
+    Set-Turtle PathAttribute @{opacity=.1} |
     Select-Object -ExpandProperty Pattern
 
 $pngPreviewFile = 'Preview.png'

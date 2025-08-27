@@ -129,22 +129,70 @@ body {
     max-width: 100vw;
     height: 100vh;
     font-family: '$Font', sans-serif;
-    margin: 3em;
-}
-header, footer {
-    text-align: center;
-    margin: 2em;
+    margin: 1em;
 }
 
+header, footer {
+    text-align: center;
+}
+
+header > svg {
+    display: block;
+    text-align: center;
+}
+
+$(
+    if ($HeaderMenu) {
+        # If the device is in landscape mode, use larger padding and gaps
+        "@media (orientation: landscape) {"
+            ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5em }"
+            ".header-menu-item { text-align: center; padding: 0.5em; }"
+        "}"
+
+        # If the device is in portrait mode, use smaller padding and gaps
+        "@media (orientation: portrait) {"
+            ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(66px, 1fr)); gap: 0.25em }"
+            ".header-menu-item { text-align: center; padding: 0.25em; }"
+        "}"
+    }
+)
+
+$(
+    if ($FooterMenu) {
+        "@media (orientation: landscape) {"
+            ".footer-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5em }"
+            ".footer-menu-item { text-align: center; padding: 0.5em; }"
+        "}"
+
+        "@media (orientation: portrait) {"
+            ".footer-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.25em }"
+            ".footer-menu-item { text-align: center; padding: 0.25em; }"
+        "}"
+    }
+)
+
+.logo { 
+    display: inline;
+    height: 4.2rem;
+}
+
+.expandInline { display: flex; flex-direction: row; }
+
 @media (orientation: landscape) {
-    .logo { height: 7em; }
+    .logo { height: 4.2rem; }
+    .site-title, .page-title {
+        font-size: 1.23rem;
+        line-height: .75rem
+    }
 }
 
 @media (orientation: portrait) {
-    .logo { height: 3em; }
+    .logo { height: 2.3rem; }
     .site-title, .page-title {
         font-size: 0.84em;
+        line-height: .66rem
     }
+    .expandInline { display: flex; flex-direction: column; }
 }
 
 pre, code { font-family: '$CodeFont', monospace; }
@@ -163,26 +211,28 @@ a:hover, a:focus {
     } elseif ($site.FontSize) {
         "font-size: $($site.FontSize);"
     } else {
-        "font-size: 1.21em;"
+        "font-size: 1.23em;"
     })
 }
 
 .taskbar {
-    position: fixed;
+    float: right;
+    position: absolute;
     top: 0; right: 0; z-index: 10;    
-    text-align: right;
-    display: flex; flex-direction: row-reverse; 
-    align-content: right; align-items: center;
+    display: flex; flex-direction: row-reverse;
+    align-content: right; align-items: flex-start;
     margin: 1em; gap: 0.5em;
 }
 
-.taskbar * {
-    vertical-align: middle;    
+.taskbar summary { 
+    color: var(--cyan);
+    list-style-type: none;
 }
 
 .background {
-    position: fixed;
+    position: fixed;    
     top: 0; left: 0;
+    margin-bottom: 0;
     min-width: 100%; height:100%;
 }
 
@@ -278,10 +328,43 @@ $bodyElements = @(
     }
     "</svg>"    
     "<canvas id='background backdrop-canvas' width='0' height='0'></canvas>"
-
+    if ($taskbar) {
+        # * Our taskbar
+        "<div class='taskbar'>"
+            foreach ($taskbarItem in $taskbar.GetEnumerator()) {
+                $itemIconAndOrName = 
+                    if ($page -and $page.Icon."$($taskbarItem.Key)") {                     
+                        $page.Icon[$taskbarItem.Key]
+                        if ($site.ShowTaskbarIconText -or $page.ShowTaskbarIconText) {
+                            $taskbarItem.Key
+                        }                    
+                    }
+                    elseif ($site -and $site.Icon."$($taskbarItem.Key)") { 
+                        $site.Icon[$taskbarItem.Key]
+                        if ($site.ShowTaskbarIconText -or $page.ShowTaskbarIconText) {
+                            $taskbarItem.Key
+                        }                
+                    }
+                    else { $taskbarItem.Key }
+                if ($taskbarItem.Value -match '[<>]') {
+                    "<details>"
+                    "<summary>"
+                    $itemIconAndOrName
+                    "</summary>"                    
+                    $taskbarItem.Value                    
+                    "</details>"
+                } else {
+                    "<a href='$($taskbarItem.Value)' class='icon-link' target='_blank'>"
+                    $itemIconAndOrName
+                    "</a>"
+                }
+                
+            }
+        "</div>"
+    }
 
     # * The header
-    "<header>"
+    "<header>"    
         if ($page.Header) {
             $page.Header -join [Environment]::NewLine
         } elseif ($site.Header) {
@@ -310,53 +393,20 @@ $bodyElements = @(
             }            
         }
         
-        if ($headerMenu) {
-            "<style>"            
-                # If the device is in landscape mode, use larger padding and gaps
-                "@media (orientation: landscape) {"
-                    ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1em }"
-                    ".header-menu-item { text-align: center; padding: 1em; }"
-                "}"
-
-                # If the device is in portrait mode, use smaller padding and gaps
-                "@media (orientation: portrait) {"
-                    ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.25em }"
-                    ".header-menu-item { text-align: center; padding: 0.25em; }"
-                "}"
-            "</style>"
+        if ($headerMenu) {        
             "<nav class='header-menu'>"
             foreach ($menuItem in $headerMenu.GetEnumerator()) {
-                "<a href='$($menuItem.Value)' class='header-menu-item'>$([Web.HttpUtility]::HtmlEncode($menuItem.Key))</a>"
+                if ($menuItem.Value -notmatch '[<>]') {
+                    "<a href='$($menuItem.Value)' class='header-menu-item'>$([Web.HttpUtility]::HtmlEncode($menuItem.Key))</a>"
+                }
+                
             }
             "</nav>"
         }
     "</header>"
 
     # * The main content
-    "<div class='main'>$outputHtml</div>"
-
-    if ($taskbar) {
-        # * Our taskbar
-        "<div class='taskbar'>"
-            foreach ($taskbarItem in $taskbar.GetEnumerator()) {
-                "<a href='$($taskbarItem.Value)' class='icon-link' target='_blank'>"
-                if ($page -and $page.Icon."$($taskbarItem.Key)") {                     
-                    $page.Icon[$taskbarItem.Key]
-                    if ($site.ShowTaskbarIconText -or $page.ShowTaskbarIconText) {
-                        $taskbarItem.Key
-                    }                    
-                }
-                elseif ($site -and $site.Icon."$($taskbarItem.Key)") { 
-                    $site.Icon[$taskbarItem.Key]
-                    if ($site.ShowTaskbarIconText -or $page.ShowTaskbarIconText) {
-                        $taskbarItem.Key
-                    }                
-                }
-                else { $taskbarItem.Key }
-                "</a>"
-            }
-        "</div>"
-    }
+    "<div class='main'>$outputHtml</div>"    
 
     # * The footer
     "<footer>"

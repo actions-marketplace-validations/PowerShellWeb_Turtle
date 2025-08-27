@@ -31,6 +31,36 @@ filter RequireModule {
         Write-Host "Already loaded $($alreadyLoaded.Name) for $($file.FullName)"
     }
 }
+
+filter Splat {
+    $in = $_
+    if ($in -isnot [Management.Automation.CommandInfo]) { return }
+    $splat = [Ordered]@{}
+    :nextParameter foreach ($parameterName in $in.Parameters.Keys) {
+        $parameter = $in.Parameters[$parameterName]
+        $potentialType = $parameter.ParameterType
+        # PowerShell parameters can have aliases, so lets find all potential names.
+        $parameterNames = @($parameter.Name;$parameter.Aliases) -ne ''
+        foreach ($PotentialName in $parameterNames) {
+            foreach ($arg in $args) {
+                if ($arg -isnot [Collections.IDictionary]) { continue }
+                if ($arg[$potentialName] -and $arg[$potentialName] -as $potentialType) {
+                    if ($potentialType -eq [Collections.IDictionary]) {
+                        if (-not $splat[$parameterName]) {
+                            $splat[$parameterName] = [Ordered]@{}
+                        }
+                        foreach ($key in $arg[$potentialName].Keys) {
+                            $splat[$parameterName][$key] = $arg[$potentialName][$key]                            
+                        }                        
+                    } else {
+                        $splat[$parameterName] = $arg[$potentialName]
+                    }                    
+                }
+            }
+        }
+    }
+    return $splat
+}
 #endregion PowerShell Specific Filters
 
 #region Special Filters

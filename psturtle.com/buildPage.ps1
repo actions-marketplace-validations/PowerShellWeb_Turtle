@@ -169,23 +169,7 @@ $pagesByUrl = $site.PagesByUrl
             $title = $Page['title'] = $file.Name -replace '\..+?\.ps1$' -replace 'index'
             
             #region Map File Parameters to Page and Site configuration
-            $FileParameters = [Ordered]@{}
-            :nextParameter foreach ($parameterName in $scriptCmd.Parameters.Keys) {
-                $parameter = $scriptCmd.Parameters[$parameterName]
-                $potentialType = $parameter.ParameterType
-                foreach ($PotentialName in 
-                    @($parameter.Name;$parameter.Aliases) -ne ''
-                ) {
-                    if ($page[$potentialName] -and $page[$potentialName] -as $potentialType) {
-                        $FileParameters[$potentialName] = $page[$potentialName]
-                        continue nextParameter
-                    }
-                    elseif ($site[$potentialName] -and $site[$potentialName] -as $potentialType) {
-                        $FileParameters[$potentialName] = $site[$potentialName]
-                        continue nextParameter
-                    }
-                }
-            }
+            $FileParameters = $scriptCmd | splat $Site $Page
             try {
                 $description = ''
                 . $file @FileParameters
@@ -259,60 +243,7 @@ $pagesByUrl = $site.PagesByUrl
         # This is somewhat straightforward, and opens up a lot of doors.
         # By allowing information in page or site to pass down to any command, 
         # we can easily extend sites with simple scripts, and seamlessly integrate them.
-        $layoutParameters = $layoutAtPathParameters[$fileRoot] = [Ordered]@{}
-
-        # We have to walk over every parameter.
-        # Since we want to exit the loop as soon as we have mapped a parameter,
-        # we use a loop label, `:nextParameter`.
-        :nextParameter foreach ($parameterName in $layoutCommand.Parameters.Keys) {
-            $parameter = $layoutCommand.Parameters[$parameterName]
-            $potentialType = $parameter.ParameterType
-            # PowerShell parameters can have aliases, so lets find all potential names.            
-            $parameterNames = @($parameter.Name;$parameter.Aliases) -ne ''
-            foreach ($PotentialName in $parameterNames) {
-                # If the page has the parameter
-                if ($page[$potentialName] -and
-                    # and it is the right type
-                    $page[$potentialName] -as $potentialType
-                ) {
-                    # We map the parameter from the page data.
-                    $layoutParameters[$potentialName] = $page[$potentialName]
-
-                    # We want to merge any dictionaries in both `$site` and `$page`.
-                    if ($site[$potentialName] -and 
-                        $site[$potentialName] -as $potentialType -and
-                        $site[$potentialName] -is [Collections.IDictionary] -and
-                        $page[$potentialName] -is [Collections.IDictionary]
-                    ) {                        
-                        # We copy in site wide data first.                        
-                        # This will show site-wide entries
-                        $layoutParameters[$potentialName] = [Ordered]@{}
-                        foreach ($siteKey in $site[$potentialName].Keys) {
-                            $layoutParameters[$PotentialName][$siteKey] = $site[$potentialName][$SiteKey]
-                        }
-                        # before page-specific entries.
-                        # An entry in pages would overwrite an entry in the site.
-                        foreach ($pageKey in $page[$potentialName].Keys) {
-                            $layoutParameters[$potentialName][$pageKey] = $page[$potentialName][$pageKey]
-                        }
-                    }
-                    # Now that we've mapped this parameter, continue to the `nextParameter`.
-                    continue nextParameter
-                }
-                
-                
-                if (
-                    # If we have the layout parameter in the `$site`
-                    $site[$potentialName] -and 
-                    # and it can be the right type
-                    $site[$potentialName] -as $potentialType
-                ) {
-                    # Map it, and continue to the next parameter.
-                    $layoutParameters[$potentialName] = $site[$potentialName]
-                    continue nextParameter
-                }
-            }
-        }
+        $layoutParameters = $layoutCommand | splat $site $page
     }
     #endregion Prepare Layout
 

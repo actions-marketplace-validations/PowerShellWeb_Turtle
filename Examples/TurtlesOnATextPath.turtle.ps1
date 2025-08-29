@@ -20,13 +20,13 @@ $turtlesOnATextPath =
     },[Ordered]@{
         attributeName = 'x'   ; values = "-100%; 100%; -50%" ; repeatCount = 'indefinite'; dur = "4.2s"
     })
-$turtlesOnATextPath | Save-Turtle ./TurtlesOnATextPathMorph.svg
+$turtlesOnATextPath | Save-Turtle ./TurtlesOnATextPath-Morph.svg
 
 
 turtle rotate -90 circle 42 text "a turtle circle" textattribute ([Ordered]@{
-    'x'='5%';
-    'dominant-baseline'='text-before-edge';
+    'x'='5%'
+    'dominant-baseline'='text-before-edge'
     'letter-spacing'='.16em'
-}) save ./aTurtleCircle.svg
+}) save ./TurtlesOnATextPath-ATurtleCircle.svg
 
 if ($PSScriptRoot) { Pop-Location }

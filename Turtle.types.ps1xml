@@ -3181,6 +3181,38 @@ param()
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Text</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the Turtle text
+.DESCRIPTION
+    Gets the text associated with the Turtle, if any exists.
+
+#&gt;
+return $this.'.Text'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the Turtle text
+.DESCRIPTION
+    Sets the text displayed along the turtle path.
+
+    Once this property is set, a text element will be displayed along with the turtle path.
+
+    To display only text, please also set the path's stroke to `transparent`
+#&gt;
+param(
+[string[]]
+$Text
+)
+
+$this | Add-Member NoteProperty '.Text' -Force ($text -join ' ')
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ViewBox</Name>
         <GetScriptBlock>
                         if ($this.'.ViewBox') { return $this.'.ViewBox' }

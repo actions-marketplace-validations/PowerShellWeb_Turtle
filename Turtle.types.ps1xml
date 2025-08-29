@@ -2859,7 +2859,8 @@ $null, $null, $viewX, $viewY = $viewBox
         }
     )&gt;"
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        $this.PathElement.OuterXml        
+        $this.PathElement.OuterXml
+        $this.TextElement.OuterXml        
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
 $(
@@ -3143,6 +3144,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $
 @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='$($this.ViewBox)' transform-origin='50% 50%' width='100%' height='100%'&gt;"
     $this.PathElement.OuterXml
+    $this.TextElement.OuterXml    
 "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>
@@ -3169,6 +3171,7 @@ param()
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
         "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
             $this.PathElement.OuterXml
+            $this.TextElement.OuterXml
         "&lt;/symbol&gt;"
         $(
             if ($this.BackgroundColor) {
@@ -3318,6 +3321,26 @@ foreach ($key in $TextAttribute.Keys) {
     $this.'.TextAttribute'[$key] = $TextAttribute[$key]
 }
                     </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>TextElement</Name>
+        <GetScriptBlock>
+                        
+if ($this.Text) {
+    return @(
+        "&lt;text id='$($this.ID)-text' $(
+    foreach ($TextAttributeName in $this.TextAttribute.Keys) {
+        " $TextAttributeName='$($this.TextAttribute[$TextAttributeName])'"
+    }
+)&gt;"
+            "&lt;textPath href='#$($this.id)-path'&gt;$([Security.SecurityElement]::Escape($this.Text))&lt;/textPath&gt;"
+            if ($this.TextAnimation) {$this.TextAnimation}
+        "&lt;/text&gt;"
+    ) -as [xml]
+}
+
+
+                    </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>ViewBox</Name>

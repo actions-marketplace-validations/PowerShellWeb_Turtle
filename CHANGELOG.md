@@ -1,3 +1,14 @@
+## Turtle 0.1.9:
+
+* Turtle Text Path Support
+  * `Turtle.get/set_Text` controls the text (#167)
+  * `Turtle.get/set_TextAttribute` sets text attributes (#168)
+  * `Turtle.get/set_TextAnimation` animates text attributes (#171)
+* `Get-Turtle` parameter improvements (#169, #170)
+* `Get-Turtle` tracks invocation info (#157)
+
+---
+
 ## Turtle 0.1.8:
 
 * Turtle Performance

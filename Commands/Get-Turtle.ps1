@@ -30,6 +30,8 @@ function Get-Turtle {
         Each argument can be the name of a move of the turtle object.
 
         After a member name is encountered, subsequent arguments will be passed to the member as parameters.
+
+        Any parameter that begins with whitespace will be split into multiple words.
     .EXAMPLE
         # We can write shapes as a series of steps
         turtle "
@@ -370,6 +372,10 @@ function Get-Turtle {
         $memberNames = $memberNames | Sort-Object @{Expression={ $_.Length };Descending=$true}, name
         # Create a new turtle object in case we have no turtle input.
         $currentTurtle = [PSCustomObject]@{PSTypeName='Turtle'}
+
+        $invocationInfo = $MyInvocation
+        $invocationInfo | 
+            Add-Member ScriptProperty History {Get-History -Id $this.HistoryId} -Force 
     }
 
     process {        
@@ -381,6 +387,12 @@ function Get-Turtle {
             return $PSBoundParameters.InputObject
         }
 
+        if (-not $currentTurtle.Invocations) {
+            $currentTurtle | Add-Member NoteProperty Invocations -Force @(,$invocationInfo) 
+        } elseif ($currentTurtle.Invocations -is [object[]]) {
+            $currentTurtle.Invocations += $invocationInfo
+        }
+
 
         # First we want to split each argument into words.
         # This way, it is roughly the same if you say:
@@ -388,14 +400,18 @@ function Get-Turtle {
         # * `turtle forward 10`
         # * `turtle 'forward', 10`
         $wordsAndArguments = @(foreach ($arg in $ArgumentList) {
-            # If the argument is a string, split it by whitespace.
+            # If the argument is a string, and it starts with whitespace
             if ($arg -is [string]) {
-                $arg -split '\s{1,}'
+                if ($arg -match '^[\r\n\s]+') {
+                    $arg -split '\s{1,}'
+                } else {
+                    $arg
+                }                
             }  else {
                 # otherwise, leave the argument alone.
                 $arg
             }
-        })    
+        })
 
         # Now that we have a series of words, we can process them.
         # We want to keep track of the current member, 
@@ -406,7 +422,7 @@ function Get-Turtle {
 
         # To do this in one pass, we will iterate through the words and arguments.
         # We use an indexed loop so we can skip past claimed arguments.
-        for ($argIndex =0; $argIndex -lt $wordsAndArguments.Length; $argIndex++) {            
+        for ($argIndex =0; $argIndex -lt $wordsAndArguments.Length; $argIndex++) {
             $arg = $wordsAndArguments[$argIndex]
             # If the argument is not in the member names list, we can complain about it.
             if ($arg -notin $memberNames) {                
@@ -415,7 +431,6 @@ function Get-Turtle {
                 }
                 continue
             }
-                 
             
             # If we have a current member, we can invoke it or get it.
             $currentMember = $arg
@@ -478,7 +493,16 @@ function Get-Turtle {
 
                     # If we have any arguments,
                     if ($argList) {
-                        # lets try to set it.        
+                        # Check to see if they are strongly typed
+                        if ($memberInfo -is [Management.Automation.Runspaces.ScriptPropertyData]) {
+                            $desiredType = $memberInfo.SetScriptBlock.Ast.ParamBlock.Parameters.StaticType
+                            if ($desiredType -is [Type] -and
+                                $argList.Length -eq 1 -and
+                                $argList[0] -as $desiredType) {
+                                $argList = $argList[0] -as $desiredType
+                            }
+                        }
+                        # lets try to set it.
                         $currentTurtle.$currentMember = $argList
                     } else {
                         # otherwise, lets get the property
@@ -492,9 +516,9 @@ function Get-Turtle {
             # Properties being returned will largely be strings or numbers, and these will always output directly.
             if ($null -ne $stepOutput -and -not ($stepOutput.pstypenames -eq 'Turtle')) {
                 # Output the step
-                $stepOutput 
+                $stepOutput
                 # and set the output turtle to false.
-                $outputTurtle = $false                
+                $outputTurtle = $false
             } elseif ($null -ne $stepOutput) {
                 # Set the current turtle to the step output.
                 $currentTurtle = $stepOutput

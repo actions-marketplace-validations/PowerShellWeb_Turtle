@@ -7,10 +7,9 @@ if ($PSScriptRoot) { Push-Location $PSScriptRoot}
     ConvertFrom-Markdown |
     Select-Object -ExpandProperty HTML) -replace '(?<=[\(\,)]\s{0,})\#\d+', {
         $match = $_                
-        if ($RepositoryUrl) {            
-            "<a href='$RepositoryUrl/issues/$($match -replace '\#')>"
-            "$match"
-            "</a>"
+        if ($RepositoryUrl) {
+            $issueNumber = $($match -replace '\#' -as [int])
+            "<a href='$RepositoryUrl/issues/$issueNumber'>" + "$issueNumber" + "</a>"
         } else {
             "$match"
         }        

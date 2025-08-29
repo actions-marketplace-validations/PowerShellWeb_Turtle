@@ -15,7 +15,7 @@ $RepositoryUrl,
 
 # We can provide the changelog path by hard-coding it, or it can provided in site or page metadata.
 [string]
-$LicensePath = '../LICENSE.txt'
+$LicensePath = '../LICENSE'
 )
 
 # Push into this location, in case we are building this file interactively.
@@ -23,7 +23,7 @@ if ($PSScriptRoot) { Push-Location $PSScriptRoot}
 
 if (-not $RepositoryUrl) {
     if ($gitHubEvent.repository.html_url) {
-        $repositoryUrl = $gitHubEvent.repository.html_url
+        $repositoryUrl = $gitHubEvent.repository.html_url -as [uri]
     } else {
         return
     }

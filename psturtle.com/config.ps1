@@ -340,4 +340,10 @@ $savedPreview = . $previewImage |
 
 $site.Image = "$($site.RootUrl)$($savedPreview.Name)"
 #endregion Site Background
+
+
+#region Highlight Settings
+$site.HighlightJS = [Ordered]@{Languages=@('powershell')}
+#endregion Highlight Settings
+
 if ($PSScriptRoot) { Pop-Location }

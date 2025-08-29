@@ -9,7 +9,7 @@ if ($PSScriptRoot) { Push-Location $PSScriptRoot}
         $match = $_                
         if ($RepositoryUrl) {
             $issueNumber = $($match -replace '\#' -as [int])
-            "<a href='$RepositoryUrl/issues/$issueNumber'>" + "$issueNumber" + "</a>"
+            "<a href='$RepositoryUrl/issues/$issueNumber'>" + "#$issueNumber" + "</a>"
         } else {
             "$match"
         }        

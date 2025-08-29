@@ -118,7 +118,7 @@ if ($PSScriptRoot -and "$PSScriptRoot" -ne "$pwd") {
 }
 
 if ($site.includes.'LastBuild.json' -is [Management.Automation.ExternalScriptInfo]) {
-    . $site.includes.'LastBuild.json'
+    . $site.includes.'LastBuild.json' > ./lastBuild.json
 }
 
 #region index.rss

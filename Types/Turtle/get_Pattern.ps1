@@ -14,7 +14,8 @@ $null, $null, $viewX, $viewY = $viewBox
         }
     )>"
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        $this.PathElement.OuterXml        
+        $this.PathElement.OuterXml
+        $this.TextElement.OuterXml        
     "</pattern>"
 "</defs>"
 $(

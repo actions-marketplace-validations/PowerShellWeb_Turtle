@@ -2859,7 +2859,8 @@ $null, $null, $viewX, $viewY = $viewBox
         }
     )&gt;"
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        $this.PathElement.OuterXml        
+        $this.PathElement.OuterXml
+        $this.TextElement.OuterXml        
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
 $(
@@ -3143,6 +3144,7 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $
 @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='$($this.ViewBox)' transform-origin='50% 50%' width='100%' height='100%'&gt;"
     $this.PathElement.OuterXml
+    $this.TextElement.OuterXml    
 "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>
@@ -3169,6 +3171,7 @@ param()
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
         "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
             $this.PathElement.OuterXml
+            $this.TextElement.OuterXml
         "&lt;/symbol&gt;"
         $(
             if ($this.BackgroundColor) {
@@ -3178,6 +3181,165 @@ param()
         "&lt;use href='#$($this.ID)-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
     "&lt;/svg&gt;"
 ) -join '' -as [xml]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Text</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the Turtle text
+.DESCRIPTION
+    Gets the text associated with the Turtle, if any exists.
+
+#&gt;
+return $this.'.Text'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the Turtle text
+.DESCRIPTION
+    Sets the text displayed along the turtle path.
+
+    Once this property is set, a text element will be displayed along with the turtle path.
+
+    To display only text, please also set the path's stroke to `transparent`
+#&gt;
+param(
+[string[]]
+$Text
+)
+
+$this | Add-Member NoteProperty '.Text' -Force ($text -join ' ')
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>TextAnimation</Name>
+        <GetScriptBlock>
+                        if ($this.'.TextAnimation') {
+    return $this.'.TextAnimation'
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the Turtle Text Animation
+.DESCRIPTION
+    Sets an animation for the Turtle path.
+.EXAMPLE
+    turtle rotate 90 jump 50 rotate -90 forward 100 text 'Hello World' textAnimation ([Ordered]@{
+        attributeName = 'fill'   ; values = "#4488ff;#224488;#4488ff" ; repeatCount = 'indefinite'; dur = "4.2s"
+    },[Ordered]@{
+        attributeName = 'font-size'   ; values = "1em;1.3em;1em" ; repeatCount = 'indefinite'; dur = "4.2s"
+    }) save ./textAnimation.svg
+#&gt;
+param(
+# The text animation object.
+# This may be a string containing animation XML, XML, or a dictionary containing animation settings.
+[PSObject]
+$TextAnimation
+)
+
+$newAnimation = @(foreach ($animation in $TextAnimation) {
+    if ($animation -is [Collections.IDictionary]) {
+        $animationCopy = [Ordered]@{} + $animation
+        if (-not $animationCopy['attributeType']) {
+            $animationCopy['attributeType'] = 'XML'
+        }
+        if (-not $animationCopy['attributeName']) {
+            $animationCopy['attributeName'] = 'transform'
+        }
+        if ($animationCopy.values -is [object[]]) {
+            $animationCopy['values'] = $animationCopy['values'] -join ';'
+        }
+
+        $elementName = 'animate'
+        if ($animationCopy['attributeName'] -eq 'transform') {
+            $elementName = 'animateTransform'
+        }
+
+
+        if (-not $animationCopy['dur'] -and $this.Duration) {
+            $animationCopy['dur'] = "$($this.Duration.TotalSeconds)s"
+        }
+        
+        "&lt;$elementName $(
+            @(foreach ($key in $animationCopy.Keys) {
+                " $key='$([Web.HttpUtility]::HtmlAttributeEncode($animationCopy[$key]))'"
+            }) -join ''
+        )/&gt;"
+    }
+    if ($animation -is [string]) {
+        $animation
+    }
+    if ($animation.OuterXml) {
+        $animation.OuterXml
+    }
+})
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.TextAnimation' -Value $newAnimation
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>TextAttribute</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets any Text Attributes
+.DESCRIPTION
+    Gets any attributes associated with the Turtle text
+    
+#&gt;
+if (-not $this.'.TextAttribute') { 
+    $this | Add-Member NoteProperty '.TextAttribute' ([Ordered]@{}) -Force    
+}
+return $this.'.TextAttribute'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets text attributes
+.DESCRIPTION
+    Sets any attributes associated with the turtle text.
+
+    These will become the attributes on the `&lt;text&gt;` element.
+#&gt;
+param(
+# The text attributes.
+[Collections.IDictionary]
+$TextAttribute = [Ordered]@{}
+)
+
+if (-not $this.'.TextAttribute') {
+    $this | Add-Member -MemberType NoteProperty -Name '.TextAttribute' -Value ([Ordered]@{}) -Force
+}
+foreach ($key in $TextAttribute.Keys) {
+    $this.'.TextAttribute'[$key] = $TextAttribute[$key]
+}
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>TextElement</Name>
+        <GetScriptBlock>
+                        
+if ($this.Text) {
+    return @(
+        "&lt;text id='$($this.ID)-text' $(
+    foreach ($TextAttributeName in $this.TextAttribute.Keys) {
+        " $TextAttributeName='$($this.TextAttribute[$TextAttributeName])'"
+    }
+)&gt;"
+            "&lt;textPath href='#$($this.id)-path'&gt;$([Security.SecurityElement]::Escape($this.Text))&lt;/textPath&gt;"
+            if ($this.TextAnimation) {$this.TextAnimation}
+        "&lt;/text&gt;"
+    ) -as [xml]
+}
+
+
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>

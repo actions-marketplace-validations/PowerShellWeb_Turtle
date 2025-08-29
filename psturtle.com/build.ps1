@@ -149,39 +149,6 @@ if ($lastBuild) {
 $newLastBuild | ConvertTo-Json -Depth 2 > lastBuild.json
 #endregion lastBuild.json
 
-#region sitemap.xml
-if (-not $Site.NoSitemap) {
-    $siteMapXml = @(
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-        :nextPage foreach ($key in $site.PagesByUrl.Keys | Sort-Object { "$_".Length}) {
-            $keyUri = $key -as [Uri]
-            $page = $site.PagesByUrl[$key]
-            if ($site.Disallow) {
-                foreach ($disallow in $site.Disallow) {
-                    if ($keyUri.LocalPath -like "*$disallow*") { continue nextPage }
-                    if ($keyUri.AbsoluteUri -like "*$disallow*") { continue nextPage }
-                }
-            }
-            if ($page.NoIndex) { continue }
-            if ($page.NoSitemap) { continue }
-            if ($page.OutputFile.Extension -ne '.html') { continue }
-            "<url>"
-            "<loc>$key</loc>"
-            if ($site.PagesByUrl[$key].Date -is [DateTime]) {
-                "<lastmod>$($site.PagesByUrl[$key].Date.ToString('yyyy-MM-dd'))</lastmod>"
-            }
-            "</url>"
-        }
-        '</urlset>'
-    ) -join ' ' -as [xml]
-    if ($siteMapXml) {
-        $siteMapXml.Save((
-            Join-Path $site.PSScriptRoot sitemap.xml
-        ))
-    }
-}
-#endregion sitemap.xml
-
 #region index.rss
 if (-not $Site.NoRss) {
     $pagesByDate = @($site.PagesByUrl.GetEnumerator() | 
@@ -251,26 +218,13 @@ if (-not $Site.NoRss) {
 
 #endregion index.rss
 
-#region robots.txt
-if (-not $Site.NoRobots) {
-    @(
-        "User-agent: *"
-        if ($site.Disallow) {
-            foreach ($disallow in $site.Disallow) {
-                "Disallow: $disallow"
-            }
-        }
-        if ($site.Allow) {
-            foreach ($allow in $site.Allow) {
-                "Allow: $allow"
-            }
-        }
-        if ($site.CNAME -and -not $site.NoSitemap) {
-            "Sitemap: https://$($site.CNAME)/sitemap.xml"
-        }
-    ) > robots.txt
+if ($site.includes.'Sitemap.xml' -is [Management.Automation.ExternalScriptInfo]) {
+    . $site.includes.'Sitemap.xml' > sitemap.xml
 }
-#endregion robots.txt
+
+if ($site.includes.'Robots.txt' -is [Management.Automation.ExternalScriptInfo]) {
+    . $site.includes.'Robots.txt' > robots.txt
+}
 
 #region index.json
 if (-not $Site.NoIndex) {

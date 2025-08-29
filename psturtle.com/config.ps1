@@ -334,9 +334,10 @@ $previewImages = @(
 )
 
 $previewImage = $previewImages  |Get-Random 
-. $previewImage |
+$savedPreview = . $previewImage |
     Set-Turtle Stroke '#4488ff' |
     Save-Turtle -FilePath "./$pngPreviewFile"
 
-$site.Image = "$($site.RootUrl)$pngPreviewFile"
+$site.Image = "$($site.RootUrl)$($savedPreview.Name)"
 #endregion Site Background
+if ($PSScriptRoot) { Pop-Location }

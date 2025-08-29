@@ -3213,6 +3213,44 @@ $this | Add-Member NoteProperty '.Text' -Force ($text -join ' ')
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>TextAttribute</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets any Text Attributes
+.DESCRIPTION
+    Gets any attributes associated with the Turtle text
+    
+#&gt;
+if (-not $this.'.TextAttribute') { 
+    $this | Add-Member NoteProperty '.TextAttribute' ([Ordered]@{}) -Force    
+}
+return $this.'.TextAttribute'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets text attributes
+.DESCRIPTION
+    Sets any attributes associated with the turtle text.
+
+    These will become the attributes on the `&lt;text&gt;` element.
+#&gt;
+param(
+# The text attributes.
+[Collections.IDictionary]
+$TextAttribute = [Ordered]@{}
+)
+
+if (-not $this.'.TextAttribute') {
+    $this | Add-Member -MemberType NoteProperty -Name '.TextAttribute' -Value ([Ordered]@{}) -Force
+}
+foreach ($key in $TextAttribute.Keys) {
+    $this.'.TextAttribute'[$key] = $TextAttribute[$key]
+}
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ViewBox</Name>
         <GetScriptBlock>
                         if ($this.'.ViewBox') { return $this.'.ViewBox' }

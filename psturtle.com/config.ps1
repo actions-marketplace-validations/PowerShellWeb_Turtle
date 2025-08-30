@@ -347,7 +347,7 @@ $site.HighlightJS = [Ordered]@{Languages=@('powershell')}
 #endregion Highlight Settings
 
 #region Google Analytics
-$site.AnalyticsID = 'G-NCPS4FQLC8'
+$site.AnalyticsID = 'G-G9D8TQ3G2L' # replace with your Google Analytics ID
 #endregion Google Analytics
 
 if ($PSScriptRoot) { Pop-Location }

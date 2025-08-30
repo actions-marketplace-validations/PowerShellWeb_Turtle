@@ -346,4 +346,8 @@ $site.Image = "$($site.RootUrl)$($savedPreview.Name)"
 $site.HighlightJS = [Ordered]@{Languages=@('powershell')}
 #endregion Highlight Settings
 
+#region Google Analytics
+$site.AnalyticsID = 'G-NCPS4FQLC8'
+#endregion Google Analytics
+
 if ($PSScriptRoot) { Pop-Location }

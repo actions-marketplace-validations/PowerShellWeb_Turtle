@@ -599,11 +599,11 @@ return $this.Rotate(-90).LSystem('-X',  [Ordered]@{
 .EXAMPLE
     Turtle GoldenFlower
 .EXAMPLE
-    Turtle StarFlower 42 20 10
+    Turtle GoldenFlower 42 10 36
 .EXAMPLE
-    Turtle StarFlower 42 40 13 9
+    Turtle GoldenFlower 42 5 72
 .EXAMPLE
-    Turtle StarFlower 84 40 6 9 | Save-Turtle ./StarFlowerPattern.svg Pattern
+    Turtle GoldenFlower 84 30 12 | Save-Turtle ./GoldenFlowerPattern.svg Pattern
 #&gt;
 param(
     # The width of each rectangle
@@ -1510,7 +1510,11 @@ if (-not $Height) {
     $Height = $width/((1 + [Math]::Sqrt(5))/2)
 }
 
-$this.Forward($width).Rotate(90).Forward($Height).Rotate(90).Forward($Width).Rotate(90).Forward($height).Rotate(90)
+$this.
+    Forward($width).Rotate(90).
+    Forward($Height).Rotate(90).
+    Forward($Width).Rotate(90).
+    Forward($height).Rotate(90)
                     </Script>
       </ScriptMethod>
       <ScriptMethod>

@@ -22,4 +22,8 @@ if (-not $Height) {
     $Height = $width/((1 + [Math]::Sqrt(5))/2)
 }
 
-$this.Forward($width).Rotate(90).Forward($Height).Rotate(90).Forward($Width).Rotate(90).Forward($height).Rotate(90)
+$this.
+    Forward($width).Rotate(90).
+    Forward($Height).Rotate(90).
+    Forward($Width).Rotate(90).
+    Forward($height).Rotate(90)

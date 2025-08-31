@@ -301,7 +301,7 @@ for ($pointIndex =0 ; $pointIndex -lt $points.Length; $pointIndex++) {
         # Turn outward and draw the side
         Rotate(-90).Forward($relativeHeight).
         # Turn and draw the top
-        Rotate(90).Forward($barWidth)
+        Rotate(90).Forward($barWidth).
         # Turn and draw the other side
         Rotate(90).Forward($relativeHeight).
         # Turn back to the original direction

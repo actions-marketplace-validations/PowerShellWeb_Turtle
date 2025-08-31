@@ -21,4 +21,5 @@
     HLineBy = 'HorizontalLine'
     VLineBy = 'VerticalLine'
     FlowerStar = 'StarFlower'
+    FlowerGolden = 'GoldenFlower'
 }

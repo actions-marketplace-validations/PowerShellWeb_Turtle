@@ -8,11 +8,11 @@
 .EXAMPLE
     Turtle GoldenFlower
 .EXAMPLE
-    Turtle StarFlower 42 20 10
+    Turtle GoldenFlower 42 10 36
 .EXAMPLE
-    Turtle StarFlower 42 40 13 9
+    Turtle GoldenFlower 42 5 72
 .EXAMPLE
-    Turtle StarFlower 84 40 6 9 | Save-Turtle ./StarFlowerPattern.svg Pattern
+    Turtle GoldenFlower 84 30 12 | Save-Turtle ./GoldenFlowerPattern.svg Pattern
 #>
 param(
     # The width of each rectangle

@@ -40,6 +40,14 @@
         <ReferencedMemberName>Forward</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>FlowerGolden</Name>
+        <ReferencedMemberName>GoldenFlower</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>FlowerStar</Name>
+        <ReferencedMemberName>StarFlower</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>HLineBy</Name>
         <ReferencedMemberName>HorizontalLine</ReferencedMemberName>
       </AliasProperty>
@@ -203,6 +211,106 @@ $Distance = 10
 )
 
 $this.Forward($Distance * -1)
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>BarGraph</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a bar graph using turtle graphics.
+.DESCRIPTION
+    This script uses turtle graphics to draw a bar graph based on the provided data.
+.EXAMPLE
+    turtle barGraph 100 100 5 10 15 20 15 10 5
+.EXAMPLE
+    turtle barGraph 200 200 (
+        @(1..50;-1..-50) | 
+            Get-Random -Count (Get-Random -Minimum 5 -Maximum 20)
+    ) save ./RandomBarGraph.svg
+.EXAMPLE
+    turtle rotate 90 barGraph 200 200 (
+        @(1..50;-1..-50) | 
+            Get-Random -Count (Get-Random -Minimum 5 -Maximum 20)
+    ) save ./RandomVerticalBarGraph.svg
+.EXAMPLE
+    turtle rotate 45 barGraph 200 200 (
+        @(1..50;-1..-50) | 
+            Get-Random -Count (Get-Random -Minimum 5 -Maximum 20)
+    ) save ./RandomDiagonalBarGraph.svg
+.EXAMPLE
+    $sourceData = @(1..50;-1..-50)
+    $itemCount  = (Get-Random -Minimum 5 -Maximum 20) 
+    $points     = $sourceData | Get-Random -Count $itemCount
+    turtle bargraph 200 200 $points morph @(
+        turtle bargraph 200 200 $points
+        turtle bargraph 200 200 ( $sourceData | Get-Random -Count $itemCount )
+        turtle bargraph 200 200 $points
+    ) save ./RandomBarGraphMorph.svg
+#&gt;
+param(
+# The width of the bar graph
+[double]$Width,
+# The height of the bar graph.
+# Please note that in the case of negative values, the effective height is twice this number.
+[double]$Height,
+
+# The points in the bar graph.  
+# Each point will be turned into a relative number and turned into an equal-width bar.
+[Parameter(ValueFromRemainingArguments)]
+[double[]]$Points
+)
+
+
+# If there were no points, we are drawing nothing, so return ourself.
+if (-not $points) { return $this}
+
+# Divide the width by the number of points to get a very snug bar graph
+$barWidth = $width / $points.Length
+
+# Find the maximum and minimum values in the points
+$min, $max = 0, 0
+foreach ($point in $points) {
+    if ($point -gt $max) { $max = $point}
+    if ($point -lt $min) { $min = $point}
+}
+
+# This gives us the range.
+$range = $max - $min
+
+# If the range is zero, we're drawing a flatline.
+if ($range -eq 0) {
+    # so just draw that line and return.
+    return $this.Forward($width)
+}
+
+# Now that we've normalized the range, we can draw the bars.
+for ($pointIndex =0 ; $pointIndex -lt $points.Length; $pointIndex++) {
+    # Each point is essentially telling us the height
+    $point = $points[$pointIndex]
+    # which we can turn into a relative value
+    $relativeHeight = (
+        # by subtracting the minimum and dividing by the range
+        (($point - $min) / $range)
+    ) * $height
+    # If the point was negative, we need to flip the height    
+    if ($point -lt 0) { $relativeHeight *= -1}
+    # Now we can draw the bar
+    $this = $this.
+        # Turn outward and draw the side
+        Rotate(-90).Forward($relativeHeight).
+        # Turn and draw the top
+        Rotate(90).Forward($barWidth).
+        # Turn and draw the other side
+        Rotate(90).Forward($relativeHeight).
+        # Turn back to the original direction
+        Rotate(-90)
+}
+return $this
+
+
+
 
                     </Script>
       </ScriptMethod>
@@ -465,22 +573,31 @@ return $this
     Draws a flower pattern in turtle graphics.
 
     This pattern consists of a series of polygons and rotations to create a flower-like design.
+.EXAMPLE    
+    turtle Flower 42
 .EXAMPLE
-    $turtle = New-Turtle
-    $turtle.Flower(100, 10, 5, 36)
-    $turtle.Pattern.Save("$pwd/FlowerPattern.svg")
+    turtle Flower 42 20 6 18
 .EXAMPLE
-    Move-Turtle Flower |
-        Save-Turtle ./FlowerSymbol.svg
+    turtle Flower 42 20 6 18
+.EXAMPLE
+    # We can make Flowers with partial polygons
+    turtle Flower 42 20 6.6 18
+.EXAMPLE
+    # They are surprisingly beautiful     
+    turtle Flower 42 30 7.7 12
 #&gt;
 param(
+    # The size of the base shape
     [double]$Size = 100,
+    # The rotation after each step
     [double]$Rotation = 10,
+    # The number of sides in each shape
     [double]$SideCount = 4,
-    [double]$StepCount = 36
+    # The number of steps in the flower.
+    [int]$StepCount = 36
 )
 
-$null = foreach ($n in 1..$StepCount) {    
+$null = foreach ($n in 1..([Math]::Abs($StepCount))) {    
     $this.Polygon($Size, $SideCount)
     $this.Rotate($Rotation)
 }
@@ -570,6 +687,42 @@ return $this.Rotate(-90).LSystem('-X',  [Ordered]@{
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>GoldenFlower</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a golden rectangle flower pattern.
+.DESCRIPTION
+    Draws a flower made out of golden rectangles.
+
+    This pattern consists of a series of rectangles and rotations to create a flower-like design.
+.EXAMPLE
+    Turtle GoldenFlower
+.EXAMPLE
+    Turtle GoldenFlower 42 10 36
+.EXAMPLE
+    Turtle GoldenFlower 42 5 72
+.EXAMPLE
+    Turtle GoldenFlower 84 30 12 | Save-Turtle ./GoldenFlowerPattern.svg Pattern
+#&gt;
+param(
+    # The width of each rectangle
+    [double]$Size = 42,
+    # The rotation after each rectangle
+    [double]$Rotation = 20,
+    # The number of steps.
+    [int]$StepCount = 18
+)
+
+$null = foreach ($n in 1..([Math]::Abs($StepCount))) {    
+    $this.Rectangle($Size)
+    $this.Rotate($Rotation)
+}
+
+return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>GosperCurve</Name>
         <Script>
                         &lt;#
@@ -633,6 +786,63 @@ return $this.Step(
     $x - $this.X,
     $y - $this.Y
 )
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>HatMonotile</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a hat aperiodic monotile.
+.DESCRIPTION
+    This function uses turtle graphics to draw an aperiodic monotile called a "Hat"
+.EXAMPLE
+    turtle rotate -90 hatMonotile 100 save ./hatMonotile.svg
+.LINK
+    https://github.com/christianp/aperiodic-monotile/blob/main/hat-monotile.logo
+#&gt;
+param(
+[double]
+$A = 100,
+
+[double]
+$B = 0
+)
+
+if (-not $B) {
+    $B = [Math]::Tan(60 * [Math]::PI / 180) * $A
+}
+
+
+return $this.
+    Forward($b).
+    Rotate(90).
+    Forward($a).
+    Left(60).
+    Forward($a).
+    Rotate(90).
+    Forward($b).
+    Rotate(60).
+    Forward($b).
+    Left(90).
+    Forward($a).
+    Rotate(60).
+    Forward($a).
+    Rotate(90).
+    Forward($b).
+    Rotate(60).
+    Forward($b).
+    Left(90).
+    Forward($a).
+    Rotate(60).
+    Forward($a).
+    Forward($a).
+    Rotate(60).
+    Forward($a).
+    Rotate(90).
+    Forward($b).
+    Left(60)
+
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -1345,16 +1555,58 @@ return $this
       <ScriptMethod>
         <Name>Polygon</Name>
         <Script>
-                        param(
-    $Size = 100, 
-    $SideCount = 6
+                        &lt;#
+.SYNOPSIS
+    Draws a polygon
+.DESCRIPTION
+    Draws a regular polygon with N sides.
+
+    To draw a closed polygon, provide a whole number of sides.
+
+    To draw an open polygon, provide a fractial number of sides.
+.EXAMPLE
+    turtle polygon 42 3
+.EXAMPLE
+    turtle polygon 42 4
+.EXAMPLE
+    turtle polygon 42 6
+.EXAMPLE
+    turtle polygon 42 8
+.EXAMPLE
+    turtle polygon 42 3.75
+.EXAMPLE
+    turtle polygon 42 3.001 morph @(
+        turtle polygon 42 3.001
+        turtle polygon 42 4
+        turtle polygon 42 3.001
+    ) save ./TriangleToSquare.svg 
+
+#&gt;
+param(
+# The default size of each segment of the polygon
+[double]$Size = 42,
+# The number of sides in the polygon.  
+# If this is not a whole number, the polygon will not be closed.
+[double]$SideCount = 6
 )
 
-$null = foreach ($n in 1..$SideCount) {    
-    $this.Forward($Size)
-    $this.Rotate(360 / $SideCount)    
+# Determine the absolute side count
+$absSideCount = [Math]::Abs($SideCount)
+# and, for each whole number between 1 and that side count
+$null = foreach ($n in 1..([Math]::Floor($absSideCount))) {
+    # Rotate and move forward
+    $this.Rotate(360 / $SideCount).Forward($Size)    
 }
-return $this
+# Determine if there was a remainder
+$remainder = $SideCount - [Math]::Floor($SideCount)
+# If there was not, return this polygon
+if (-not $remainder) { return $this }
+# Otherwise, we do one more partial rotation (multiplied by the remainder)
+# and draw one more line segment (multiplied by the remainder)
+# (the effect will be like watching a polygon close)
+return $this.Rotate((360 / $SideCount) * $remainder).Forward($remainder * $Size)
+
+
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -1386,6 +1638,40 @@ $this.'.Stack'.Push(@{
     Heading = $this.Heading
 })
 return $this
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Rectangle</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Rectangle
+.DESCRIPTION
+    Draws a Rectangle.  
+    
+    If only one dimension is specified, will draw a golden rectangle.
+.EXAMPLE    
+    turtle rectangle 42 save ./goldenRectangle.svg
+#&gt;
+param(
+# The width of the rectangle
+[double]
+$Width = 42,
+
+# The height of the rectangle.  If not provided, will be the width divided by the golden ratio.
+[double]
+$Height
+)
+
+if (-not $Height) {
+    $Height = $width/((1 + [Math]::Sqrt(5))/2)
+}
+
+$this.
+    Forward($width).Rotate(90).
+    Forward($Height).Rotate(90).
+    Forward($Width).Rotate(90).
+    Forward($height).Rotate(90)
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -1848,21 +2134,82 @@ return $this
 .DESCRIPTION
     Draws a star pattern with turtle graphics.
 .EXAMPLE
-    $turtle = New-Turtle
-    $turtle.Star().Pattern.Save("$pwd/Star.svg")
+    turtle star 42 
 .EXAMPLE
-    Move-Turtle Star | Save-Turtle "./Star.svg"
+    turtle star 42 20
+.EXAMPLE
+    turtle star 42 20 @('rotate', (360/20*2), 'star', 42, 20 * 10) save ./StarFlower20.svg
+.EXAMPLE
+    turtle star 42 20 @('rotate', (360/20*2), 'star', 42, 20 * 10) morph @(
+        turtle star 42 20 @('rotate', (360/20*2), 'star', 42, 20 * 10)
+        turtle star 42 20 @('rotate', (360/20*26), 'star', 42, 20 * 10)
+        turtle star 42 20 @('rotate', (360/20*2), 'star', 42, 20 * 10)        
+    ) save ./StarFlower20Morph.svg
+.EXAMPLE
+    turtle star 42 20 @('rotate', (360/20*18), 'star', 42, 20 * 10) save ./StarFlower-20-18.svg
 #&gt;
 param(
+    # The approximate size of the star
     [double]$Size = 50,
-    [int]$Points = 5
+    # The number of points in the star
+    [int]$Points = 6
 )
-$Angle = 180 - (180 / $Points)
-foreach ($n in 1..$Points) {
-    $this.Forward($Size)
-    $this.Rotate($Angle)
+
+# To determine the angle, divide 360 by the number of points
+$angle = 360 / $Points
+
+$SegmentLength = ($Size*2)/$Points
+# Each 'point' in the star actually consists of two points, an inward and outward point.
+# Imagine we start an an outward point
+$null = foreach ($n in 1..([Math]::Abs($Points))) {
+    $this. # We rotate by the angle and move forward one segment
+        Rotate($Angle).Forward($SegmentLength).
+        # The rotate back and move forward another segment
+        Rotate(-$angle).Forward($SegmentLength).
+        # then rotate once more so we continue moving around the circle
+        Rotate($angle)
+} # we repeat this up to the number of points in order to draw a star with no crossings.
+
+return $this
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>StarFlower</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a star flower pattern.
+.DESCRIPTION
+    Draws a flower made out of stars.
+
+    This pattern consists of a series of stars and rotations to create a flower-like design.
+.EXAMPLE
+    Turtle StarFlower
+.EXAMPLE
+    Turtle StarFlower 42 20 10
+.EXAMPLE
+    Turtle StarFlower 42 40 13 9
+.EXAMPLE
+    Turtle StarFlower 84 40 6 9 | Save-Turtle ./StarFlowerPattern.svg Pattern
+#&gt;
+param(
+    # The size of each star
+    [double]$Size = 42,
+    # The rotation after each star
+    [double]$Rotation = 20,
+    # The number of points in the star    
+    [double]$PointCount = 6,
+    # The number of steps.
+    [int]$StepCount = 18
+)
+
+$null = foreach ($n in 1..([Math]::Abs($StepCount))) {    
+    $this.Star($Size, $PointCount)
+    $this.Rotate($Rotation)
 }
 
+return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -2133,6 +2480,66 @@ return $this.LSystem('F++F++F',  [Ordered]@{
     '-'     = { $this.Rotate($Angle*-1)}
     'F'     = { $this.Forward($Size) }
 })
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>TurtleMonotile</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a turtle aperiodic monotile.
+.DESCRIPTION
+    This function uses turtle graphics to draw an aperiodic monotile called a "Turtle"
+.EXAMPLE
+    turtle rotate -90 turtleMonotile 100 save ./turtleMonotile.svg
+.LINK
+    https://github.com/christianp/aperiodic-monotile/blob/main/turtle-monotile.logo
+#&gt;
+param(
+[double]
+$A = 100,
+
+[double]
+$B = 0
+)
+
+if (-not $B) {
+    $B = [Math]::Tan(60 * [Math]::PI / 180) * $A
+}
+
+return $this.
+    Rotate(90).
+    Forward($a).
+    Rotate(60).
+    Forward($a).
+    Rotate(-90).
+    Forward($b).
+    Rotate(60).
+    Forward($b).
+    Forward($b).
+    Rotate(60).
+    Forward($b).
+    Rotate(90).
+    Forward($a).
+    Rotate(-60).
+    Forward($a).
+    Rotate(90).
+    Forward($b).
+    Rotate(-60).
+    Forward($b).
+    Rotate(90).
+    Forward($a).
+    Rotate(60).
+    Forward($a).
+    Rotate(-90).
+    Forward($b).
+    Rotate(60).
+    Forward($b)
+
+return
+
+
 
                     </Script>
       </ScriptMethod>

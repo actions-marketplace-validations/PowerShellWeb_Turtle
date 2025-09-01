@@ -20,4 +20,6 @@
     ArcL = 'ArcLeft'
     HLineBy = 'HorizontalLine'
     VLineBy = 'VerticalLine'
+    FlowerStar = 'StarFlower'
+    FlowerGolden = 'GoldenFlower'
 }

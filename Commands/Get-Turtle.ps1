@@ -189,6 +189,54 @@ function Get-Turtle {
             $flowerPetals
         )
     .EXAMPLE
+        # We can create a Star with N points
+        turtle star 42 5
+
+        turtle star 42 6
+
+        turtle star 42 7
+
+        turtle star 42 8
+    .EXAMPLE
+        # Stars look spectacular when we rotate and repeat them 
+        turtle @('star',42,5,'rotate',72 * 5)
+
+        turtle @('star',42,6,'rotate',60 * 6)
+
+        turtle @('star',42,7,'rotate',(360/7) * 7)
+
+        turtle @('star',42,8,'rotate',45 * 8)
+    .EXAMPLE
+        # When we do this, we call it a Star Flower
+        turtle StarFlower 42
+    .EXAMPLE
+        turtle StarFlower 42 45 8 8
+    .EXAMPLE
+        turtle StarFlower 42 45 8 8
+    .EXAMPLE
+        # StarFlowers look spectacular when morphed
+        turtle StarFlower 42 45 8 24 morph @(
+            turtle StarFlower 42 45 8 24
+            turtle StarFlower 42 15 8 24
+            turtle StarFlower 42 45 8 24
+        )
+    .EXAMPLE
+        # We can rotate the points we morph into.
+        turtle StarFlower 42 45 8 24 morph @(
+            turtle StarFlower 42 45 8 24
+            turtle rotate (Get-Random -Max 360) StarFlower 42 15 8 24
+            turtle StarFlower 42 45 8 24
+        )
+    .EXAMPLE
+        # We can mix the number of points in a star flower morph
+        # 
+        # (as long as we're drawing the same number of points)        
+        turtle StarFlower 42 12 5 30 morph @(
+            turtle StarFlower 42 12 5 30
+            turtle rotate (Get-Random -Max 360) StarFlower 42 14.4 6 25
+            turtle StarFlower 42 12 5 30
+        )
+    .EXAMPLE
         # We can construct a 'scissor' by drawing two lines at an angle
         turtle Scissor 42 60
     .EXAMPLE

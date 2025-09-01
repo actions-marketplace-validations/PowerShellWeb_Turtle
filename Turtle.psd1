@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.9'
+    ModuleVersion = '0.1.10'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -37,15 +37,21 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
-## Turtle 0.1.9:
+## Turtle 0.1.10:
 
-* Turtle Text Path Support
-  * `Turtle.get/set_Text` controls the text (#167)
-  * `Turtle.get/set_TextAttribute` sets text attributes (#168)
-  * `Turtle.get/set_TextAnimation` animates text attributes (#171)
-* `Get-Turtle` parameter improvements (#169, #170)
-* `Get-Turtle` tracks invocation info (#157)
-
+* Updated Methods
+  * `Turtle.Star` even point fix (#190)
+  * `Turtle.Polygon` partial polygon support (#194)
+* New Shapes
+  * `Turtle.Rectangle` (#192)
+  * `Turtle.StarFlower` (#191)
+  * `Turtle.GoldenFlower` (#193)
+  * `Turtle.HatMonotile` (#196)
+  * `Turtle.TurtleMonotile` (#195)
+  * `Turtle.BarGraph` (#173)
+* Added Demos
+   * Intro To Turtles (#197)
+   
 ---
 
 Additional details available in the [CHANGELOG](https://github.com/PowerShellWeb/Turtle/blob/main/CHANGELOG.md)

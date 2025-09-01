@@ -1,3 +1,20 @@
+## Turtle 0.1.10:
+
+* Updated Methods
+  * `Turtle.Star` even point fix (#190)
+  * `Turtle.Polygon` partial polygon support (#194)
+* New Shapes
+  * `Turtle.Rectangle` (#192)
+  * `Turtle.StarFlower` (#191)
+  * `Turtle.GoldenFlower` (#193)
+  * `Turtle.HatMonotile` (#196)
+  * `Turtle.TurtleMonotile` (#195)
+  * `Turtle.BarGraph` (#173)
+* Added Demos
+   * Intro To Turtles (#197)
+   
+---
+
 ## Turtle 0.1.9:
 
 * Turtle Text Path Support

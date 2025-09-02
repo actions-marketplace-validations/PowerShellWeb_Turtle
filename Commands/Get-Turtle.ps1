@@ -150,11 +150,14 @@ function Get-Turtle {
         $sideCount = (3..12 | Get-Random)        
         turtle Flower 50 15 $sideCount 36 morph @(
             turtle Flower 50 10 $sideCount 72
-            turtle rotate (Get-Random -Max 360 -Min 180) Flower 50 5 $sideCount 72
+            turtle rotate (                
+                Get-Random -Max 360 -Min -360
+            ) Flower 50 5 $sideCount 72
             turtle Flower 50 10 $sideCount 72
         )        
     .EXAMPLE
-        # We can draw a pair of arcs and turn back after each one.        
+        # We can draw a pair of arcs and turn back after each one.
+        # 
         # We call this a 'petal'.
         turtle rotate -30 Petal 42 60
     .EXAMPLE
@@ -175,14 +178,16 @@ function Get-Turtle {
         $flowerAngle = 30..60 | Get-Random
         $AngleFactor = 2..6 | Get-Random
         $StepCount = 36
-        $flowerPetals = turtle rotate (
-            (Get-Random -Max 180) * -1
-        ) flowerPetal $radius 10 $flowerAngle $stepCount    
-        $flowerPetals2 = turtle rotate (
-            (Get-Random -Max 180)
-        ) flowerPetal $radius (
-            10 * $AngleFactor
-        ) $flowerAngle $stepCount
+        $flowerPetals =
+            turtle rotate (
+                (Get-Random -Max 180) * -1
+            ) flowerPetal $radius 10 $flowerAngle $stepCount
+        $flowerPetals2 =
+            turtle rotate (
+                (Get-Random -Max 180)
+            ) flowerPetal $radius (
+                10 * $AngleFactor
+            ) $flowerAngle $stepCount
         turtle flowerPetal $radius 10 $flowerAngle $stepCount morph (
             $flowerPetals, 
             $flowerPetals2,
@@ -235,7 +240,9 @@ function Get-Turtle {
         # (as long as we're drawing the same number of points)        
         turtle StarFlower 42 12 5 30 morph @(
             turtle StarFlower 42 12 5 30
-            turtle rotate (Get-Random -Max 360) StarFlower 42 14.4 6 25
+            turtle rotate (
+                Get-Random -Max 360 -Min -360
+            ) StarFlower 42 14.4 6 25
             turtle StarFlower 42 12 5 30
         )
     .EXAMPLE
@@ -243,22 +250,23 @@ function Get-Turtle {
         turtle Scissor 42 60
     .EXAMPLE
         # Drawing a scissor does not change the heading
-        # So we can create a zig-zag pattern by multiply scissors
+        #
+        # We can create a zig-zag pattern by multiplying scissors
         turtle @('Scissor',42,60 * 4)
     .EXAMPLE
         # Getting a bit more interesting, we can create a polygon out of scissors
+        # 
         # We will continually rotate until we have turned a multiple of 360 degrees.
         Turtle ScissorPoly 23 90 120
     .EXAMPLE
         Turtle ScissorPoly 23 60 72
     .EXAMPLE
         # This can get very chaotic, if it takes a while to reach a multiple of 360
-        # Build N scissor polygons
+        # 
+        # Let's build a dozen scissor polygons.        
         foreach ($n in 60..72) {
             Turtle ScissorPoly 16 $n $n
         }
-    .EXAMPLE
-        Turtle ScissorPoly 16 69 69
     .EXAMPLE
         # We can draw an outward spiral by growing a bit each step
         turtle StepSpiral
@@ -376,7 +384,20 @@ function Get-Turtle {
         turtle SierpinskiTriangle 42 4
     .EXAMPLE
         # Let's draw two reflected Sierpinski Triangles
-        turtle rotate 60 SierpinskiTriangle 42 4 SierpinskiTriangle -42 4
+        turtle @(
+            'rotate', 60
+            'SierpinskiTriangle', 42, 4
+            'SierpinskiTriangle', -42, 4
+        )
+    .EXAMPLE
+        # Now let's draw a dozen reflected Sierpinski Triangles
+        turtle @(
+            'rotate', 60,
+            'SierpinskiTriangle', 42, 4,
+            'SierpinskiTriangle', -42, 4,
+            'rotate', 30 *
+                12
+        )
     .EXAMPLE
         # We can draw a 'Sierpinski Snowflake' with multiple Sierpinski Triangles.
         turtle @('rotate', 30, 'SierpinskiTriangle',42,4 * 12)

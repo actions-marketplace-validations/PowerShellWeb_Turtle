@@ -16,9 +16,9 @@ param()
 #region Core
 if ($psScriptRoot) {Push-Location $psScriptRoot}
 if (-not $Site) { $Site = [Ordered]@{} }
-$parentFolderManifest = 
-    Get-ChildItem -File -Path .. | 
-    Where-Object Extension -eq .psd1 | 
+$parentFolderManifest =
+    Get-ChildItem -File -Path .. |
+    Where-Object Extension -eq .psd1 |
     Select-String 'ModuleVersion\s{0,}='
 
 if ($parentFolderManifest) {
@@ -65,23 +65,27 @@ if ($site.PSScriptRoot) {
             }
             $pointer = $pointer[$subdirectory]
         }
-                
+                        
         $propertyName = $hierarchy[-1] -replace '_' -replace "$([Regex]::Escape($underbarFile.Extension))$"
         
-        $fileData = 
-            switch ($underbarFile.Extension) {
-                '.ps1' { $ExecutionContext.SessionState.InvokeCommand.GetCommand($underbarFile.FullName, 'ExternalScript') }
-                '.txt' { Get-Content -LiteralPath $underbarFile.FullName }
-                '.json' { Get-Content -LiteralPath $underbarFile.FullName -Raw | ConvertFrom-Json }
-                '.psd1' { Get-Content -LiteralPath $underbarFile.FullName -Raw | ConvertFrom-StringData }
-                '.yaml' {
-                    'YaYaml' | RequireModule
-                    Get-Content -LiteralPath $underbarFile.FullName -Raw | ConvertFrom-Yaml                    
-                }                
-                '.svg' { (Get-Content -LiteralPath $underbarFile -Raw) -as [xml] }
-                '.csv' { Import-Csv -LiteralPath $underbarFile.FullName }
-                '.tsv' { Import-Csv -LiteralPath $underbarFile.FullName -Delimiter "`t" }            
-            }
+        $getFile = @{LiteralPath=$underbarFile.FullName}
+        $fileData  =
+            switch -regex ($underbarFile.Extension) {
+                '\.ps1$' { $ExecutionContext.SessionState.InvokeCommand.GetCommand($underbarFile.FullName, 'ExternalScript') }
+                '\.(css|html|txt)$' { Get-Content @getFile }
+                '\.json$' { Get-Content @getFile | ConvertFrom-Json }
+                '\.jsonl$' { Get-Content @getFile | ConvertFrom-Json }
+                '\.psd1$' { Get-Content @getFile -Raw | ConvertFrom-StringData }
+                '\.(?>ps1xml|xml|svg)$' { (Get-Content @getFile -Raw) -as [xml] }
+                '\.(?>yaml|toml)$' { Get-Content @getFile -Raw }
+                '\.csv$' { Import-Csv @getFile }
+                '\.tsv$' { Import-Csv @getFile -Delimiter "`t" }
+            }        
+        if (-not $fileData) { continue }
+        switch ($underbarFile.Extension) {
+            .toml { RequireModule PSToml; $fileData = $fileData | ConvertFrom-Toml }
+            .yaml { RequireModule YaYaml; $fileData = $fileData | ConvertFrom-Yaml }
+        }
 
         if ($fileData) {
             $pointer[$propertyName] = $fileData
@@ -138,13 +142,14 @@ if ($site.Module) {
     "<pre><code>Import-Module $($site.Module)</code></pre>"
     "<h3>Basics</h3>"
     "<pre><code>turtle polygon 42 6</code></pre>"
-    "$(turtle polygon 42 6)"
-    "<h3>Fractals</h3>"
-    "<pre><code>turtle SierpinskiTriangle 42 3</code></pre>"
-    "$(turtle SierpinskiTriangle 42 3)"
-    "<h3><a href='/Commands/Get-Turtle'>More Examples</a></h3>"    
+    "$(turtle polygon 42 6)"    
+    "<h3><a href='/Commands/Get-Turtle'>More Examples</a></h3>"
 }
     ) -join [Environment]::NewLine
+    'Settings' = @(
+        . $site.includes.SelectPalette
+        . $site.includes.GetRandomPalette
+    )
 }
 
 <#$site.HeaderMenu = [Ordered]@{

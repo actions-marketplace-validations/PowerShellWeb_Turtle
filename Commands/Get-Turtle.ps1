@@ -210,7 +210,9 @@ function Get-Turtle {
         # When we do this, we call it a Star Flower
         turtle StarFlower 42
     .EXAMPLE
-        turtle StarFlower 42 45 8 8
+        turtle StarFlower 42 30 6 12
+    .EXAMPLE
+        turtle StarFlower 42 (360/7) 7 7
     .EXAMPLE
         turtle StarFlower 42 45 8 8
     .EXAMPLE

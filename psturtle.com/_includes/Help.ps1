@@ -56,7 +56,10 @@ if ($notes) {
     text-align: center;
     width: 60ch;
     font-size: .9rem;
+    margin-left: auto;
+    margin-right: auto;
 }"
+
 "code { text-align: left}"
 
 ".example-outputs {

@@ -53,10 +53,11 @@ if ($notes) {
     text-align: center;    
 }"
 ".sampleCode {
-    text-align: left;
+    text-align: center;
     width: 60ch;
     font-size: .9rem;
 }"
+"code { text-align: left}"
 
 ".example-outputs {
     display: flex;

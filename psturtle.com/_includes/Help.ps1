@@ -20,7 +20,7 @@ $SampleCodeWidthLandscape = 80,
 
 # The width of the sample code (in portrait mode), in characters
 [int]
-$SampleCodeWidthPortrait = 80
+$SampleCodeWidthPortrait = 50
 )
 
 # Try to get command help

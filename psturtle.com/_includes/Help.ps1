@@ -62,15 +62,15 @@ if ($notes) {
 }"
 ".sampleCode {
     text-align: center;
-    width: ${SampleCodeWidthLandscape}ch;
+    width: fit-content;
     font-size: .9rem;
     margin-left: auto;
     margin-right: auto;
 }"
 
-"@media (orientation: portrait) {
+<#"@media (orientation: portrait) {
     sampleCode { width: ${SampleCodeWidthPortrait}ch }
-}"
+}"#>
 
 "code { text-align: left}"
 

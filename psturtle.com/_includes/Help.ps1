@@ -14,9 +14,13 @@ $Command,
 [switch]
 $InvokeExample,
 
-# The width of the sample code, in characters
+# The width of the sample code (in landscape mode), in characters
 [int]
-$SampleCodeWidth = 80
+$SampleCodeWidthLandscape = 80,
+
+# The width of the sample code (in portrait mode), in characters
+[int]
+$SampleCodeWidthPortrait = 80
 )
 
 # Try to get command help
@@ -58,10 +62,14 @@ if ($notes) {
 }"
 ".sampleCode {
     text-align: center;
-    width: 60ch;
+    width: ${SampleCodeWidthLandscape}ch;
     font-size: .9rem;
     margin-left: auto;
     margin-right: auto;
+}"
+
+"@media (orientation: portrait) {
+    sampleCode { width: ${SampleCodeWidthPortrait}ch }
 }"
 
 "code { text-align: left}"

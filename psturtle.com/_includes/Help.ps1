@@ -119,8 +119,8 @@ foreach ($example in $CommandHelp.examples.example) {
         # followed by our sample code
         "<div class='sampleCode'>"
             "<pre>"
-                "<code class='language-powershell'>"
-                    [Web.HttpUtility]::HtmlEncode($codeBlock)
+                "<code class='language-powershell'>" + 
+                    [Web.HttpUtility]::HtmlEncode($codeBlock) + 
                 "</code>"
             "</pre>"
         "</div>"    

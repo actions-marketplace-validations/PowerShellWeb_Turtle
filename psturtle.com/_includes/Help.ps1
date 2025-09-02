@@ -12,7 +12,11 @@ $Command,
 # If set, will invoke examples.
 # This can be as dangerous as your examples.
 [switch]
-$InvokeExample
+$InvokeExample,
+
+# The width of the sample code, in characters
+[int]
+$SampleCodeWidth = 80
 )
 
 # Try to get command help

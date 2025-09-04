@@ -12,10 +12,9 @@ $null, $null, $viewX, $viewY = $viewBox
                 }) -join ' '
             ) + "'"
         }
-    )>"
+    )>"        
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        $this.PathElement.OuterXml
-        $this.TextElement.OuterXml        
+        $($this.SVG.SVG.InnerXML)
     "</pattern>"
 "</defs>"
 $(

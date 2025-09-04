@@ -3264,10 +3264,9 @@ $null, $null, $viewX, $viewY = $viewBox
                 }) -join ' '
             ) + "'"
         }
-    )&gt;"
+    )&gt;"        
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        $this.PathElement.OuterXml
-        $this.TextElement.OuterXml        
+        $($this.SVG.SVG.InnerXML)
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
 $(
@@ -3550,8 +3549,33 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $
                         param()
 @(
 "&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='$($this.ViewBox)' transform-origin='50% 50%' width='100%' height='100%'&gt;"
+    # Output our own path
     $this.PathElement.OuterXml
-    $this.TextElement.OuterXml    
+    # Followed by any text elements
+    $this.TextElement.OuterXml
+
+    # If the turtle has children
+    $children = @(foreach ($turtleName in $this.Turtles.Keys) {
+        # make sure they're actually turtles
+        if ($this.Turtles[$turtleName].pstypenames -notcontains 'Turtle') { continue }
+        # and then set their IDs
+        $childTurtle = $this.Turtles[$turtleName]
+        $childTurtle.ID = "$($this.ID)-$turtleName"
+        $childTurtle
+    })
+    # If we have any children
+    if ($children) {
+        # put them in a group containing their children
+        "&lt;g id='$($this.ID)-children'&gt;"            
+            foreach ($child in $children) {
+                # and ask for this child's inner XML
+                # (which would contain any of its children) 
+                # (and their children's children)
+                # and so on.
+                $child.SVG.SVG.InnerXML                
+            }
+        "&lt;/g&gt;"
+    }
 "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>
@@ -3577,8 +3601,7 @@ param()
 @(    
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
         "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
-            $this.PathElement.OuterXml
-            $this.TextElement.OuterXml
+            $($this.SVG.OuterXml)
         "&lt;/symbol&gt;"
         $(
             if ($this.BackgroundColor) {

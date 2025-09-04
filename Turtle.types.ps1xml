@@ -3750,6 +3750,94 @@ if ($this.Text) {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Turtles</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle's Turtles
+.DESCRIPTION
+    Gets the Turtles contained within a Turtle object.
+
+    These turtles may also contain turtles...
+    which may also contain turtles... 
+    which may also contain turtles...
+    which may also contain turtles...
+    all the way down.
+.EXAMPLE
+    turtle square 42 turtles @{
+        circle = turtle circle 21        
+    } save ./InscribedSquare.svg
+     
+.EXAMPLE
+    turtle square 42 turtles @{
+        square = 
+            turtle teleport 4 4 square 34 turtles @{
+                square = turtle teleport 8 8 square 26 turtles @{
+                    square = turtle teleport 8 8 square 26 turtles @{
+                        square = turtle teleport 12 12 square 18 turtles @{
+                            square = turtle teleport 16 16 square 10
+                        }
+                    }
+                }
+            }        
+    } save ./SquaresWithinSquares.svg
+#&gt;
+if ($this -and -not $this.'.Turtles') {
+    $this | Add-Member NoteProperty '.Turtles' ([Ordered]@{}) -Force 
+}
+
+return $this.'.Turtles'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets a Turtle's Turtles
+.DESCRIPTION
+    Sets the Turtles contained within a Turtle object.
+
+    These turtles may also contain turtles...
+    which may also contain turtles... 
+    which may also contain turtles...
+    which may also contain turtles...
+    all the way down.
+.EXAMPLE
+    turtle square 42 turtles @{
+        circle = turtle circle 21        
+    } save ./InscribedSquare.svg     
+.EXAMPLE
+    turtle square 42 turtles @{
+        square = 
+            turtle teleport 4 4 square 34 turtles @{
+                square = turtle teleport 8 8 square 26 turtles @{
+                    square = turtle teleport 8 8 square 26 turtles @{
+                        square = turtle teleport 12 12 square 18 turtles @{
+                            square = turtle teleport 16 16 square 10
+                        }
+                    }
+                }
+            }        
+    } save ./SquaresWithinSquares.svg
+#&gt;
+param(
+$Value
+)
+
+if ($this -and -not $this.'.Turtles') {
+    $this | Add-Member NoteProperty '.Turtles' ([Ordered]@{}) -Force 
+}
+
+if ($value -is [Collections.IDictionary]) {
+    foreach ($key in $value.Keys) {
+        $this.'.Turtles'[$key] = $Value[$key]
+    }    
+} elseif ($value.pstypenames -contains 'Turtle') {
+    $this.'.Turtles'["Turtle$($this.'.Turtles'.Count + 1)"] = $value
+}
+
+return $this.'.Turtles'
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ViewBox</Name>
         <GetScriptBlock>
                         if ($this.'.ViewBox') { return $this.'.ViewBox' }

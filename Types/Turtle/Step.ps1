@@ -17,9 +17,9 @@ param(
 if ($DeltaX -or $DeltaY) {
     $this.Position = $DeltaX, $DeltaY
     if ($This.IsPenDown) {
-        $this.Steps += " l $DeltaX $DeltaY"
+        $this.Steps.Add(" l $DeltaX $DeltaY")
     } else {
-        $this.Steps += " m $DeltaX $DeltaY"
+        $this.Steps.Add(" m $DeltaX $DeltaY")
     }
 }
 

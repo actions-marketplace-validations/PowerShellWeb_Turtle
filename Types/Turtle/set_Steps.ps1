@@ -11,11 +11,8 @@ param(
 $Steps
 )
 
-if (-not $this.'.Steps') {
-    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @(
-        [Collections.Generic.List[string]]::new($Steps)
-    )
-} else {
-    $this.'.Steps' = $steps
+$currentSteps = $this.Steps
+foreach ($step in $steps) {
+    $currentSteps.Add($step)
 }
 

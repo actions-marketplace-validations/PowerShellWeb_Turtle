@@ -102,8 +102,8 @@ if ($this.PathAnimation) {
         @(foreach ($animationXML in $this.PathAnimation -split '(?<=/>)') {
             $animationXML = $animationXML -as [xml]
             if (-not $animationXML) { continue }
-            if ($animationXML.attributeName -eq 'd') {
-                $animationXML.values = "$($newPaths -join ';')"
+            if ($animationXML.animate.attributeName -eq 'd') {
+                $animationXML.animate.values = "$($newPaths -join ';')"
             }
             $animationXML.OuterXml
         })

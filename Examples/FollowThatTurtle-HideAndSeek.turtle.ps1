@@ -20,7 +20,7 @@ param(
 [double]
 $SquareSize = 420,
 [double]
-$HiderSpeed = (Get-Random -Min 1 -Max 5),
+$HiderSpeed = 2,
 [double]
 $SeekerSpeedRatio = ((1 + [Math]::Sqrt(5))/2),
 [double]

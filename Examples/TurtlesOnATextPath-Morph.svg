@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" transform-origin="50% 50%">
   <symbol id="turtle-symbol" viewBox="0 0 173.205080756888 100" transform-origin="50% 50%">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 173.205080756888 100" transform-origin="50% 50%" width="100%" height="100%">
-      <animate attributeName="d" values="m 0 0  m 0 50  l 196.961550602442 -34.729635533386;m 0 0  m 0 50  l 199.238939618349 -17.4311485495316;m 0 0  m 0 50  l 196.961550602442 -34.729635533386" repeatCount="indefinite" dur="4.2s" attributeType="XML" />
       <path id="turtle-path" d="m 0 50  m 0 50  l 173.205080756888 -100" stroke="currentcolor" stroke-width="0.25%" fill="transparent" class="foreground-stroke" transform-origin="50% 50%">
         <animate attributeName="d" values="m 0 0  m 0 50  l 196.961550602442 -34.729635533386;m 0 0  m 0 50  l 199.238939618349 -17.4311485495316;m 0 0  m 0 50  l 196.961550602442 -34.729635533386" repeatCount="indefinite" dur="4.2s" attributeType="XML" />
       </path>

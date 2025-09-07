@@ -3831,14 +3831,14 @@ return $this.'.SVGAttribute'
         <SetScriptBlock>
                         param(
 [Collections.IDictionary]
-$PathAttribute = [Ordered]@{}
+$SVGAttribute = [Ordered]@{}
 )
 
-if (-not $this.'.PathAttribute') {
-    $this | Add-Member -MemberType NoteProperty -Name '.PathAttribute' -Value ([Ordered]@{}) -Force
+if (-not $this.'.SVGAttribute') {
+    $this | Add-Member -MemberType NoteProperty -Name '.SVGAttribute' -Value ([Ordered]@{}) -Force
 }
-foreach ($key in $PathAttribute.Keys) {
-    $this.'.PathAttribute'[$key] = $PathAttribute[$key]
+foreach ($key in $SVGAttribute.Keys) {
+    $this.'.SVGAttribute'[$key] = $SVGAttribute[$key]
 }
                     </SetScriptBlock>
       </ScriptProperty>

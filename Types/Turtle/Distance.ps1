@@ -6,7 +6,7 @@
 #>
 param()
 
-$towards = $args
+$towards = $args | . { process { $_ } }
 
 $tx = 0.0
 $ty = 0.0
@@ -24,7 +24,7 @@ foreach ($toward in $towards) {
     elseif ($null -ne $toward.X -and $null -ne $toward.Y) {
         $tx = $toward.x
         $ty = $toward.y
-        $nCount+= 2        
+        $nCount+= 2
     }
 }
 

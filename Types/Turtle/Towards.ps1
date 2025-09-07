@@ -6,7 +6,7 @@
 #>
 param()
 
-$towards = $args
+$towards = $args | . { process { $_ } }
 
 $tx = 0.0
 $ty = 0.0

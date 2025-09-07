@@ -16,10 +16,10 @@ param(
 # The path animation object.
 # This may be a string containing animation XML, XML, or a dictionary containing animation settings.
 [PSObject]
-$PathAnimation
+$SVGAnimation
 )
 
-$newAnimation = @(foreach ($animation in $PathAnimation) {
+$newAnimation = @(foreach ($animation in $SVGAnimation) {
     if ($animation -is [Collections.IDictionary]) {
         $animationCopy = [Ordered]@{} + $animation
         if (-not $animationCopy['attributeType']) {
@@ -56,4 +56,4 @@ $newAnimation = @(foreach ($animation in $PathAnimation) {
     }
 })
 
-$this | Add-Member -MemberType NoteProperty -Force -Name '.PathAnimation' -Value $newAnimation
+$this | Add-Member -MemberType NoteProperty -Force -Name '.SVGAnimation' -Value $newAnimation

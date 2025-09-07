@@ -1,3 +1,3 @@
-if ($this.'.PathAnimation') {
-    return $this.'.PathAnimation'
+if ($this.'.SVGAnimation') {
+    return $this.'.SVGAnimation'
 }

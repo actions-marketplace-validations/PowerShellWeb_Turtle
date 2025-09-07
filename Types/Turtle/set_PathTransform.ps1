@@ -4,7 +4,7 @@
 .DESCRIPTION
     Sets any transforms that apply to the turtle path.
 .EXAMPLE
-    turtle width 100 height 100 teleport 25 25 square 50 pathTransform @{skewX=45}
+    turtle width 100 height 100 teleport 25 25 square 50 pathTransform @{skewX=45} save ./skewSquare.svg
 #>
 param($value)
 $value = $value | . { process { $_ }}

@@ -6,6 +6,7 @@
 #>
 param()
 @(
+
 $svgAttributes = [Ordered]@{
     xmlns='http://www.w3.org/2000/svg'
     viewBox="$($this.ViewBox)"
@@ -13,11 +14,18 @@ $svgAttributes = [Ordered]@{
     width='100%'
     height='100%'
 }
+
 # If the viewbox would have zero width or height
 if ($this.ViewBox[-1] -eq 0 -or $this.ViewBox[-2] -eq 0) {
     # It's not much of a viewbox at all, and we will omit the attribute.
     $svgAttributes.Remove('viewBox')
 }
+
+# Any explicitly provided attributes should override any automatic attributes.
+foreach ($key in $this.SVGAttribute.Keys) {
+    $svgAttributes[$key] = $this.SVGAttribute[$key]
+}
+
 "<svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     " $attributeName='$($svgAttributes[$attributeName])'"
 }) -join '')>"    

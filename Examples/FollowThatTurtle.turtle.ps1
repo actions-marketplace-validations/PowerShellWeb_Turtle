@@ -27,11 +27,11 @@ if (-not $StepCount) {
 }
 
 # Set up our turtles.
-$followThatTurtle = turtle square $Size turtles ([Ordered]@{
-    t1 = turtle teleport 0 0 
-    t2 = turtle teleport $Size 0 
-    t3 = turtle teleport $Size $Size 
-    t4 = turtle teleport 0 $Size
+$followThatTurtle = turtle stroke '#4488ff' square $Size turtles ([Ordered]@{
+    t1 = turtle teleport 0 0 stroke '#4488ff'
+    t2 = turtle teleport $Size 0 stroke '#4488ff'
+    t3 = turtle teleport $Size $Size stroke '#4488ff' 
+    t4 = turtle teleport 0 $Size stroke '#4488ff'
 })
 
 # For each step

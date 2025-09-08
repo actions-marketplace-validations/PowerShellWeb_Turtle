@@ -408,7 +408,38 @@ We call this 'Turtles All The Way Down', and it lets us do two very important se
 * It allows turtles to interact
 * It allows us to model the behavior of multiple turtles
 
-Let's start with a couple of cool practical examples.
+Let's start with a few cool examples.
+
+At the most basic, let's make an inscribed circle and square:
+
+~~~PowerShell
+$(
+    @(Get-Content ./Examples/InscribedCircle.turtle.ps1 | 
+    Select-Object -Skip 1) -join [Environment]::NewLine
+)
+~~~
+
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/InscribedCircle.svg' alt='Inscribed Circle' width='100%' />
+</div>
+"@
+
+@"
+Let's see it as a pattern:
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/InscribedCirclePattern.svg' alt='Inscribed Circle Pattern' width='100%' height='50%' />
+</div>
+"@
+
+
+@"
+#### Behavior Modelling
 
 Imagine we are four turtles in a square, each trying to catch up with the next turtle.
 

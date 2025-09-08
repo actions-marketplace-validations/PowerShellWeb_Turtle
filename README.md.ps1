@@ -374,7 +374,7 @@ $SnowFlakePattern = . $MakeSnowflakePattern
 
 @"
 <div align='center'>
-<img src='./Examples/$($SnowFlakePattern.Name)' alt='Snowflake Pattern' width='50%' />
+<img src='./Examples/$($SnowFlakePattern.Name)' alt='Snowflake Pattern' width='100%' height='50%' />
 </div>
 "@
 
@@ -391,7 +391,7 @@ $(
 
 @"
 <div align='center'>
-<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' />
+<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' height='50%' />
 </div>
 "@
 
@@ -434,7 +434,7 @@ Let's see it as a pattern:
 
 @"
 <div align='center'>
-<img src='./Examples/FollowThatTurtlePattern.svg' alt='Follow That Turtle' width='100%' />
+<img src='./Examples/FollowThatTurtlePattern.svg' alt='Follow That Turtle' width='100%' height='50%' />
 </div>
 "@
 
@@ -465,7 +465,7 @@ Let's see it as a pattern:
 
 @"
 <div align='center'>
-<img src='./Examples/FollowThatTurtleHideAndSeekPattern.svg' alt='Follow That Turtle Hide And Seek Pattern' width='100%' />
+<img src='./Examples/FollowThatTurtleHideAndSeekPattern.svg' alt='Follow That Turtle Hide And Seek Pattern' width='100%' height='50%' />
 </div>
 "@
 #endregion Turtles All The Way Down

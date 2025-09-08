@@ -260,7 +260,7 @@ For example, here is an example of a pattern comprised of Koch Snowflakes:
 
 ~~~
 <div align='center'>
-<img src='./Examples/KochSnowflakePattern.svg' alt='Snowflake Pattern' width='50%' />
+<img src='./Examples/KochSnowflakePattern.svg' alt='Snowflake Pattern' width='100%' height='50%' />
 </div>
 We can also animate the pattern, for endless variety:
 
@@ -284,7 +284,7 @@ $turtle | save-turtle -Path ./EndlessSnowflake.svg -Property Pattern
 Pop-Location
 ~~~
 <div align='center'>
-<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' />
+<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' height='50%' />
 </div>
 ### Turtles all the way down
 
@@ -330,11 +330,11 @@ if (-not $StepCount) {
 }
 
 # Set up our turtles.
-$followThatTurtle = turtle square $Size turtles ([Ordered]@{
-    t1 = turtle teleport 0 0 
-    t2 = turtle teleport $Size 0 
-    t3 = turtle teleport $Size $Size 
-    t4 = turtle teleport 0 $Size
+$followThatTurtle = turtle stroke '#4488ff' square $Size turtles ([Ordered]@{
+    t1 = turtle teleport 0 0 stroke '#4488ff'
+    t2 = turtle teleport $Size 0 stroke '#4488ff'
+    t3 = turtle teleport $Size $Size stroke '#4488ff' 
+    t4 = turtle teleport 0 $Size stroke '#4488ff'
 })
 
 # For each step
@@ -369,7 +369,7 @@ $followThatTurtle | Save-Turtle ./FollowThatTurtlePattern.svg Pattern
 </div>
 Let's see it as a pattern:
 <div align='center'>
-<img src='./Examples/FollowThatTurtlePattern.svg' alt='Follow That Turtle' width='100%' />
+<img src='./Examples/FollowThatTurtlePattern.svg' alt='Follow That Turtle' width='100%' height='50%' />
 </div>
 
 Now let's imagine we have four turtles in the center, and they're trying to get away from the turtles in the corners.
@@ -396,7 +396,7 @@ What kind of shape will this produce?
 #>
 param(
 [double]
-$SquareSize = 420,
+$SquareSize = 200,
 [double]
 $HiderSpeed = 2,
 [double]
@@ -413,7 +413,7 @@ $stepCount = $squareSize/2 * (1 + ([Math]::Abs($attackerSpeed - $evaderSpeed)))
 
 $hideAndSeek = turtle square $squareSize stroke '#4488ff' turtles ([Ordered]@{
     s1 = turtle teleport 0 0 stroke '#4488ff' # stroke 'red' pathclass 'red-stroke' fill red
-    s2 = turtle teleport $squareSize stroke '#4488ff' 0 # stroke 'yellow' pathclass 'yellow-stroke' fill yellow
+    s2 = turtle teleport $squareSize 0 stroke '#4488ff' # stroke 'yellow' pathclass 'yellow-stroke' fill yellow
     s3 = turtle teleport $squareSize $squareSize stroke '#4488ff' # stroke 'green' pathclass 'green-stroke' fill green
     s4 = turtle teleport 0 $squareSize stroke '#4488ff' # stroke 'blue' PathClass 'blue-stroke' fill blue
     h1 = turtle teleport $midpoint stroke '#4488ff' # stroke 'red' fill 'red'
@@ -470,7 +470,7 @@ if ($PSScriptRoot) { Pop-Location}
 </div>
 Let's see it as a pattern:
 <div align='center'>
-<img src='./Examples/FollowThatTurtleHideAndSeekPattern.svg' alt='Follow That Turtle Hide And Seek Pattern' width='100%' />
+<img src='./Examples/FollowThatTurtleHideAndSeekPattern.svg' alt='Follow That Turtle Hide And Seek Pattern' width='100%' height='50%' />
 </div>
 
 ### Turtles in HTML

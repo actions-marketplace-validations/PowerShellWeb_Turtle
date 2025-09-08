@@ -18,7 +18,7 @@
 #>
 param(
 [double]
-$SquareSize = 420,
+$SquareSize = 200,
 [double]
 $HiderSpeed = 2,
 [double]

@@ -33,15 +33,15 @@ $midpoint = ($squareSize/2), ($squareSize/2)
 $seekerSpeed = $HiderSpeed * $SeekerSpeedRatio # (1 + (Get-Random -Min 10 -Max 50)/50) # (Get-Random -Min 1 -Max 5)
 $stepCount = $squareSize/2 * (1 + ([Math]::Abs($attackerSpeed - $evaderSpeed)))
 
-$hideAndSeek = turtle square $squareSize turtles ([Ordered]@{
-    s1 = turtle teleport 0 0 # stroke 'red' pathclass 'red-stroke' fill red
-    s2 = turtle teleport $squareSize 0 # stroke 'yellow' pathclass 'yellow-stroke' fill yellow
-    s3 = turtle teleport $squareSize $squareSize # stroke 'green' pathclass 'green-stroke' fill green
-    s4 = turtle teleport 0 $squareSize # stroke 'blue' PathClass 'blue-stroke' fill blue
-    h1 = turtle teleport $midpoint # stroke 'red' fill 'red'
-    h2 = turtle teleport $midpoint # stroke 'yellow' fill 'yellow'
-    h3 = turtle teleport $midpoint # stroke 'green' fill 'green'
-    h4 = turtle teleport $midpoint # stroke 'blue' fill 'blue'
+$hideAndSeek = turtle square $squareSize stroke '#4488ff' turtles ([Ordered]@{
+    s1 = turtle teleport 0 0 stroke '#4488ff' # stroke 'red' pathclass 'red-stroke' fill red
+    s2 = turtle teleport $squareSize stroke '#4488ff' 0 # stroke 'yellow' pathclass 'yellow-stroke' fill yellow
+    s3 = turtle teleport $squareSize $squareSize stroke '#4488ff' # stroke 'green' pathclass 'green-stroke' fill green
+    s4 = turtle teleport 0 $squareSize stroke '#4488ff' # stroke 'blue' PathClass 'blue-stroke' fill blue
+    h1 = turtle teleport $midpoint stroke '#4488ff' # stroke 'red' fill 'red'
+    h2 = turtle teleport $midpoint stroke '#4488ff' # stroke 'yellow' fill 'yellow'
+    h3 = turtle teleport $midpoint stroke '#4488ff' # stroke 'green' fill 'green'
+    h4 = turtle teleport $midpoint stroke '#4488ff' # stroke 'blue' fill 'blue'
 })
 
 
@@ -81,8 +81,8 @@ $hideAndSeek = turtle square $squareSize turtles ([Ordered]@{
 }
 
 
-$hideAndSeek | turtle save ./FollowThatTurtle-HideAndSeek.svg
+$hideAndSeek | turtle save ./FollowThatTurtleHideAndSeek.svg
 $hideAndSeek.Stroke = 'transparent'
-$hideAndSeek | Save-Turtle ./FollowThatTurtle-HideAndSeekPattern.svg Pattern
+$hideAndSeek | Save-Turtle ./FollowThatTurtleHideAndSeekPattern.svg Pattern
 
 if ($PSScriptRoot) { Pop-Location}

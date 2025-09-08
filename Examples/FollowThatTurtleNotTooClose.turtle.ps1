@@ -6,7 +6,7 @@
 
     A series of turtles will follow the next turtle, until they get within a proximity.
 
-    Then, the same turtles will avoid the turtle, until they are outside of the proximity
+    Then, the same turtles will avoid the turtle, until they are outside of the proximity.
 #>
 param(
 # The size of the square
@@ -36,11 +36,11 @@ if (-not $Proximity) {
 }
 
 # Set up our turtles.
-$followThatTurtle = turtle square $Size turtles ([Ordered]@{
-    t1 = turtle teleport 0 0 
-    t2 = turtle teleport $Size 0 
-    t3 = turtle teleport $Size $Size 
-    t4 = turtle teleport 0 $Size
+$followThatTurtle = turtle square $Size stroke '#4488ff' turtles ([Ordered]@{
+    t1 = turtle teleport 0 0 stroke '#4488ff'
+    t2 = turtle teleport $Size 0 stroke '#4488ff'
+    t3 = turtle teleport $Size $Size stroke '#4488ff'
+    t4 = turtle teleport 0 $Size stroke '#4488ff'
 })
 
 # For each step

@@ -66,7 +66,7 @@ if ($site.PSScriptRoot) {
             $pointer = $pointer[$subdirectory]
         }
                         
-        $propertyName = $hierarchy[-1] -replace '_' -replace "$([Regex]::Escape($underbarFile.Extension))$"
+        $propertyName = $hierarchy[-1] -replace '\.ps1$'
         
         $getFile = @{LiteralPath=$underbarFile.FullName}
         $fileData  =
@@ -101,6 +101,7 @@ $Site.Description = 'Turtles in a PowerShell'
 
 #region Site Icons
 $Site.Icon  = [Ordered]@{
+    'BlueSky' = $site.includes.'BlueSky.svg'.OuterXml
     'GitHub' = . $site.includes.Feather 'GitHub'
     'RSS' = . $site.includes.Feather 'RSS'
     'Settings' = . $site.includes.Feather 'Settings'
@@ -129,7 +130,7 @@ $Site.Logo.ID = 'Turtle-Logo'
 } #>
 
 $site.Taskbar = [Ordered]@{
-    # 'BlueSky' = 'https://bsky.app/profile/mrpowershell.com'
+    'BlueSky' = 'https://bsky.app/profile/psturtle.com'
     'GitHub' = 'https://github.com/PowerShellWeb/Turtle'
     'RSS' = 'https://psturtle.com/RSS/index.rss'
     'Help' = @(

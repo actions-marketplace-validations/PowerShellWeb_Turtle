@@ -402,8 +402,12 @@ function Get-Turtle {
         # The SierpinskiTriangle is a Fractal classic    
         turtle SierpinskiTriangle 42 4
     .EXAMPLE
-        # We can morph a SierpinskiTriangle to show it step by step
-        turtle SierpinskiTriangle 42 4 morph 
+        # We can morph with no parameters to try to draw step by step
+        # 
+        # This will result in large files.
+        # 
+        # This may not work in all browsers for all graphics.
+        turtle SierpinskiTriangle 42 3 morph 
     .EXAMPLE
         # Let's draw two reflected Sierpinski Triangles
         turtle @(

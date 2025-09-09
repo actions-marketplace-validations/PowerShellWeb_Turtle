@@ -333,7 +333,23 @@ function Get-Turtle {
     .EXAMPLE
         turtle spirolateral 23 144 8
     .EXAMPLE
-        turtle spirolateral 23 72 8    
+        turtle spirolateral 23 72 8
+    .EXAMPLE
+        # Lets get practical.  Turtle can easily make a bar graph.
+        turtle BarGraph 200 300 (1..10)
+    .EXAMPLE
+        # Want a vertical bar graph? Rotate first.
+        turtle rotate 90 BarGraph 200 300 (1..10)
+    .EXAMPLE
+        # Let's provide more random points:
+        turtle rotate 90 BarGraph 200 300 (1..20 | Get-Random -Count 20)
+    .EXAMPLE
+        # We can draw pretty pictures by connecting and rotating graphs
+        turtle @(
+            'BarGraph', 200, 300, (1..10),
+            'BarGraph', 200, 300, (10..1),
+            'rotate',180 * 2
+        )
     .EXAMPLE
         # Turtle can draw a number of fractals        
         turtle BoxFractal 42 4
@@ -371,6 +387,9 @@ function Get-Turtle {
         # We can use a Moore Curve to fill a space with a bit more density.
         turtle MooreCurve 42 4
     .EXAMPLE
+        # We can rotate and repeat moore curves, giving us even Moore.
+        turtle @('MooreCurve', 42, 4, 'Rotate', 90 * 4)
+    .EXAMPLE
         # We can show a binary tree
         turtle BinaryTree 42 4
     .EXAMPLE
@@ -382,6 +401,9 @@ function Get-Turtle {
     .EXAMPLE
         # The SierpinskiTriangle is a Fractal classic    
         turtle SierpinskiTriangle 42 4
+    .EXAMPLE
+        # We can morph a SierpinskiTriangle to show it step by step
+        turtle SierpinskiTriangle 42 4 morph 
     .EXAMPLE
         # Let's draw two reflected Sierpinski Triangles
         turtle @(

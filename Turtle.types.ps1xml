@@ -486,12 +486,23 @@ return $this
       <ScriptMethod>
         <Name>Clear</Name>
         <Script>
-                        $this.Heading = 0
-$this.Steps = @()
+                        &lt;#
+.SYNOPSIS
+    Clears a Turtle
+.DESCRIPTION
+    Clears the heading, steps, position, minimim, maximum, and any nested Turtles.
+.EXAMPLE
+    turtle square 42 clear circle 21
+#&gt;
+$this.Heading = 0
+if ($this.Steps.Clear) {
+    $this.Steps.Clear()
+}
 $this | Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value ([pscustomobject]@{ X = 0; Y = 0 })
 $this | Add-Member -MemberType NoteProperty -Force -Name '.Minimum' -Value ([pscustomobject]@{ X = 0; Y = 0 })
 $this | Add-Member -MemberType NoteProperty -Force -Name '.Maximum' -Value ([pscustomobject]@{ X = 0; Y = 0 })
 $this.ViewBox = 0
+$this.Turtles.Clear()
 return $this
                     </Script>
       </ScriptMethod>
@@ -540,16 +551,36 @@ return $this.LSystem('F+F+F+F',  [Ordered]@{
 .DESCRIPTION
     Determines the distance from the turtle's current position to a point.
 #&gt;
-param(
-# The X-coordinate
-[double]$X = 0,
-# The Y-coordinate
-[double]$Y = 0
-)
+param()
+
+$towards = $args | . { process { $_ } }
+
+$tx = 0.0
+$ty = 0.0
+
+$nCount = 0
+foreach ($toward in $towards) {
+    if ($toward -is [double] -or $toward -is [float] -or $toward -is [int]) {
+        if (-not ($nCount % 2)) {
+            $tx = $toward 
+        } else {
+            $ty = $toward
+        }
+        $nCount++    
+    }
+    elseif ($null -ne $toward.X -and $null -ne $toward.Y) {
+        $tx = $toward.x
+        $ty = $toward.y
+        $nCount+= 2
+    }
+}
+
+$tx/=($nCount/2)
+$ty/=($nCount/2)
 
 # Determine the delta from the turtle's current position to the specified point
-$deltaX = $X - $this.Position.X
-$deltaY = $Y - $this.Position.Y
+$deltaX = $tx - $this.Position.X 
+$deltaY = $ty - $this.Position.Y
 
 # Calculate the distance using the Pythagorean theorem
 return [Math]::Sqrt($deltaX*$deltaX + $deltaY*$deltaY)
@@ -661,8 +692,9 @@ param(
 $Distance = 10
 )
 
-$x = $Distance * ([math]::round([math]::cos($this.Heading * [Math]::PI / 180),15))
-$y = $Distance * ([math]::round([math]::sin($this.Heading * [Math]::PI / 180),15))
+$x = $Distance * ([math]::cos($this.Heading * [Math]::PI / 180))
+$y = $Distance * ([math]::sin($this.Heading * [Math]::PI / 180))
+
 return $this.Step($x, $y)
                     </Script>
       </ScriptMethod>
@@ -1330,7 +1362,11 @@ return $this.LSystem(
 .DESCRIPTION
     Morphs a Turtle by animating its path.
 
-    Any two paths with the same number of points can be morphed into each other.
+    Any two paths with the same number of points can be morphed into each other smoothly.
+
+    Any two paths with a different number of points will become a step-by-step animation.
+
+    Since animations can include multiple complex paths, they can get quite large, and be quite beautiful.
 .EXAMPLE
     $sierpinskiTriangle = turtle SierpinskiTriangle 42 4
     $SierpinskiTriangleFlipped = turtle rotate 180 SierpinskiTriangle 42 4
@@ -1360,6 +1396,12 @@ return $this.LSystem(
         $flowerPetals3,
         $flowerPetals
     ) | Save-Turtle ./flowerPetalMorph.svg Pattern
+.EXAMPLE
+    turtle SierpinskiTriangle 42 4 morph |
+        Save-Turtle ./SierpinskiTriangleConstruction.svg
+.EXAMPLE
+    turtle stroke '#224488' fill '#4488ff' backgroundColor '#112244' rotate 60 SierpinskiTriangle 42 4 SierpinskiTriangle -42 4 morph |
+        Save-Turtle ./SierpinskiTriangleReflectionConstructionAndFill.svg
 #&gt;
 param(
 [Parameter(ValueFromRemainingArguments)]
@@ -1367,30 +1409,50 @@ $Arguments
 )
 
 $durationArgument = $null
-
+$hasPoints = $false
+$segmentCount = 0 
 $newPaths = @(foreach ($arg in $Arguments) {
     if ($arg -is [string]) {
         if ($arg -match '^\s{0,}m') {
             $arg
+            $hasPoints = $true
         }
     } elseif ($arg.PathData) {
         $arg.PathData
+        $hasPoints = $true
     } elseif ($arg.D) {
         $arg.D
+        $hasPoints = $true
     } elseif ($arg -is [TimeSpan]) {
         $durationArgument = $arg
     }
     elseif ($arg -is [double] -or $arg -is [int]) {
-        $durationArgument = [TimeSpan]::FromSeconds($arg)
+        if (-not $hasPoints -and $arg -is [int]) {
+            $segmentCount = [Math]::Abs($arg)
+        } else {
+            $durationArgument = [TimeSpan]::FromSeconds($arg)
+        }        
     }
 })
 
 if (-not $newPaths) {
-    return $this
-    &lt;#$pathSegments = @($this.PathData -split '(?=\p{L})')
-    $newPaths = @(for ($segmentNumber = 0; $segmentNumber -lt $pathSegments.Count; $segmentNumber++) {
-        $pathSegments[0..$segmentNumber] -join ' '
-    }) -join ';'#&gt;
+    if ($this.Steps.Count) {        
+        $stepList = @($this.PathData -join ' ' -split '(?=\p{L})' -ne '')
+        if ($segmentCount) {
+            $newPaths = @(
+                for ($n = 1; $n -lt $stepList.Length; $n += ($stepList.Length/$segmentCount)) {
+                    $stepList[0..$n] -join ' '
+                }
+            )            
+        } else {
+            $newPaths = @(foreach ($n in 1..($stepList.Length)) {
+                $stepList[0..$n] -join ' '
+            })
+        }
+        
+    } else {
+        return $this
+    }        
 }
 
 if ($this.PathAnimation) {
@@ -1398,8 +1460,8 @@ if ($this.PathAnimation) {
         @(foreach ($animationXML in $this.PathAnimation -split '(?&lt;=/&gt;)') {
             $animationXML = $animationXML -as [xml]
             if (-not $animationXML) { continue }
-            if ($animationXML.attributeName -eq 'd') {
-                $animationXML.values = "$($newPaths -join ';')"
+            if ($animationXML.animate.attributeName -eq 'd') {
+                $animationXML.animate.values = "$($newPaths -join ';')"
             }
             $animationXML.OuterXml
         })
@@ -2234,9 +2296,9 @@ param(
 if ($DeltaX -or $DeltaY) {
     $this.Position = $DeltaX, $DeltaY
     if ($This.IsPenDown) {
-        $this.Steps += " l $DeltaX $DeltaY"
+        $this.Steps.Add(" l $DeltaX $DeltaY")
     } else {
-        $this.Steps += " m $DeltaX $DeltaY"
+        $this.Steps.Add(" m $DeltaX $DeltaY")
     }
 }
 
@@ -2427,16 +2489,36 @@ return "$($this.SVG.OuterXml)"
 .DESCRIPTION
     Determines the angle from the turtle's current heading towards a point.
 #&gt;
-param(
-# The X-coordinate
-[double]$X = 0,
-# The Y-coordinate
-[double]$Y = 0
-)
+param()
+
+$towards = $args | . { process { $_ } }
+
+$tx = 0.0
+$ty = 0.0
+
+$nCount = 0
+foreach ($toward in $towards) {
+    if ($toward -is [double] -or $toward -is [float] -or $toward -is [int]) {
+        if (-not ($nCount % 2)) {
+            $tx = $toward 
+        } else {
+            $ty = $toward
+        }
+        $nCount++    
+    }
+    elseif ($null -ne $toward.X -and $null -ne $toward.Y) {
+        $tx = $toward.x
+        $ty = $toward.y
+        $nCount+= 2        
+    }
+}
+
+$tx/=($nCount/2)
+$ty/=($nCount/2)
 
 # Determine the delta from the turtle's current position to the specified point
-$deltaX = $X - $this.Position.X 
-$deltaY = $Y - $this.Position.Y
+$deltaX = $tx - $this.Position.X 
+$deltaY = $ty - $this.Position.Y
 # Calculate the angle in radians and convert to degrees
 $angle = [Math]::Atan2($deltaY, $deltaX) * 180 / [Math]::PI
 # Return the angle minus the current heading (modulo 360)
@@ -2690,32 +2772,33 @@ $this | Add-Member NoteProperty -Name '.BackgroundColor' -Value $value -Force
 .DESCRIPTION
     Gets a turtle a canvas element.
 #&gt;
-
 @(
     $viewBox = $this.ViewBox
-    $null, $null, $viewX, $viewY = $viewBox
-    "&lt;style&gt;canvas {max-width: 100%; height: 100%}&lt;/style&gt;"
-    "&lt;canvas id='$($this.ID)-canvas' width='$($viewX + 1)' height='$($viewY + 1)'&gt;&lt;/canvas&gt;"
-
-    "&lt;script&gt;"    
+    $null, $null, $viewX, $viewY = $viewBox    
+    "&lt;canvas id='$($this.ID)-canvas'&gt;&lt;/canvas&gt;"    
+    "&lt;script type='module'&gt;"    
 @"
 window.onload = async function() {
-  var canvas = document.getElementById('$($this.ID)-canvas');
-  var ctx = canvas.getContext('2d');
-  ctx.strokeStyle = '$($this.Stroke)'
-  ctx.lineWidth = '$(
-    if ($this.StrokeWidth -match '%') {
-        [Math]::Max($viewX, $viewY) * ($this.StrokeWidth -replace '%' -as [double])/100
-    } else {
-        $this.StrokeWidth
+    const loadImage = async url =&gt; {
+        const newImage = document.createElement('img')
+        newImage.src = url
+        return new Promise((resolve, reject) =&gt; {
+            newImage.onload = () =&gt; resolve(newImage)
+            newImage.onerror = reject
+        })
     }
-)'
-  ctx.fillStyle = '$($this.Fill)'
-  var p = new Path2D("$($this.PathData)")
-  ctx.stroke(p)
-  ctx.fill(p)
+    const dataHeader = 'data:image/svg+xml;charset=utf-8'
+    const serializeAsXML = e =&gt; (new XMLSerializer()).serializeToString(e)
+    const encodeAsUTF8 = s =&gt; ```${dataHeader},`${encodeURIComponent(s)}``
 
-  /*Insert-Post-Processing-Here*/
+    const img = await loadImage('$($this.DataUrl)')  
+    
+    var canvas = document.getElementById('$($this.ID)-canvas');
+    canvas.width = $viewX
+    canvas.height = $viewY
+    var ctx = canvas.getContext('2d')
+    ctx.drawImage(img, 0, 0, $viewX, $viewY)
+    /*Insert-Post-Processing-Here*/
 }
 "@
     "&lt;/script&gt;"
@@ -2741,9 +2824,10 @@ window.onload = async function() {
     
     This can be used as an inline image in HTML, CSS, or Markdown.
 #&gt;
-$thisSymbol = $this.Symbol
-$b64 = [Convert]::ToBase64String($OutputEncoding.GetBytes($thisSymbol.outerXml))
-"data:image/svg+xml;base64,$b64"
+$thisSVG = $this.SVG
+"data:image/svg+xml;base64,$(
+    [Convert]::ToBase64String($OutputEncoding.GetBytes($this.SVG.outerXml))
+)"
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -2771,16 +2855,27 @@ $value
 )
 
 foreach ($v in $value) {
-    if ($v -is [Timespan]) {
-        $this | Add-Member NoteProperty '.Duration' $v -Force
-    } elseif ($v -is [double] -or $v -is [int]) {
+    if ($v -is [double] -or $v -is [int]) {
         $this | Add-Member NoteProperty '.Duration' ([TimeSpan]::FromSeconds($v)) -Force
+    } elseif ($v -as [TimeSpan]) {
+        $this | Add-Member NoteProperty '.Duration' ($v -as [Timespan]) -Force
     } else {
         Write-Warning "'$Value' is not a number or timespan"
     }
 }
 
-
+if (($this.'.Duration' -is [TimeSpan]) -and $this.PathAnimation) {
+    $updatedAnimations =
+        @(foreach ($animationXML in $this.PathAnimation -split '(?&lt;=/&gt;)') {
+            $animationXML = $animationXML -as [xml]
+            if (-not $animationXML) { continue }
+            if ($animationXML.animate.attributeName -eq 'd') {
+                $animationXML.animate.dur = "$(($this.'.Duration').TotalSeconds)s"
+            }
+            $animationXML.OuterXml
+        })
+    $this.PathAnimation = $updatedAnimations
+}
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -3230,22 +3325,80 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @(
       <ScriptProperty>
         <Name>PathElement</Name>
         <GetScriptBlock>
-                        @(
-"&lt;path id='$($this.id)-path' d='$($this.PathData)' stroke='$(
-    if ($this.Stroke) { $this.Stroke } else { 'currentColor' }
-)' stroke-width='$(
-    if ($this.StrokeWidth) { $this.StrokeWidth } else { '0.1%' }
-)' fill='$($this.Fill)' class='$(
-    $this.PathClass -join ' '
-)' transform-origin='50% 50%' $(
-    foreach ($pathAttributeName in $this.PathAttribute.Keys) {
-        " $pathAttributeName='$($this.PathAttribute[$pathAttributeName])'"
+                        &lt;#
+.SYNOPSIS
+    Gets the Turtle Path Element
+.DESCRIPTION
+    Gets the Path Element of a Turtle.
+
+    This contains the path of the Turtle's motion.
+#&gt;
+
+# Set our core attributes
+$coreAttributes = [Ordered]@{
+    id="$($this.id)-path"
+    d="$($this.PathData)"
+    stroke=
+        if ($this.Stroke) { $this.Stroke } 
+        else { 'currentColor' }
+    'stroke-width'=
+        if ($this.StrokeWidth) { $this.StrokeWidth } 
+        else { '0.1%' }
+    fill="$($this.Fill)"
+    class=$($this.PathClass -join ' ')
+    'transform-origin'='50% 50%' 
+}
+# If someone decides to override any of these attributes, they are welcome to (at their own aesthetic risk)
+foreach ($pathAttributeName in $this.PathAttribute.Keys) {
+    $coreAttributes[$pathAttributeName] = $($this.PathAttribute[$pathAttributeName])
+}
+
+@(
+"&lt;path$(
+    foreach ($attributeName in $coreAttributes.Keys) {
+        " $attributeName='$($coreAttributes[$attributeName])'"
     }
 )&gt;"
 if ($this.PathAnimation) {$this.PathAnimation}
 "&lt;/path&gt;"
 ) -as [xml]
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>PathTransform</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets any Path Transforms
+.DESCRIPTION
+    Gets any transforms that will apply to this Turtle's path.
+#&gt;
+return $this.PathAttribute['transform']
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets Path Transforms
+.DESCRIPTION
+    Sets any transforms that apply to the turtle path.
+.EXAMPLE
+    turtle width 100 height 100 teleport 25 25 square 50 pathTransform @{skewX=45} save ./skewSquare.svg
+#&gt;
+param($value)
+$value = $value | . { process { $_ }}
+$transformString = foreach ($v in $value) {
+    if ($v -is [Collections.IDictionary]) {
+        foreach ($k in $v.Keys) {
+            "$k($($v[$k]))"
+        }
+    } else {
+        "$v"
+    }
+}
+
+
+return $this.PathAttribute['transform'] = "$transformString"
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Pattern</Name>
@@ -3264,10 +3417,9 @@ $null, $null, $viewX, $viewY = $viewBox
                 }) -join ' '
             ) + "'"
         }
-    )&gt;"
+    )&gt;"        
         $(if ($this.PatternAnimation) { $this.PatternAnimation })
-        $this.PathElement.OuterXml
-        $this.TextElement.OuterXml        
+        $($this.SVG.SVG.InnerXML)
     "&lt;/pattern&gt;"
 "&lt;/defs&gt;"
 $(
@@ -3503,12 +3655,9 @@ param(
 $Steps
 )
 
-if (-not $this.'.Steps') {
-    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @(
-        [Collections.Generic.List[string]]::new($Steps)
-    )
-} else {
-    $this.'.Steps' = $steps
+$currentSteps = $this.Steps
+foreach ($step in $steps) {
+    $currentSteps.Add($step)
 }
 
 
@@ -3547,14 +3696,163 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $
       <ScriptProperty>
         <Name>SVG</Name>
         <GetScriptBlock>
-                        param()
+                        &lt;#
+.SYNOPSIS
+    The Turtle's SVG
+.DESCRIPTION
+    Gets this turtle and any nested turtles as a single Scalable Vector Graphic.
+#&gt;
+param()
 @(
-"&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='$($this.ViewBox)' transform-origin='50% 50%' width='100%' height='100%'&gt;"
+
+$svgAttributes = [Ordered]@{
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox="$($this.ViewBox)"
+    'transform-origin'='50% 50%'
+    width='100%'
+    height='100%'
+}
+
+# If the viewbox would have zero width or height
+if ($this.ViewBox[-1] -eq 0 -or $this.ViewBox[-2] -eq 0) {
+    # It's not much of a viewbox at all, and we will omit the attribute.
+    $svgAttributes.Remove('viewBox')
+}
+
+# Any explicitly provided attributes should override any automatic attributes.
+foreach ($key in $this.SVGAttribute.Keys) {
+    $svgAttributes[$key] = $this.SVGAttribute[$key]
+}
+
+"&lt;svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
+    " $attributeName='$($svgAttributes[$attributeName])'"
+}) -join '')&gt;"
+    # Declare any SVG animations
+    if ($this.SVGAnimation) {$this.SVGAnimation}
+
+    # Output our own path
     $this.PathElement.OuterXml
-    $this.TextElement.OuterXml    
+    # Followed by any text elements
+    $this.TextElement.OuterXml
+
+    # If the turtle has children
+    $children = @(foreach ($turtleName in $this.Turtles.Keys) {
+        # make sure they're actually turtles
+        if ($this.Turtles[$turtleName].pstypenames -notcontains 'Turtle') { continue }
+        # and then set their IDs
+        $childTurtle = $this.Turtles[$turtleName]
+        $childTurtle.ID = "$($this.ID)-$turtleName"
+        $childTurtle
+    })
+    # If we have any children
+    if ($children) {
+        # put them in a group containing their children
+        "&lt;g id='$($this.ID)-children'&gt;"            
+            foreach ($child in $children) {
+                # and ask for this child's inner XML
+                # (which would contain any of its children) 
+                # (and their children's children)
+                # and so on.
+                $child.SVG.SVG.InnerXML                
+            }
+        "&lt;/g&gt;"
+    }
 "&lt;/svg&gt;"
 ) -join '' -as [xml]
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>SVGAnimation</Name>
+        <GetScriptBlock>
+                        if ($this.'.SVGAnimation') {
+    return $this.'.SVGAnimation'
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the Turtle SVG Animation
+.DESCRIPTION
+    Sets an animation for the Turtle's SVG.
+.EXAMPLE
+    turtle flower SVGAnimation ([Ordered]@{
+        attributeName = 'fill'   ; values = "#4488ff;#224488;#4488ff" ; repeatCount = 'indefinite'; dur = "4.2s" # ; additive = 'sum'
+    }, [Ordered]@{
+        attributeName = 'stroke'   ; values = "#224488;#4488ff;#224488" ; repeatCount = 'indefinite'; dur = "2.1s" # ; additive = 'sum'
+    }, [Ordered]@{
+        type = 'rotate'   ; values = 0, 360 ;repeatCount = 'indefinite'; dur = "41s"
+    }) save ./AnimatedFlower.svg
+#&gt;
+param(
+# The path animation object.
+# This may be a string containing animation XML, XML, or a dictionary containing animation settings.
+[PSObject]
+$SVGAnimation
+)
+
+$newAnimation = @(foreach ($animation in $SVGAnimation) {
+    if ($animation -is [Collections.IDictionary]) {
+        $animationCopy = [Ordered]@{} + $animation
+        if (-not $animationCopy['attributeType']) {
+            $animationCopy['attributeType'] = 'XML'
+        }
+        if (-not $animationCopy['attributeName']) {
+            $animationCopy['attributeName'] = 'transform'
+        }
+        if ($animationCopy.values -is [object[]]) {
+            $animationCopy['values'] = $animationCopy['values'] -join ';'
+        }
+
+        $elementName = 'animate'
+        if ($animationCopy['attributeName'] -eq 'transform') {
+            $elementName = 'animateTransform'
+        }
+
+
+        if (-not $animationCopy['dur'] -and $this.Duration) {
+            $animationCopy['dur'] = "$($this.Duration.TotalSeconds)s"
+        }
+        
+        "&lt;$elementName $(
+            @(foreach ($key in $animationCopy.Keys) {
+                " $key='$([Web.HttpUtility]::HtmlAttributeEncode($animationCopy[$key]))'"
+            }) -join ''
+        )/&gt;"
+    }
+    if ($animation -is [string]) {
+        $animation
+    }
+    if ($animation.OuterXml) {
+        $animation.OuterXml
+    }
+})
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.SVGAnimation' -Value $newAnimation
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>SVGAttribute</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.SVGAttribute') { 
+    $this | Add-Member NoteProperty '.SVGAttribute' ([Ordered]@{}) -Force    
+}
+return $this.'.SVGAttribute'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        param(
+[Collections.IDictionary]
+$SVGAttribute = [Ordered]@{}
+)
+
+if (-not $this.'.SVGAttribute') {
+    $this | Add-Member -MemberType NoteProperty -Name '.SVGAttribute' -Value ([Ordered]@{}) -Force
+}
+foreach ($key in $SVGAttribute.Keys) {
+    $this.'.SVGAttribute'[$key] = $SVGAttribute[$key]
+}
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Symbol</Name>
@@ -3577,8 +3875,7 @@ param()
 @(    
     "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
         "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
-            $this.PathElement.OuterXml
-            $this.TextElement.OuterXml
+            $($this.SVG.OuterXml)
         "&lt;/symbol&gt;"
         $(
             if ($this.BackgroundColor) {
@@ -3748,6 +4045,116 @@ if ($this.Text) {
 
 
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Turtles</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle's Turtles
+.DESCRIPTION
+    Gets the Turtles contained within a Turtle object.
+
+    These turtles may also contain turtles...
+    which may also contain turtles... 
+    which may also contain turtles...
+    which may also contain turtles...
+    all the way down.
+.EXAMPLE
+    turtle square 42 turtles @{
+        circle = turtle circle 21        
+    } save ./InscribedSquare.svg
+     
+.EXAMPLE
+    turtle square 42 turtles @{
+        square = 
+            turtle teleport 4 4 square 34 turtles @{
+                square = turtle teleport 8 8 square 26 turtles @{
+                    square = turtle teleport 8 8 square 26 turtles @{
+                        square = turtle teleport 12 12 square 18 turtles @{
+                            square = turtle teleport 16 16 square 10
+                        }
+                    }
+                }
+            }        
+    } save ./SquaresWithinSquares.svg
+#&gt;
+if ($this -and -not $this.'.Turtles') {
+    $this | Add-Member NoteProperty '.Turtles' ([Ordered]@{}) -Force 
+}
+
+return $this.'.Turtles'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets a Turtle's Turtles
+.DESCRIPTION
+    Sets the Turtles contained within a Turtle object.
+
+    These turtles may also contain turtles...
+    which may also contain turtles... 
+    which may also contain turtles...
+    which may also contain turtles...
+    all the way down.
+.EXAMPLE
+    turtle square 42 turtles @{
+        circle = turtle circle 21        
+    } save ./InscribedSquare.svg     
+.EXAMPLE
+    turtle square 42 turtles @{
+        square = 
+            turtle teleport 4 4 square 34 turtles @{
+                square = turtle teleport 8 8 square 26 turtles @{
+                    square = turtle teleport 8 8 square 26 turtles @{
+                        square = turtle teleport 12 12 square 18 turtles @{
+                            square = turtle teleport 16 16 square 10
+                        }
+                    }
+                }
+            }        
+    } save ./SquaresWithinSquares.svg
+#&gt;
+param(
+[PSObject]
+$Value
+)
+
+# If we don't already have a turtles dictionary
+if ($this -and -not $this.'.Turtles') {
+    # now is the time to create one.
+    $this | Add-Member NoteProperty '.Turtles' ([Ordered]@{}) -Force 
+}
+
+# Go over each value
+foreach ($v in $value) {
+    # If the value was a dictionary
+    if ($v -is [Collections.IDictionary]) {
+        # merge it into our turtle dictionary
+        foreach ($key in $v.Keys) {
+            $this.'.Turtles'[$key] = $V[$key]
+        }    
+    } elseif ($v.pstypenames -contains 'Turtle') {
+        # If it was a turtle, just add it
+
+        # If the turtle had an ID, use it
+        if ($v.ID -ne 'Turtle') {
+            $this.'.Turtles'[$v.ID] = $v
+        } else {
+            # otherwise, provide it an auto incremented ID
+            $this.'.Turtles'["Turtle$($this.'.Turtles'.Count + 1)"] = $v
+        }        
+    } elseif ($v -is [int]) {
+        # If the provided a number, let's create that many turtles.
+        # Note: the automatic placement of these turtles might be nice, and may be added in the future.
+        foreach ($n in 1..([Math]::Abs($value))) {
+            $this.'.Turtles'["Turtle$($this.'.Turtles'.Count + 1)"] = turtle
+        }    
+    }
+}
+
+return $this.'.Turtles'
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>ViewBox</Name>

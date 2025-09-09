@@ -4,32 +4,33 @@
 .DESCRIPTION
     Gets a turtle a canvas element.
 #>
-
 @(
     $viewBox = $this.ViewBox
-    $null, $null, $viewX, $viewY = $viewBox
-    "<style>canvas {max-width: 100%; height: 100%}</style>"
-    "<canvas id='$($this.ID)-canvas' width='$($viewX + 1)' height='$($viewY + 1)'></canvas>"
-
-    "<script>"    
+    $null, $null, $viewX, $viewY = $viewBox    
+    "<canvas id='$($this.ID)-canvas'></canvas>"    
+    "<script type='module'>"    
 @"
 window.onload = async function() {
-  var canvas = document.getElementById('$($this.ID)-canvas');
-  var ctx = canvas.getContext('2d');
-  ctx.strokeStyle = '$($this.Stroke)'
-  ctx.lineWidth = '$(
-    if ($this.StrokeWidth -match '%') {
-        [Math]::Max($viewX, $viewY) * ($this.StrokeWidth -replace '%' -as [double])/100
-    } else {
-        $this.StrokeWidth
+    const loadImage = async url => {
+        const newImage = document.createElement('img')
+        newImage.src = url
+        return new Promise((resolve, reject) => {
+            newImage.onload = () => resolve(newImage)
+            newImage.onerror = reject
+        })
     }
-)'
-  ctx.fillStyle = '$($this.Fill)'
-  var p = new Path2D("$($this.PathData)")
-  ctx.stroke(p)
-  ctx.fill(p)
+    const dataHeader = 'data:image/svg+xml;charset=utf-8'
+    const serializeAsXML = e => (new XMLSerializer()).serializeToString(e)
+    const encodeAsUTF8 = s => ```${dataHeader},`${encodeURIComponent(s)}``
 
-  /*Insert-Post-Processing-Here*/
+    const img = await loadImage('$($this.DataUrl)')  
+    
+    var canvas = document.getElementById('$($this.ID)-canvas');
+    canvas.width = $viewX
+    canvas.height = $viewY
+    var ctx = canvas.getContext('2d')
+    ctx.drawImage(img, 0, 0, $viewX, $viewY)
+    /*Insert-Post-Processing-Here*/
 }
 "@
     "</script>"

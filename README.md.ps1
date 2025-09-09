@@ -7,11 +7,9 @@
 #requires -Module Turtle
 param()
 
-#region Introduction
 
-@"
-# Turtle
-
+$imageHeader = @(
+@'
 <div align='center'>
     <img src='./Examples/SierpinskiTriangle.svg' alt='SierpinskiTriangle' width='50%' />
     <br/>
@@ -19,8 +17,15 @@ param()
     <img src='https://img.shields.io/powershellgallery/dt/Turtle' />
     </a>
 </div>
+'@
+)
 
+#region Introduction
 
+@"
+# Turtle
+
+$imageHeader
 
 ## Turtles in a PowerShell
 
@@ -123,6 +128,9 @@ The turtle is represented as an object, and any number of commands can make or m
 
 Last but not least:  `Get-Turtle` lets you run multiple steps of turtle, and is aliased to `turtle`.
 
+Get-Turtle is the command we will use most often, and we will almost always just call it by the alias `turtle`.
+
+If you want to get a sense of all that Turtle can do, check out the [Get-Turtle examples](https://psturtle.com/Commands/Get-Turtle)
 "@
 
 @"
@@ -143,15 +151,10 @@ Let's start simple, by drawing a square with a series of commands.
 ~~~PowerShell
 $(
 $drawSquare1 = {
-New-Turtle | 
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
+turtle Forward 10 Rotate 90 |
+    turtle Forward 10 Rotate 90 |
+    turtle Forward 10 Rotate 90 |
+    turtle Forward 10 Rotate 90 |    
     Save-Turtle "./Square.svg"
 }
 $drawSquare1
@@ -296,7 +299,7 @@ $box3 = {
 
 ### Drawing Fractals
 
-Turtle is often used to draw fractals.
+Turtle is can be used to draw fractals.
 
 Many fractals can be described in something called a [L-System](https://en.wikipedia.org/wiki/L-system) (short for Lindenmayer system)
 
@@ -371,7 +374,7 @@ $SnowFlakePattern = . $MakeSnowflakePattern
 
 @"
 <div align='center'>
-<img src='./Examples/$($SnowFlakePattern.Name)' alt='Snowflake Pattern' width='50%' />
+<img src='./Examples/$($SnowFlakePattern.Name)' alt='Snowflake Pattern' width='100%' height='50%' />
 </div>
 "@
 
@@ -388,11 +391,114 @@ $(
 
 @"
 <div align='center'>
-<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' />
+<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' height='50%' />
 </div>
 "@
 
 #endregion LSystems
+
+#region Turtles All The Way Down
+@"
+### Turtles all the way down
+
+A turtle can contain turtles, which can contain turtles, which can contain turtles ...
+
+We call this 'Turtles All The Way Down', and it lets us do two very important sets of things:
+
+* It allows turtles to interact
+* It allows us to model the behavior of multiple turtles
+
+Let's start with a few cool examples.
+
+At the most basic, let's make an inscribed circle and square:
+
+~~~PowerShell
+$(
+    @(Get-Content ./Examples/InscribedCircle.turtle.ps1 | 
+    Select-Object -Skip 1) -join [Environment]::NewLine
+)
+~~~
+
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/InscribedCircle.svg' alt='Inscribed Circle' width='100%' />
+</div>
+"@
+
+@"
+Let's see it as a pattern:
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/InscribedCirclePattern.svg' alt='Inscribed Circle Pattern' width='100%' height='50%' />
+</div>
+"@
+
+
+@"
+#### Behavior Modelling
+
+Imagine we are four turtles in a square, each trying to catch up with the next turtle.
+
+[What kind of shape do you think our paths will draw?](Get-Content ./Examples/FollowThatTurtle.turtle.ps1)
+
+~~~PowerShell
+$(
+    @(Get-Content ./Examples/FollowThatTurtle.turtle.ps1 | 
+    Select-Object -Skip 1) -join [Environment]::NewLine
+)
+~~~
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/FollowThatTurtle.svg' alt='Follow That Turtle' width='100%' />
+</div>
+"@
+
+@"
+Let's see it as a pattern:
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/FollowThatTurtlePattern.svg' alt='Follow That Turtle' width='100%' height='50%' />
+</div>
+"@
+
+@"
+
+Now let's imagine we have four turtles in the center, and they're trying to get away from the turtles in the corners.
+
+[What kind of shape will this produce?](./Examples/FollowThatTurtleHideAndSeek.turtle.ps1)
+~~~PowerShell
+$(
+    @(Get-Content ./Examples/FollowThatTurtleHideAndSeek.turtle.ps1 | 
+    Select-Object -Skip 1) -join [Environment]::NewLine
+)
+~~~
+"@
+
+
+@"
+<div align='center'>
+<img src='./Examples/FollowThatTurtleHideAndSeek.svg' alt='Follow That Turtle Hide And Seek' width='100%' />
+</div>
+"@
+
+@"
+Let's see it as a pattern:
+"@
+
+@"
+<div align='center'>
+<img src='./Examples/FollowThatTurtleHideAndSeekPattern.svg' alt='Follow That Turtle Hide And Seek Pattern' width='100%' height='50%' />
+</div>
+"@
+#endregion Turtles All The Way Down
 
 #region Turtles in HTML
 @"
@@ -413,11 +519,16 @@ turtle SierpinskiTriangle |
 
 Anything we do with our turtle should work within a webpage.
 
+To include a Turtle in a page, we can simply stringify it:
+
+~~~PowerShell
+"`$(turtle SierpinskiTriangle)"
+~~~
+
 There are a few properties of the turtle that may be helpful:
 
 * `.Canvas` returns the turtle rendered in an HTML canvas
 * `.OffsetPath` returns the turtle as an offset path
-* `.ClipPath` returns the turtle as a clip path
 
 "@
 #endregion Turtles in HTML

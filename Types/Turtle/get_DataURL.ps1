@@ -6,6 +6,7 @@
     
     This can be used as an inline image in HTML, CSS, or Markdown.
 #>
-$thisSymbol = $this.Symbol
-$b64 = [Convert]::ToBase64String($OutputEncoding.GetBytes($thisSymbol.outerXml))
-"data:image/svg+xml;base64,$b64"
+$thisSVG = $this.SVG
+"data:image/svg+xml;base64,$(
+    [Convert]::ToBase64String($OutputEncoding.GetBytes($this.SVG.outerXml))
+)"

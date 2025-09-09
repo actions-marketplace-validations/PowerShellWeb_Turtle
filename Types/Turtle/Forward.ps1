@@ -12,6 +12,7 @@ param(
 $Distance = 10
 )
 
-$x = $Distance * ([math]::round([math]::cos($this.Heading * [Math]::PI / 180),15))
-$y = $Distance * ([math]::round([math]::sin($this.Heading * [Math]::PI / 180),15))
+$x = $Distance * ([math]::cos($this.Heading * [Math]::PI / 180))
+$y = $Distance * ([math]::sin($this.Heading * [Math]::PI / 180))
+
 return $this.Step($x, $y)

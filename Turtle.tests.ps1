@@ -60,7 +60,7 @@ describe Turtle {
             [Math]::Round($turtle.Position.Y,10) | Should -be 1
             $turtle = $turtle.Rotate($turtle.Towards(2,2))
             $turtle = $turtle.Forward($turtle.Distance(2,2))
-            $turtle.Heading | Should -be 45
+            $turtle.Heading -as [float] | Should -be 45
             [Math]::Round($turtle.Position.Y,10) | Should -be 2
             [Math]::Round($turtle.Position.Y,10) | Should -be 2
         }

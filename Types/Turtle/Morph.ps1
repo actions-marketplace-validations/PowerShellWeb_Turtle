@@ -4,7 +4,11 @@
 .DESCRIPTION
     Morphs a Turtle by animating its path.
 
-    Any two paths with the same number of points can be morphed into each other.
+    Any two paths with the same number of points can be morphed into each other smoothly.
+
+    Any two paths with a different number of points will become a step-by-step animation.
+
+    Since animations can include multiple complex paths, they can get quite large, and be quite beautiful.
 .EXAMPLE
     $sierpinskiTriangle = turtle SierpinskiTriangle 42 4
     $SierpinskiTriangleFlipped = turtle rotate 180 SierpinskiTriangle 42 4
@@ -34,6 +38,12 @@
         $flowerPetals3,
         $flowerPetals
     ) | Save-Turtle ./flowerPetalMorph.svg Pattern
+.EXAMPLE
+    turtle SierpinskiTriangle 42 4 morph |
+        Save-Turtle ./SierpinskiTriangleConstruction.svg
+.EXAMPLE
+    turtle stroke '#224488' fill '#4488ff' backgroundColor '#112244' rotate 60 SierpinskiTriangle 42 4 SierpinskiTriangle -42 4 morph |
+        Save-Turtle ./SierpinskiTriangleReflectionConstructionAndFill.svg
 #>
 param(
 [Parameter(ValueFromRemainingArguments)]
@@ -41,30 +51,50 @@ $Arguments
 )
 
 $durationArgument = $null
-
+$hasPoints = $false
+$segmentCount = 0 
 $newPaths = @(foreach ($arg in $Arguments) {
     if ($arg -is [string]) {
         if ($arg -match '^\s{0,}m') {
             $arg
+            $hasPoints = $true
         }
     } elseif ($arg.PathData) {
         $arg.PathData
+        $hasPoints = $true
     } elseif ($arg.D) {
         $arg.D
+        $hasPoints = $true
     } elseif ($arg -is [TimeSpan]) {
         $durationArgument = $arg
     }
     elseif ($arg -is [double] -or $arg -is [int]) {
-        $durationArgument = [TimeSpan]::FromSeconds($arg)
+        if (-not $hasPoints -and $arg -is [int]) {
+            $segmentCount = [Math]::Abs($arg)
+        } else {
+            $durationArgument = [TimeSpan]::FromSeconds($arg)
+        }        
     }
 })
 
 if (-not $newPaths) {
-    return $this
-    <#$pathSegments = @($this.PathData -split '(?=\p{L})')
-    $newPaths = @(for ($segmentNumber = 0; $segmentNumber -lt $pathSegments.Count; $segmentNumber++) {
-        $pathSegments[0..$segmentNumber] -join ' '
-    }) -join ';'#>
+    if ($this.Steps.Count) {        
+        $stepList = @($this.PathData -join ' ' -split '(?=\p{L})' -ne '')
+        if ($segmentCount) {
+            $newPaths = @(
+                for ($n = 1; $n -lt $stepList.Length; $n += ($stepList.Length/$segmentCount)) {
+                    $stepList[0..$n] -join ' '
+                }
+            )            
+        } else {
+            $newPaths = @(foreach ($n in 1..($stepList.Length)) {
+                $stepList[0..$n] -join ' '
+            })
+        }
+        
+    } else {
+        return $this
+    }        
 }
 
 if ($this.PathAnimation) {
@@ -72,8 +102,8 @@ if ($this.PathAnimation) {
         @(foreach ($animationXML in $this.PathAnimation -split '(?<=/>)') {
             $animationXML = $animationXML -as [xml]
             if (-not $animationXML) { continue }
-            if ($animationXML.attributeName -eq 'd') {
-                $animationXML.values = "$($newPaths -join ';')"
+            if ($animationXML.animate.attributeName -eq 'd') {
+                $animationXML.animate.values = "$($newPaths -join ';')"
             }
             $animationXML.OuterXml
         })

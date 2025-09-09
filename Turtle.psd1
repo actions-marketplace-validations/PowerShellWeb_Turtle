@@ -1,6 +1,6 @@
 @{    
     # Version number of this module.
-    ModuleVersion = '0.1.10'
+    ModuleVersion = '0.2.0'
     # Description of the module
     Description = "Turtles in a PowerShell"
     # Script module or binary module file associated with this manifest.
@@ -37,21 +37,32 @@
             # A URL to the license for this module.
             LicenseURI = 'https://github.com/PowerShellWeb/Turtle/blob/main/LICENSE'
             ReleaseNotes = @'
-## Turtle 0.1.10:
+## Turtle 0.2:
 
-* Updated Methods
-  * `Turtle.Star` even point fix (#190)
-  * `Turtle.Polygon` partial polygon support (#194)
-* New Shapes
-  * `Turtle.Rectangle` (#192)
-  * `Turtle.StarFlower` (#191)
-  * `Turtle.GoldenFlower` (#193)
-  * `Turtle.HatMonotile` (#196)
-  * `Turtle.TurtleMonotile` (#195)
-  * `Turtle.BarGraph` (#173)
-* Added Demos
-   * Intro To Turtles (#197)
-   
+### Turtles All The Way Down 
+
+A turtle can now contain `.Turtles`
+Which can contain `.Turtles`
+Which can contain `.Turtles`
+Which can contain `.Turtles`...
+
+* Turtles all the way down (#206)
+  * `Turtle.get/set_Turtles` (#207)
+  * `Turtle.get_SVG` supports children (#209)
+  * `Turtle.get_Canvas` rasterization improvement (#210)
+  * `Turtle.Towards()` multiple targets (#211) 
+  * `Turtle.Distance()` multiple targets (#212)
+* `Turtle.Morph` supports stepwise animation (#215)
+* Small fixes
+  * `Turtle.Step()` uses Add (#213)
+  * `Turtle.set_Steps` initialization fix (#214)
+  * `Turtle.set_Duration` anytime (#216)
+  * `Turtle.get_SVG` empty viewbox support (#218)
+  * `Turtle.get/set_SVGAttribute` (#219)
+  * `Turtle.get/set_SVGAnimation` (#220)
+  * `Turtle.get/set_PathTransform` (#217)
+  * `Turtle.Forward()` removing rounding (#221)
+
 ---
 
 Additional details available in the [CHANGELOG](https://github.com/PowerShellWeb/Turtle/blob/main/CHANGELOG.md)

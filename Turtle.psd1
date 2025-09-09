@@ -66,6 +66,17 @@ Which can contain `.Turtles`...
 ---
 
 Additional details available in the [CHANGELOG](https://github.com/PowerShellWeb/Turtle/blob/main/CHANGELOG.md)
+
+Please:
+
+* [Like](https://github.com/PowerShell/Turtle)
+* [Share](https://psturtle.com/)
+* Subscribe
+  * [psturtle.com](https://bsky.app/profile/psturtle.com)
+  * [mrpowershell.com](https://bsky.app/profile/mrpowershell.com)
+  * [StartAutomating](https://github.com/StartAutomating)
+  * [PowerShellWeb](https://github.com/PowerShellWeb)
+* Sponsor [StartAutomating](https://github.com/sponsors/StartAutomating)
 '@        
         }
     }

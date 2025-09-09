@@ -326,7 +326,7 @@ Let's see it as a pattern:
 
 Imagine we are four turtles in a square, each trying to catch up with the next turtle.
 
-What kind of shape do you think our paths will draw?
+[What kind of shape do you think our paths will draw?](Get-Content ./Examples/FollowThatTurtle.turtle.ps1)
 
 ~~~PowerShell
 .SYNOPSIS
@@ -401,8 +401,7 @@ Let's see it as a pattern:
 
 Now let's imagine we have four turtles in the center, and they're trying to get away from the turtles in the corners.
 
-What kind of shape will this produce?
-
+[What kind of shape will this produce?](./Examples/FollowThatTurtleHideAndSeek.turtle.ps1)
 ~~~PowerShell
 .SYNOPSIS
     Hide and Seek

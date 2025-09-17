@@ -692,10 +692,13 @@ param(
 $Distance = 10
 )
 
-$x = $Distance * ([math]::cos($this.Heading * [Math]::PI / 180))
-$y = $Distance * ([math]::sin($this.Heading * [Math]::PI / 180))
+$precision = if ($this.Precision -ge 0) { $this.Precision } else { 4 }
+
+$x = $Distance * ([Math]::Round([math]::cos($this.Heading * [Math]::PI / 180), $precision))
+$y = $Distance * ([Math]::Round([math]::sin($this.Heading * [Math]::PI / 180), $precision))
 
 return $this.Step($x, $y)
+
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -3616,6 +3619,55 @@ if ($posX -gt $this.'.Maximum'.X) {
 if ($posY -gt $this.'.Maximum'.Y) {
     $this.'.Maximum'.Y = $posY
 }
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Precision</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Turtle Precision
+.DESCRIPTION
+    Gets the rounding precision for the turtle.
+
+    Any move the turtle makes will be rounded by this number of digits.
+
+    Paths with more rounding may be more accurate at extremly high resolutions.
+    
+    They will have difficulty rendering stepwise animations and take up more file space per point.
+
+    The default value for `Precision` is currently `4`
+#&gt;
+if (-not $this.'.Precision') {
+    $this | Add-Member NoteProperty '.Precision' 4 -Force
+}
+return $this.'.Precision'
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the Turtle's Precision
+.DESCRIPTION
+    Sets the level of precision a turtle should use for rounding.
+
+    This is the number of digits a value will be rounded to.
+    
+    Lower precision will result in smaller filesizes, and a much better chance of stepwise animations working properly.
+
+    Higher precision will result in large filesizes and will occassionally cause stepwise animations to get stuck.
+#&gt;
+param(
+# The number of decimal places used in rounding.
+[ValidateRange(1,28)]
+[int]
+$Precision = 4
+)
+
+$this | Add-Member NoteProperty '.Precision' $Precision -Force
+
+
+
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>

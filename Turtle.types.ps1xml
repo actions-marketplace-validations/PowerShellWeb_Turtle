@@ -1016,8 +1016,15 @@ $Distance = 10
 
 $precision = if ($this.Precision -ge 0) { $this.Precision } else { 4 }
 
-$x = $Distance * ([Math]::Round([math]::cos($this.Heading * [Math]::PI / 180), $precision))
-$y = $Distance * ([Math]::Round([math]::sin($this.Heading * [Math]::PI / 180), $precision))
+$x = [Math]::Round(
+    $Distance * [math]::cos($this.Heading * [Math]::PI / 180), 
+    $precision
+)
+$y = [Math]::Round(
+    $Distance * [math]::sin($this.Heading * [Math]::PI / 180),
+    $precision
+)
+
 
 return $this.Step($x, $y)
 
@@ -4022,10 +4029,10 @@ if ($posY -gt $this.'.Maximum'.Y) {
     
     They will have difficulty rendering stepwise animations and take up more file space per point.
 
-    The default value for `Precision` is currently `4`
+    The default value for `Precision` is currently `6`
 #&gt;
 if (-not $this.'.Precision') {
-    $this | Add-Member NoteProperty '.Precision' 4 -Force
+    $this | Add-Member NoteProperty '.Precision' 6 -Force
 }
 return $this.'.Precision'
 
@@ -4047,7 +4054,7 @@ param(
 # The number of decimal places used in rounding.
 [ValidateRange(1,28)]
 [int]
-$Precision = 4
+$Precision = 6
 )
 
 $this | Add-Member NoteProperty '.Precision' $Precision -Force

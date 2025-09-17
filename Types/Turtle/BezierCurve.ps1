@@ -20,6 +20,8 @@
         'BezierCurve', 0, 100, -100, 100
         'BezierCurve', -100, -100, -100, -100
     ) save ./b4.svg
+.LINK
+    https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 #>
 param(
 # The X control point

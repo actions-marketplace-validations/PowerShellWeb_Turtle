@@ -315,6 +315,69 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>BezierCurve</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Draws a Bezier Curve
+.DESCRIPTION
+    Draws a simple Bezier curve.  
+.EXAMPLE
+    turtle BezierCurve 0 -100 100 -100 save ./b.svg
+.EXAMPLE
+    turtle BezierCurve 0 -100 100 -100 BezierCurve 100 100 100 100 save ./b2.svg
+.EXAMPLE
+    turtle @(
+        'BezierCurve', 0, -100, 100, -100
+        'BezierCurve', 100, 100, 100, 100
+        'BezierCurve', 0, 100, -100, 100
+    ) save ./b3.svg
+.EXAMPLE
+    turtle @(
+        'BezierCurve', 0, -100, 100, -100
+        'BezierCurve', 100, 100, 100, 100
+        'BezierCurve', 0, 100, -100, 100
+        'BezierCurve', -100, -100, -100, -100
+    ) save ./b4.svg
+#&gt;
+param(
+# The X control point
+[double]
+$ControlX,
+
+# The Y control point
+[double]
+$ControlY,
+
+# The delta X
+[double]
+$DeltaX,
+
+# The delta Y
+[double]
+$DeltaY
+)
+
+
+
+if ($DeltaX -or $DeltaY) {
+    $this.Position = $DeltaX, $DeltaY
+    # If the pen is down
+    if ($this.IsPenDown) {
+        # draw the curve
+        $this.Steps.Add("s $ControlX $ControlY $DeltaX $DeltaY")
+    } else {        
+        # otherwise, move to the deltaX/deltaY
+        $this.Steps.Add("m $DeltaX $DeltaY")
+    }
+}
+
+return $this
+
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>BinaryTree</Name>
         <Script>
                         param(

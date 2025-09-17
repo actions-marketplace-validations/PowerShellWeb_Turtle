@@ -10,9 +10,9 @@
     
     They will have difficulty rendering stepwise animations and take up more file space per point.
 
-    The default value for `Precision` is currently `4`
+    The default value for `Precision` is currently `6`
 #>
 if (-not $this.'.Precision') {
-    $this | Add-Member NoteProperty '.Precision' 4 -Force
+    $this | Add-Member NoteProperty '.Precision' 6 -Force
 }
 return $this.'.Precision'

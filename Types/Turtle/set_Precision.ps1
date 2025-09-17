@@ -14,7 +14,7 @@ param(
 # The number of decimal places used in rounding.
 [ValidateRange(1,28)]
 [int]
-$Precision = 4
+$Precision = 6
 )
 
 $this | Add-Member NoteProperty '.Precision' $Precision -Force

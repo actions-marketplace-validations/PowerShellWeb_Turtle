@@ -28,8 +28,20 @@
         <ReferencedMemberName>Backward</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>BackgroundColour</Name>
+        <ReferencedMemberName>BackgroundColor</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>BézierCurve</Name>
+        <ReferencedMemberName>BezierCurve</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>bk</Name>
         <ReferencedMemberName>Backward</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>CubicBézierCurve</Name>
+        <ReferencedMemberName>CubicBezierCurve</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>down</Name>
@@ -38,6 +50,10 @@
       <AliasProperty>
         <Name>fd</Name>
         <ReferencedMemberName>Forward</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>FillColour</Name>
+        <ReferencedMemberName>FillColor</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>FlowerGolden</Name>
@@ -72,8 +88,16 @@
         <ReferencedMemberName>PenDown</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>PenColour</Name>
+        <ReferencedMemberName>PenColor</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>pu</Name>
         <ReferencedMemberName>PenUp</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>QuadraticBézierCurve</Name>
+        <ReferencedMemberName>QuadraticBezierCurve</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>r</Name>
@@ -90,6 +114,22 @@
       <AliasProperty>
         <Name>SetPosition</Name>
         <ReferencedMemberName>GoTo</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>SierpińskiArrowHeadCurve</Name>
+        <ReferencedMemberName>SierpinskiArrowHeadCurve</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>SierpińskiCurve</Name>
+        <ReferencedMemberName>SierpinskiCurve</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>SierpińskiSquareCurve</Name>
+        <ReferencedMemberName>SierpinskiSquareCurve</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>SierpińskiTriangle</Name>
+        <ReferencedMemberName>SierpinskiTriangle</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>up</Name>

@@ -634,7 +634,7 @@ return $this
         'Rotate', 90 * 4
     ) save ./Quadrants.svg
 .EXAMPLE
-    Turtle @(
+    Turtle width 84 height 84 teleport 42 42 @(
         'CircleArc',42, 60,
         'Rotate', 60 * 6
     ) save ./Sextants.svg

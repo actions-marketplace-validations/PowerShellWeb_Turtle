@@ -807,9 +807,18 @@ return $this.LSystem('F+F+F+F',  [Ordered]@{
                         
 &lt;#
 .SYNOPSIS
-    Draws a Bezier Curve
+    Draws a Cubic Bezier Curve
 .DESCRIPTION
-    Draws a simple Bezier curve.  
+    Draws a Cubic Bezier curve.
+
+    Cubic Bezier curves take three points:
+
+    * A Start Control Point
+    * An End Control Point
+    * An End Point
+
+    A line will be drawn from the current position to the end point,
+    curved towards both the start and control point.
 .EXAMPLE
     turtle @(
         'CubicBezierCurve',
@@ -817,6 +826,73 @@ return $this.LSystem('F+F+F+F',  [Ordered]@{
             0,200,  # End Control Point
             200,200 # End Point        
     ) save ./cubic.svg
+.EXAMPLE
+    turtle width 200 height 200 morph @(
+        turtle 'CubicBezierCurve',
+            200,0,  # Start Control Point 
+            0,200,  # End Control Point
+            200,200 # End Point
+            
+        turtle 'CubicBezierCurve',
+            0,200,  # Start Control Point 
+            200,0,  # End Control Point
+            200,200 # End Point
+        turtle 'CubicBezierCurve',
+            200,0,  # Start Control Point 
+            0,200,  # End Control Point
+            200,200 # End Point
+    ) save ./CubicMorph.svg
+.EXAMPLE
+    turtle width 200 height 200 morph @(
+        turtle 'CubicBezierCurve',
+            200,0,    # Start Control Point 
+            0,200,    # End Control Point
+            200,200   # End Point
+            
+        turtle 'CubicBezierCurve',
+            0,200,    # Start Control Point 
+            200,0,    # End Control Point
+            200,200   # End Point
+
+        turtle 'CubicBezierCurve',
+            200,200,  # Start Control Point 
+            200,0,    # End Control Point
+            200,200   # End Point
+        
+        turtle 'CubicBezierCurve',
+            0,200,    # Start Control Point 
+            0,200,    # End Control Point
+            200,200   # End Point
+
+        turtle 'CubicBezierCurve',
+            400,0,    # Start Control Point 
+            0,200,    # End Control Point
+            200,200   # End Point
+
+        turtle 'CubicBezierCurve',
+            0,200,      # Start Control Point 
+            200,0,      # End Control Point
+            200,200   # End Point
+
+        turtle 'CubicBezierCurve',
+            400,0,    # Start Control Point 
+            0,400,    # End Control Point
+            200,200   # End Point
+
+        turtle 'CubicBezierCurve',
+            0,200,      # Start Control Point 
+            200,0,      # End Control Point
+            200,200   # End Point        
+
+        turtle 'CubicBezierCurve',
+            200,0,   # Start Control Point 
+            0,200,   # End Control Point
+            200,200  # End Point
+    ) save ./MoreCubicMorphs.svg   
+.NOTES
+    This corresponds to the `c` element in an SVG Path
+.LINK
+    https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/Paths#b%C3%A9zier_curves
 .LINK
     https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 #&gt;

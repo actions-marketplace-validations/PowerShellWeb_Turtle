@@ -3204,6 +3204,37 @@ window.onload = async function() {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Class</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle's class
+.DESCRIPTION
+    Gets any CSS classes associated with the turtle
+.EXAMPLE
+    turtle class foo bar baz bing class
+#&gt;
+return $this.SVGAttribute["class"] -split '\s+'
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets a Turtle's class
+.DESCRIPTION
+    Sets any CSS classes associated with the turtle
+.EXAMPLE
+    turtle class foo bar baz bing class
+#&gt;
+param(
+$Class
+)
+
+$this.SVGAttribute['class'] = $Class -join ' '
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ClipPath</Name>
         <GetScriptBlock>
                         "clip-path: path(`"$($this.PathData)`");"

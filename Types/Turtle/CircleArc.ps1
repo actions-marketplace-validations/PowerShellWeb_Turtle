@@ -13,7 +13,7 @@
         'Rotate', 90 * 4
     ) save ./Quadrants.svg
 .EXAMPLE
-    Turtle width 84 height 84 teleport 42 42 @(
+    Turtle @(
         'CircleArc',42, 60,
         'Rotate', 60 * 6
     ) save ./Sextants.svg
@@ -32,7 +32,6 @@ $Radius = 42,
 [double]
 $Angle = 30
 )
-
 
 # If we wanted an angle that was a multiple of 360
 # we actually want to just draw a circle
@@ -66,7 +65,8 @@ $null = $this.Forward($Radius)
 $WedgeEndX = $this.Position.X
 $WedgeEndY = $this.Position.Y
 # Go back to the center, rotate, and move forward by the radius.
-$null = $this.Forward(-$radius).Rotate($Angle).Forward($radius)
+$null = $this.Forward(-$radius)
+$null = $this.Rotate($Angle).Forward($radius)
 # now we can compute the distance to the end of the wedge
 $DeltaX = $WedgeEndX - $this.Position.X
 $DeltaY = $WedgeEndY - $this.Position.Y
@@ -75,5 +75,6 @@ $this = $this.Arc($Radius, $Radius, 0, ($Angle -gt 180), $false, $DeltaX, $Delta
 # and then pop our position back
 $null = $this.Pop()
 # and return this
+$null = $this.ResizeViewBox($Radius)
 return $this
 

@@ -47,6 +47,9 @@
         )
         $randomNegativePie
     ) save ./RandomPieGraphWithNegativeMorph.svg
+.EXAMPLE
+    # Multiple pie graphs
+    turtle PieGraph 400 (1,2,4,8,4,2,1) jump 800 rotate 180 PieGraph 400 (1,2,4,8,4,2,1) save ./pg.svg
 #>
 param(
 # The radius of the bar graph
@@ -97,6 +100,11 @@ $Slices = @(
             }
             $richSlices = $true
         }
+        elseif ($DataPoint -is 'Microsoft.PowerShell.Commands.GroupInfo') {
+            $total += $dataPoint.Count
+            $dataPoint.Count
+            $richSlices = $true
+        }
     }
 )
 
@@ -108,20 +116,14 @@ $relativeSlices =
 if (-not $relativeSlices) { return $this }
 
 # Next let's figure out the maximum delta x and delta y
-$dx = $this.X + ($Radius * 2)
-$dy = $this.Y + ($Radius * 2)
+$dx = $this.X + $Radius
+$dy = $this.Y + $Radius
 # and resize our viewbox with respect to our radius
 $null = $this.ResizeViewBox($Radius)
 
-# Calulate the midpoint of the circle
-$midX = $this.X + $dx/2
-$midY = $this.Y + $dy/2
-
-# and teleport to it
-$null = $this.Teleport($midX, $midY)
-
-# If we are not rendering "rich" slices, we can draw the arcs as one path.
+# If we are not rendering "rich" slices, we can draw the arcs as one path
 if (-not $richSlices) {
+    # and we do not need to teleport
     for ($sliceNumber =0 ; $sliceNumber -lt $Slices.Length; $sliceNumber++) {
         # Turn each ratio into an angle        
         $Angle = $relativeSlices[$sliceNumber] * 360        
@@ -129,7 +131,7 @@ if (-not $richSlices) {
                 # Draw an arc of that angle,
                 CircleArc($Radius, $Angle).
                 # then rotate by the angle.
-                Rotate($angle)    
+                Rotate($angle)
     }
 }
 else {
@@ -138,11 +140,14 @@ else {
     # The idea is the same, but the implementation is more complicated
     $heading = $this.Heading
     if (-not $heading) { $heading = 0.0 }    
+    # Calulate the midpoint of the circle
+    $midX = $this.X + ($dx - $this.X)/2
+    $midY = $this.Y + ($dy - $this.Y)/2
     for ($sliceNumber =0 ; $sliceNumber -lt $Slices.Length; $sliceNumber++) {
         $Angle = $relativeSlices[$sliceNumber] * 360
-        $sliceName = "slice$sliceNumber"
+        $sliceName = "slice$sliceNumber"        
         # created a nested turtle at the midpoint
-        $nestedTurtles["slice$sliceNumber"] = turtle teleport $midX $midY 
+        $nestedTurtles["slice$sliceNumber"] = turtle teleport $this.X $this.Y 
         # with the current heading
         $nestedTurtles["slice$sliceNumber"].Heading = $this.Heading
         # and arc by the angle

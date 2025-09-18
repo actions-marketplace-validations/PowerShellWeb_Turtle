@@ -105,8 +105,48 @@ $Slices = @(
             $dataPoint.Count
             $richSlices = $true
         }
+        elseif ($dataPoint -isnot [string]) {
+            foreach ($prop in $dataPoint.psobject.properties) {
+                if ($dataPoint.($prop.Name) | IsPrimitive) {
+                    $Total += $dataPoint.($prop.Name) # add it to the total
+                    $dataPoint.($prop.Name) -as [double] # and output that
+                }
+            }
+            $richSlices = $true
+        }
     }
 )
+
+if ($Slices.Length -eq 1 -and -not $richSlices) {
+
+    # If we provide a single number, we will auto-slice the pie
+    # If the number is between 0 and 1, we want to show a fraction
+    if ($slices[0] -ge 0 -and $slices[0] -le 1) {        
+        # Set the total to one
+        $total = 1
+        # and make two pie slices.
+        $slices = $slices[0], (1- $slices[0])
+    } else {
+        # Otherwise, we want mostly equal pie slices
+        # (mostly is in case of a decimal value)
+        # Get the floor of our slice,
+        $floor = [Math]::Floor($slices[0])
+        # and determine the remainder.
+        $remainder = $slices[0] - $floor
+        # Then create N equal slices.
+        $Slices = @(,1 * $floor)
+        # If there was a remainder
+        if ($remainder) {
+            # create a small slice.
+            $slices += $remainder
+        }
+        # Retotal our pie
+        $total = 0.0
+        foreach ($slice in $slices) {
+            $total += $slice
+        }        
+    }    
+}
 
 # Turn each numeric slice into a ratio
 $relativeSlices =

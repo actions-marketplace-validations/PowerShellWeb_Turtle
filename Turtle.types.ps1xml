@@ -52,6 +52,10 @@
         <ReferencedMemberName>CubicBezierCurve</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Defs</Name>
+        <ReferencedMemberName>Defines</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>down</Name>
         <ReferencedMemberName>PenDown</ReferencedMemberName>
       </AliasProperty>
@@ -3761,6 +3765,53 @@ $thisSVG = $this.SVG
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Defines</Name>
+        <GetScriptBlock>
+                        if ($this.'.Defines') {
+    return $this.'.Defines'
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the Turtle Path Animation
+.DESCRIPTION
+    Sets an animation for the Turtle path.
+#&gt;
+param(
+# The definition object.
+# This may be a string, XML, a dictionary containing defines, or an element
+[PSObject]
+$Defines
+)
+
+$newDefinition = @(foreach ($definition in $Defines) {
+    if ($ -is [Collections.IDictionary]) {
+        $definitionCopy = [Ordered]@{} + $definition                
+        "&lt;$elementName $(
+            @(foreach ($key in $definitionCopy.Keys) {
+                if ($key -eq 'Children') { continue }
+                " $key='$([Web.HttpUtility]::HtmlAttributeEncode($definitionCopy[$key]))'"
+            }) -join ''
+        )$()&gt;"
+    }
+    elseif ($definition -is [string]) {
+        $definition
+    }    
+    elseif ($definition.OuterXml) {
+        $definition.OuterXml
+    }
+    else {
+        "$definition"
+    }
+})
+
+$this | Add-Member -MemberType NoteProperty -Force -Name '.Defines' -Value $newDefinition
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Duration</Name>
         <GetScriptBlock>
                         &lt;#
@@ -4742,7 +4793,14 @@ foreach ($key in $this.SVGAttribute.Keys) {
 
 "&lt;svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     " $attributeName='$($svgAttributes[$attributeName])'"
-}) -join '')&gt;"    
+}) -join '')&gt;"
+    # Declare any definitions, like markers or gradients.
+    if ($this.Defines) {
+        "&lt;defs&gt;"
+            $this.Defines
+        "&lt;/defs&gt;"
+    }
+
     # Declare any SVG animations
     if ($this.SVGAnimation) {$this.SVGAnimation}
     if ($this.Link) {

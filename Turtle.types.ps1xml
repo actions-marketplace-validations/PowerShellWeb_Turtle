@@ -4264,7 +4264,13 @@ $newAnimation = @(foreach ($animation in $PathAnimation) {
     }
 })
 
+if ($this.PathAnimation) {
+    $newAnimation = @($this.PathAnimation) + $newAnimation
+}
 $this | Add-Member -MemberType NoteProperty -Force -Name '.PathAnimation' -Value $newAnimation
+
+
+
 
                     </SetScriptBlock>
       </ScriptProperty>

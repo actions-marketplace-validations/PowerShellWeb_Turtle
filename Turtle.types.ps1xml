@@ -76,6 +76,10 @@
         <ReferencedMemberName>HorizontalLine</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Href</Name>
+        <ReferencedMemberName>Link</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>l</Name>
         <ReferencedMemberName>Step</ReferencedMemberName>
       </AliasProperty>
@@ -3926,6 +3930,43 @@ if ($chromeOutput -match '&lt;img\ssrc="data:image/\w+;base64,(?&lt;b64&gt;[^"]+
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Link</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle's link
+.DESCRIPTION
+    Gets a link reference (href) associated with the turtle.
+
+    If one is present, this will nest the turtle inside of an &lt;a&gt; element
+.EXAMPLE
+    turtle link https://psturtle.com/ link
+
+#&gt;
+$this.'.link'
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets a Turtle's link
+.DESCRIPTION
+    Sets a link reference (`href`) associated with the turtle.
+
+    If one is present, this will nest the turtle inside of an anchor `&lt;a&gt;` element
+.EXAMPLE
+    turtle link https://psturtle.com/
+#&gt;
+param(
+[string]
+$Link
+)
+
+$this | Add-Member NoteProperty '.Link' $link -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Mask</Name>
         <GetScriptBlock>
                         $segments = @(
@@ -4613,14 +4654,19 @@ foreach ($key in $this.SVGAttribute.Keys) {
 
 "&lt;svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     " $attributeName='$($svgAttributes[$attributeName])'"
-}) -join '')&gt;"
+}) -join '')&gt;"    
     # Declare any SVG animations
     if ($this.SVGAnimation) {$this.SVGAnimation}
-
+    if ($this.Link) {
+        "&lt;a href='$($this.Link)'&gt;"
+    }
     # Output our own path
     $this.PathElement.OuterXml
     # Followed by any text elements
     $this.TextElement.OuterXml
+    if ($this.Link) {
+        "&lt;/a&gt;"
+    }
 
     # If the turtle has children
     $children = @(foreach ($turtleName in $this.Turtles.Keys) {

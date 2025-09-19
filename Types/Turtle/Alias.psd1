@@ -1,33 +1,57 @@
 @{
+    # SVG Path Compatibility
+    # (these methods directly reflect the corresponding instruction)
+    a = 'Arc'
+    c = 'CubicBezierCurve'
+    l = 'Step'
+    s = 'BezierCurve'
+    q = 'QuadraticBezierCurve'
+
+    # Shorter forms:
+    Pie = 'PieGraph'
+    ArcR = 'ArcRight'
+    ArcL = 'ArcLeft'
+
+    # Logo ('Original') Turtle Compatibility
     pd = 'PenDown'
     pu = 'PenUp'
     fd = 'Forward'
-    down = 'PenDown'
-    up = 'PenUp'
-    l = 'Left'
     lt = 'Left'
     rt = 'Right'
-    r = 'Right'
+    bk = 'Backward' 
+    
+    # Python Turtle Compatibility
+    SetPos = 'GoTo'
+    SetPosition = 'GoTo'        
+    Back = 'Backward'
     xPos = 'xcor'
     yPos = 'ycor'
+
+    # Python Turtle Compatibility That Will be Revised if/when the Turtle goes to 3D
+    down = 'PenDown'
+    up = 'PenUp'        
+    r = 'Rotate'    
+        
+    # CSS shape pre-compatibility
     LineTo = 'GoTo'
-    SetPos = 'GoTo'
-    SetPosition = 'GoTo'
     MoveTo = 'Teleport'
-    Back = 'Backward'
-    bk = 'Backward'
-    ArcR = 'ArcRight'
-    ArcL = 'ArcLeft'
     HLineBy = 'HorizontalLine'
     VLineBy = 'VerticalLine'
+
+    # Common transposition errors
     FlowerStar = 'StarFlower'
     FlowerGolden = 'GoldenFlower'
+
+    # Anglican color property names
     BackgroundColour = 'BackgroundColor'
     FillColour = 'FillColor'
     PenColour = 'PenColor'
+
+    # Internationalized Method Names.  
+    # These are technically more correct, but will not be easy to type on all keyboards.    
     BézierCurve = 'BezierCurve'
     QuadraticBézierCurve = 'QuadraticBezierCurve'
-    CubicBézierCurve = 'CubicBezierCurve'
+    CubicBézierCurve = 'CubicBezierCurve'    
     SierpińskiTriangle = 'SierpinskiTriangle'
     SierpińskiArrowHeadCurve = 'SierpinskiArrowHeadCurve'
     SierpińskiSquareCurve = 'SierpinskiSquareCurve'

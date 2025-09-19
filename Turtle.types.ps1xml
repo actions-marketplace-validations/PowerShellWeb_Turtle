@@ -16,6 +16,10 @@
         </Members>
       </MemberSet>
       <AliasProperty>
+        <Name>a</Name>
+        <ReferencedMemberName>Arc</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>ArcL</Name>
         <ReferencedMemberName>ArcLeft</ReferencedMemberName>
       </AliasProperty>
@@ -38,6 +42,10 @@
       <AliasProperty>
         <Name>bk</Name>
         <ReferencedMemberName>Backward</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>c</Name>
+        <ReferencedMemberName>CubicBezierCurve</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>CubicBézierCurve</Name>
@@ -69,7 +77,7 @@
       </AliasProperty>
       <AliasProperty>
         <Name>l</Name>
-        <ReferencedMemberName>Left</ReferencedMemberName>
+        <ReferencedMemberName>Step</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>LineTo</Name>
@@ -92,8 +100,16 @@
         <ReferencedMemberName>PenColor</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Pie</Name>
+        <ReferencedMemberName>PieGraph</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>pu</Name>
         <ReferencedMemberName>PenUp</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>q</Name>
+        <ReferencedMemberName>QuadraticBezierCurve</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>QuadraticBézierCurve</Name>
@@ -101,11 +117,15 @@
       </AliasProperty>
       <AliasProperty>
         <Name>r</Name>
-        <ReferencedMemberName>Right</ReferencedMemberName>
+        <ReferencedMemberName>Rotate</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>rt</Name>
         <ReferencedMemberName>Right</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>s</Name>
+        <ReferencedMemberName>BezierCurve</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>SetPos</Name>

@@ -42,8 +42,11 @@
     FlowerStar = 'StarFlower'
     FlowerGolden = 'GoldenFlower'
 
+    # Technically accurate aliases to more helpful names
+    Href = 'Link'
+
     # Anglican color property names
-    BackgroundColour = 'BackgroundColor'
+    BackgroundColour = 'BackgroundColor'    
     FillColour = 'FillColor'
     PenColour = 'PenColor'
 

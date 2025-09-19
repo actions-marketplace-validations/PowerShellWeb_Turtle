@@ -28,14 +28,19 @@ foreach ($key in $this.SVGAttribute.Keys) {
 
 "<svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     " $attributeName='$($svgAttributes[$attributeName])'"
-}) -join '')>"
+}) -join '')>"    
     # Declare any SVG animations
     if ($this.SVGAnimation) {$this.SVGAnimation}
-
+    if ($this.Link) {
+        "<a href='$($this.Link)'>"
+    }
     # Output our own path
     $this.PathElement.OuterXml
     # Followed by any text elements
     $this.TextElement.OuterXml
+    if ($this.Link) {
+        "</a>"
+    }
 
     # If the turtle has children
     $children = @(foreach ($turtleName in $this.Turtles.Keys) {

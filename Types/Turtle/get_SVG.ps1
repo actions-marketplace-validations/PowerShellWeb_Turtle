@@ -28,7 +28,14 @@ foreach ($key in $this.SVGAttribute.Keys) {
 
 "<svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     " $attributeName='$($svgAttributes[$attributeName])'"
-}) -join '')>"    
+}) -join '')>"
+    # Declare any definitions, like markers or gradients.
+    if ($this.Defines) {
+        "<defs>"
+            $this.Defines
+        "</defs>"
+    }
+
     # Declare any SVG animations
     if ($this.SVGAnimation) {$this.SVGAnimation}
     if ($this.Link) {

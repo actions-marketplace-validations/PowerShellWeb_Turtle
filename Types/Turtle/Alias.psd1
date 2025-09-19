@@ -43,7 +43,8 @@
     FlowerGolden = 'GoldenFlower'
 
     # Technically accurate aliases to more helpful names
-    Href = 'Link'
+    Href = 'Link'    
+    Defs = 'Defines'    
 
     # Anglican color property names
     BackgroundColour = 'BackgroundColor'    

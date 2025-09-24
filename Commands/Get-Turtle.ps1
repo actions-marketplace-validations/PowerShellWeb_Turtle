@@ -470,9 +470,27 @@ function Get-Turtle {
         # Create a new turtle object in case we have no turtle input.
         $currentTurtle = [PSCustomObject]@{PSTypeName='Turtle'}
 
-        $invocationInfo = $MyInvocation
+        # Grab our invocation information
+        $invocationInfo = $myInv = $MyInvocation
+        # and attach a script property to access this point in command history
         $invocationInfo | 
-            Add-Member ScriptProperty History {Get-History -Id $this.HistoryId} -Force 
+            Add-Member ScriptProperty History {Get-History -Id $this.HistoryId} -Force
+                    
+        # Peek at our callstack
+        $myCallstack = @(Get-PSCallStack)
+        # and try to get our caller
+        $myCaller = $myCallstack[-1]
+        if ($myCaller) {
+            # If we can, find the CommandAst that called us.
+            # (this will have the arugment list in a more useful form, and will help us recreate a call)
+            $myCommandAst = 
+                $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
+                    param($ast) 
+                        $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
+                        $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
+                        $ast -is [Management.Automation.Language.CommandAst]
+                },$true)
+        }
     }
 
     process {        
@@ -488,6 +506,14 @@ function Get-Turtle {
             $currentTurtle | Add-Member NoteProperty Invocations -Force @(,$invocationInfo) 
         } elseif ($currentTurtle.Invocations -is [object[]]) {
             $currentTurtle.Invocations += $invocationInfo
+        }
+
+        if ($myCommandAst) {
+            if (-not $currentTurtle.Commands) {
+                $currentTurtle | Add-Member NoteProperty Commands -Force @(,$myCommandAst)
+            } elseif ($currentTurtle.Commands -is [object[]]) {
+                $currentTurtle.Commands += $myCommandAst
+            }
         }
 
 
@@ -529,16 +555,28 @@ function Get-Turtle {
                 continue
             }
             
+            
             # If we have a current member, we can invoke it or get it.
             $currentMember = $arg
+            $memberInfo = $turtleType.Members[$currentMember]
+
+            # If it's an alias
+            if ($memberInfo.ReferencedMemberName) {
+                # try to resolve it.
+                $currentMember = $memberInfo.ReferencedMemberName
+                $memberInfo = $turtleType.Members[$currentMember]
+            }
+            
             # We can also begin looking for arguments 
             for (
                 # at the next index.
                 $methodArgIndex = $argIndex + 1; 
                 # We will continue until we reach the end of the words and arguments,
-                $methodArgIndex -lt $wordsAndArguments.Length -and 
-                $wordsAndArguments[$methodArgIndex] -notin $memberNames; 
-                $methodArgIndex++) {
+                $methodArgIndex -lt $wordsAndArguments.Length -and
+                $wordsAndArguments[$methodArgIndex] -notin $memberNames;
+                $methodArgIndex++
+            ) {
+                
             }
             # Now we know how long it took to get to the next member name.
 
@@ -548,16 +586,7 @@ function Get-Turtle {
                 @(if ($methodArgIndex -ne ($argIndex + 1)) {
                     $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)]
                     $argIndex = $methodArgIndex - 1
-                })
-
-            # Look up the member information for the current member.
-            $memberInfo = $turtleType.Members[$currentMember]
-            # If it's an alias
-            if ($memberInfo.ReferencedMemberName) {
-                # try to resolve it.
-                $currentMember = $memberInfo.ReferencedMemberName
-                $memberInfo = $turtleType.Members[$currentMember]
-            }
+                })            
 
             
             # Now we want to get the output from the step.
@@ -600,7 +629,12 @@ function Get-Turtle {
                             }
                         }
                         # lets try to set it.
-                        $currentTurtle.$currentMember = $argList
+                        try {
+                            $currentTurtle.$currentMember = $argList
+                        } catch {
+                            $ex  = $_
+                            $PSCmdlet.WriteError($ex)
+                        }
                     } else {
                         # otherwise, lets get the property
                         $currentTurtle.$currentMember

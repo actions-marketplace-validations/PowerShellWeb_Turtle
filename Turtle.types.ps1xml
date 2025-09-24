@@ -4727,6 +4727,26 @@ $this | Add-Member NoteProperty '.Precision' $Precision -Force
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>ScriptBlock</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Get the Turtle's ScriptBlock
+.DESCRIPTION
+    Gets the ScriptBlock used to create the turtle.
+
+    All steps will become a fluent pipeline.
+.EXAMPLE
+    turtle SierpinskiTriangle 42 4 | 
+        Select-Object -ExpandProperty ScriptBlock
+#&gt;
+[ScriptBlock]::Create(
+    $this.Commands.Extent -join (' |' + [Environment]::NewLine + '    ')
+)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Stack</Name>
         <GetScriptBlock>
                         if ($null -ne $this.'.Stack'.Count) {

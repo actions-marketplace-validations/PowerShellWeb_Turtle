@@ -594,10 +594,25 @@ function Get-Turtle {
             # (it is important that we always force any parameters into an array)
             $argList = 
                 @(if ($methodArgIndex -ne ($argIndex + 1)) {
-                    $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)] -replace '^\[' -replace '\]$'
+                    # We only want to remove one pair of brackets
+                    $debracketCount = 0
+                    foreach ($word in $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)]) {
+                        # If the word started with a bracket, and we haven't removed any
+                        if ($word -match '^\[' -and -not $debracketCount) {                            
+                            $word = $word -replace '^\[' # remove it
+                            $debracketCount++ # and increment our removal counter.
+                        }
+                        # If the word ended with a bracket, and we have debracketed once
+                        if ($word -match '\]$' -and $debracketCount -eq 1) {
+                            # remove the closing bracket
+                            $word = $word -replace '\]$'
+                            # and increment our removal counter
+                            $debracketCount++
+                        }
+                        $word # output the word into the array.
+                    }
                     $argIndex = $methodArgIndex - 1
-                })            
-
+                })
             
             # Now we want to get the output from the step.
             $stepOutput =

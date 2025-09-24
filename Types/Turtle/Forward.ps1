@@ -12,16 +12,9 @@ param(
 $Distance = 10
 )
 
-$precision = if ($this.Precision -ge 0) { $this.Precision } else { 4 }
+#$precision = if ($this.Precision -ge 0) { $this.Precision } else { 4 }
 
-$x = [Math]::Round(
-    $Distance * [math]::cos($this.Heading * [Math]::PI / 180), 
-    $precision
-)
-$y = [Math]::Round(
-    $Distance * [math]::sin($this.Heading * [Math]::PI / 180),
-    $precision
-)
-
+$x = $Distance * [math]::cos($this.Heading * [Math]::PI / 180)
+$y = $Distance * [math]::sin($this.Heading * [Math]::PI / 180)
 
 return $this.Step($x, $y)

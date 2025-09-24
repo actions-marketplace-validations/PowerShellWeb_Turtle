@@ -576,11 +576,13 @@ function Get-Turtle {
                 $methodArgIndex -lt $wordsAndArguments.Length;
                 $methodArgIndex++
             ) {
-                # Count our brackets                                
-                foreach ($bracket in [regex]::Matches($wordsAndArguments[$methodArgIndex],'[\[\]]')) {
-                    if ("$bracket" -eq '[') { $bracketDepth++ }
-                    if ("$bracket" -eq ']') { $bracketDepth-- } 
-                }
+                # Count our brackets
+                if ($wordsAndArguments[$methodArgIndex] -is [string]) {
+                    foreach ($bracket in [regex]::Matches("$($wordsAndArguments[$methodArgIndex])",'[\[\]]')) {
+                        if ("$bracket" -eq '[') { $bracketDepth++ }
+                        if ("$bracket" -eq ']') { $bracketDepth-- } 
+                    }
+                }                
                 # If the next word is a method name, and our brackets are balanced
                 if ($wordsAndArguments[$methodArgIndex] -in $memberNames -and -not $bracketDepth) {
                     # break out of the loop.

@@ -523,14 +523,14 @@ function Get-Turtle {
         # * `turtle forward 10`
         # * `turtle 'forward', 10`
         $wordsAndArguments = @(foreach ($arg in $ArgumentList) {
-            # If the argument is a string, and it starts with whitespace
+            # If the argument is a string, and it starts with whitespace            
             if ($arg -is [string]) {
                 if ($arg -match '^[\r\n\s]+') {
                     $arg -split '\s{1,}'
                 } else {
                     $arg
                 }                
-            }  else {
+            } else {
                 # otherwise, leave the argument alone.
                 $arg
             }
@@ -567,24 +567,34 @@ function Get-Turtle {
                 $memberInfo = $turtleType.Members[$currentMember]
             }
             
-            # We can also begin looking for arguments 
+            # We can also begin looking for arguments, as long as they are not bracketed.
+            $bracketDepth = 0             
             for (
-                # at the next index.
+                # Let's start at the next index.
                 $methodArgIndex = $argIndex + 1; 
-                # We will continue until we reach the end of the words and arguments,
-                $methodArgIndex -lt $wordsAndArguments.Length -and
-                $wordsAndArguments[$methodArgIndex] -notin $memberNames;
+                # and continue until we reach the end of the words and arguments,
+                $methodArgIndex -lt $wordsAndArguments.Length;
                 $methodArgIndex++
             ) {
+                # Count our brackets                                
+                foreach ($bracket in [regex]::Matches($wordsAndArguments[$methodArgIndex],'[\[\]]')) {
+                    if ("$bracket" -eq '[') { $bracketDepth++ }
+                    if ("$bracket" -eq ']') { $bracketDepth-- } 
+                }
+                # If the next word is a method name, and our brackets are balanced
+                if ($wordsAndArguments[$methodArgIndex] -in $memberNames -and -not $bracketDepth) {
+                    # break out of the loop.
+                    break
+                }
                 
             }
-            # Now we know how long it took to get to the next member name.
+            # Now we know how far we had to look to get to the next member name.
 
             # And we can determine if we have any parameters.
             # (it is important that we always force any parameters into an array)
             $argList = 
                 @(if ($methodArgIndex -ne ($argIndex + 1)) {
-                    $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)]
+                    $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)] -replace '^\[' -replace '\]$'
                     $argIndex = $methodArgIndex - 1
                 })            
 

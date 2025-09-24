@@ -67,7 +67,7 @@
     
     # Walk over our steps
     foreach ($step in
-        $this.Steps -join ' ' -replace ',',' ' -split '(?=\p{L})' -ne ''
+        $this.Steps -join ' ' -replace ',',' ' -split '(?=[\p{L}-[E]])' -ne ''
     ) {
         # If our precision is zero or nothing, don't round 
         if (-not $precision) {

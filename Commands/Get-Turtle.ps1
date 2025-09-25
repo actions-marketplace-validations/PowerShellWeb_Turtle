@@ -478,19 +478,21 @@ function Get-Turtle {
                     
         # Peek at our callstack
         $myCallstack = @(Get-PSCallStack)
-        # and try to get our caller
-        $myCaller = $myCallstack[-1]
-        if ($myCaller) {
+        # and try to get our most recent two callers
+        foreach ($possibleCaller in $myCallstack[-1..-2]) {
             # If we can, find the CommandAst that called us.
             # (this will have the arugment list in a more useful form, and will help us recreate a call)
             $myCommandAst = 
-                $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
+                $possibleCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
                     param($ast) 
                         $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
                         $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
                         $ast -is [Management.Automation.Language.CommandAst]
                 },$true)
-        }
+            if ($myCommandAst) {
+                break
+            }
+        }        
     }
 
     process {        

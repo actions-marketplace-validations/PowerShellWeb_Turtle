@@ -21,8 +21,9 @@
         'Get-Turtle',
         'Move-Turtle',
         'New-Turtle',
+        'Save-Turtle',
         'Set-Turtle',
-        'Save-Turtle'
+        'Show-Turtle'
     # Format files (.ps1xml) to be loaded when importing this module
     # FormatsToProcess = @()
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.

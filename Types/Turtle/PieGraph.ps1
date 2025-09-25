@@ -22,6 +22,83 @@
         @(1..50) | 
             Get-Random -Count (Get-Random -Minimum 5 -Maximum 20)
     ) save ./RandomPieGraph.svg
+.EXAMPLE    
+    turtle rotate -90 piegraph 100 @(
+        $allTokens = Get-Module Turtle |
+            Split-Path |
+            Get-ChildItem -Filter *.ps1 | 
+            Foreach-Object { 
+                [Management.Automation.PSParser]::Tokenize(
+                    (Get-Content -Path $_.FullName -Raw), [ref]$null
+                )
+            }
+        $allTokens |
+            Group-Object Type -NoElement | 
+            Sort-Object Count -Descending |
+            Add-Member ScriptProperty Fill {
+                "#{0:x6}" -f (Get-Random -Maximum 0xffffff)
+            } -Force -PassThru |
+             Add-Member ScriptProperty Link {
+                "https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.pstokentype?view=powershellsdk-7.4.0#system-management-automation-pstokentype-$($this.Name.ToLower())"
+            } -Force -PassThru
+        
+    ) save ./TurtlePSTokenCountPieGraph.svg
+.EXAMPLE
+    turtle rotate -90 piegraph 100 @(
+        $allTokens = Get-Module Turtle |
+            Split-Path |
+            Get-ChildItem -Filter *.ps1 | 
+            Foreach-Object { 
+                [Management.Automation.PSParser]::Tokenize(
+                    (Get-Content -Path $_.FullName -Raw), [ref]$null
+                )
+            }
+        $allTokens |
+            Group-Object Type |
+            Select-Object Name, @{
+                Name='TotalLength'
+                Expression = {
+                    $total = 0
+                    foreach ($item in $_.Group) {
+                        $total+=$item.Length
+                    }
+                    $total
+                }
+            } | 
+            Sort-Object TotalLength -Descending |
+            Add-Member ScriptProperty Fill {
+                "#{0:x6}" -f (Get-Random -Maximum 0xffffff)
+            } -Force -PassThru |
+             Add-Member ScriptProperty Link {
+                "https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.pstokentype?view=powershellsdk-7.4.0#system-management-automation-pstokentype-$($this.Name.ToLower())"
+            } -Force -PassThru
+        
+    ) save ./TurtlePSTokenLengthPieGraph.svg
+.EXAMPLE
+    turtle rotate -90 piegraph 100 @(
+        $allTypes = Get-Module Turtle |
+            Split-Path |
+            Get-ChildItem -Filter *.ps1 | 
+            Get-Command -Name { $_.FullName } |
+            Foreach-Object { 
+                $_.ScriptBlock.Ast.FindAll({
+                    param($ast)
+                    $ast -is [Management.Automation.Language.TypeExpressionAst]
+                }, $true)
+            } |
+            Foreach-Object {
+                $_.Extent -replace '^\[' -replace '\]$' -as [type]
+            }
+        $allTypes |
+            Group-Object FullName | 
+            Sort-Object Count -Descending |
+            Add-Member ScriptProperty Fill {
+                "#{0:x6}" -f (Get-Random -Maximum 0xffffff)
+            } -Force -PassThru |
+             Add-Member ScriptProperty Link {
+                "https://learn.microsoft.com/en-us/dotnet/api/$($this.Name.ToLower())"
+            } -Force -PassThru        
+    ) save ./TurtleDotNetTypesPieGraph.svg
 .EXAMPLE
     $n = Get-Random -Min 5 -Max 10
     turtle width 200 height 200 morph @(
@@ -76,13 +153,13 @@ $richSlices = $false
 $Slices = @(
     $dataPointIndex = 0
     foreach ($dataPoint in $GraphData)
-    {
-        $sliceObjects["slice$($sliceObjects.Count)"] = $dataPoint
+    {        
         # If the data point is a number (or other primitive data)
         if ($dataPoint | IsPrimitive)
         {
             $Total += $dataPoint # add it to the total
             $dataPoint -as [double] # and output it
+            $sliceObjects["slice$($sliceObjects.Count)"] = $dataPoint
         }
         # Otherwise, if the data point has a value that is a number
         elseif ($dataPoint.value | IsPrimitive)
@@ -90,19 +167,23 @@ $Slices = @(
             $Total += $dataPoint.value # add it to the total
             $dataPoint.value -as [double] # and output that
             $richSlices = $true
+            $sliceObjects["slice$($sliceObjects.Count)"] = $dataPoint
         }
         elseif ($dataPoint -is [Collections.IDictionary]) {
             foreach ($key in $dataPoint.Keys) {
                 if ($dataPoint[$key] | IsPrimitive) {
                     $Total += $dataPoint[$key] # add it to the total
                     $dataPoint[$key] -as [double] # and output that
+                    $sliceObjects["slice$($sliceObjects.Count)"] = $dataPoint[$key]
                 }
             }
+            
             $richSlices = $true
         }
         elseif ($DataPoint -is 'Microsoft.PowerShell.Commands.GroupInfo') {
             $total += $dataPoint.Count
             $dataPoint.Count
+            $sliceObjects["slice$($sliceObjects.Count)"] = $dataPoint
             $richSlices = $true
         }
         elseif ($dataPoint -isnot [string]) {
@@ -110,6 +191,7 @@ $Slices = @(
                 if ($dataPoint.($prop.Name) | IsPrimitive) {
                     $Total += $dataPoint.($prop.Name) # add it to the total
                     $dataPoint.($prop.Name) -as [double] # and output that
+                    $sliceObjects["slice$($sliceObjects.Count)"] = $dataPoint
                 }
             }
             $richSlices = $true
@@ -208,10 +290,10 @@ else {
         elseif ($sliceObjects[$sliceName] -isnot [string])
         {
             # Set any settable properties on the turlte
-            foreach ($property in $sliceObjects[$sliceName].Keys) {
+            foreach ($key in $sliceObjects[$sliceName].psobject.properties.Name) {
                 # that exist in both the turtle and the slice object.
                 if ($nestedTurtles[$sliceName].psobject.properties[$key].SetterScript) {
-                    $nestedTurtles[$sliceName].$key = $sliceObjects[$sliceName][$key]
+                    $nestedTurtles[$sliceName].$key = $sliceObjects[$sliceName].$key
                 }
             }
         }

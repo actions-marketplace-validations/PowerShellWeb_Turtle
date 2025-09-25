@@ -30,12 +30,10 @@ foreach ($key in $this.Attribute.Keys) {
     }
 }
 
-# They can also come from SVGAttribute
+# They can also come from `.SVGAttribute`
 foreach ($key in $this.SVGAttribute.Keys) {
     $svgAttributes[$key] = $this.SVGAttribute[$key]
 }
-
-
 
 "<svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     if ($attributeName -match '/') { continue }
@@ -48,7 +46,7 @@ foreach ($key in $this.SVGAttribute.Keys) {
         "</defs>"
     }
     
-    if ($this.Keyframe -or $this.Style) {        
+    if ($this.Keyframe.Count -or $this.Style) {        
         $keyframe = $this.Keyframe
         "<style>"
         @(foreach ($keyframeName in $keyframe.Keys) {

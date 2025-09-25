@@ -17,11 +17,6 @@ $null, $null, $viewX, $viewY = $viewBox
         $($this.SVG.SVG.InnerXML)
     "</pattern>"
 "</defs>"
-$(
-    if ($this.BackgroundColor) {
-        "<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' />"
-    }
-)
 "<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='url(#$($this.ID)-pattern)' transform-origin='50% 50%' />"
 "</svg>") 
 

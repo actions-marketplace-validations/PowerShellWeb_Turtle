@@ -45,9 +45,10 @@
     # Technically accurate aliases to more helpful names
     Href = 'Link'    
     Defs = 'Defines'
-    
+        
     # Aliasing plurals
     Keyframes = 'Keyframe'
+    Styles = 'Style'
 
     # Anglican color property names
     BackgroundColour = 'BackgroundColor'    

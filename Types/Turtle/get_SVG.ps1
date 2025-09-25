@@ -22,11 +22,23 @@ if ($this.ViewBox[-1] -eq 0 -or $this.ViewBox[-2] -eq 0) {
 }
 
 # Any explicitly provided attributes should override any automatic attributes.
+
+# These can come from .Attribute
+foreach ($key in $this.Attribute.Keys) {
+    if ($key -match '^svg/') { # (as long as they start with `svg/`)
+        $svgAttributes[$key -replace '^svg/'] = $this.Attribute[$key]
+    }
+}
+
+# They can also come from SVGAttribute
 foreach ($key in $this.SVGAttribute.Keys) {
     $svgAttributes[$key] = $this.SVGAttribute[$key]
 }
 
+
+
 "<svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
+    if ($attributeName -match '/') { continue }
     " $attributeName='$($svgAttributes[$attributeName])'"
 }) -join '')>"
     # Declare any definitions, like markers or gradients.
@@ -35,19 +47,47 @@ foreach ($key in $this.SVGAttribute.Keys) {
             $this.Defines
         "</defs>"
     }
+    
+    if ($this.Keyframe -or $this.Style) {        
+        $keyframe = $this.Keyframe
+        "<style>"
+        @(foreach ($keyframeName in $keyframe.Keys) {
+            $keyframeKeyframes = $keyframe[$keyframeName]
+            "@keyframes $keyframeName {"
+            foreach ($percent in $keyframeKeyframes.Keys) {
+                "  $percent {"
+                $props = $keyframeKeyframes[$percent]
+                foreach ($prop in $props.Keys) {
+                    $value = $props.$prop
+                    "    ${prop}: $value;"
+                }
+                "  }"
+            }
+            "}"
+            ".$keyframeName {"
+            "    animation-name: $keyframeName;"
+            "    animation-duration: $($this.Duration.TotalSeconds)s;"
+            "    animation-iteration-count: infinite;"
+            "}"
+        }) -join [Environment]::NewLine
+        if ($this.Style) {
+            "$($this.Style -join (';' + [Environment]::NewLine))"
+        }
+        "</style>"
+    }
 
     # Declare any SVG animations
-    if ($this.SVGAnimation) {$this.SVGAnimation}
+    if ($this.SVGAnimation) {$this.SVGAnimation}    
+    if ($this.BackgroundColor) {
+        "<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' />"
+    }
     if ($this.Link) {
         "<a href='$($this.Link)'>"
     }
     # Output our own path
     $this.PathElement.OuterXml
     # Followed by any text elements
-    $this.TextElement.OuterXml
-    if ($this.Link) {
-        "</a>"
-    }
+    $this.TextElement.OuterXml    
 
     # If the turtle has children
     $children = @(foreach ($turtleName in $this.Turtles.Keys) {
@@ -70,6 +110,9 @@ foreach ($key in $this.SVGAttribute.Keys) {
                 $child.SVG.SVG.InnerXML                
             }
         "</g>"
+    }
+    if ($this.Link) {
+        "</a>"
     }
 "</svg>"
 ) -join '' -as [xml]

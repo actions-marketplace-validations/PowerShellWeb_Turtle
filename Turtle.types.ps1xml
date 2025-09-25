@@ -164,6 +164,10 @@
         <ReferencedMemberName>SierpinskiTriangle</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Styles</Name>
+        <ReferencedMemberName>Style</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>up</Name>
         <ReferencedMemberName>PenUp</ReferencedMemberName>
       </AliasProperty>
@@ -5175,6 +5179,49 @@ $this | Add-Member -MemberType NoteProperty -Force -Name '.Stroke' -Value $value
                         param([string]$value)
 
 $this | Add-Member -MemberType NoteProperty -Force -Name '.StrokeWidth' -Value $value
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Style</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle's Style
+.DESCRIPTION
+    Gets any CSS styles associated with the Turtle.
+
+    These styles will be declared in a `&lt;style&gt;` element, just beneath a Turtle's `&lt;svg&gt;`
+.EXAMPLE
+    turtle style '.myClass { color: #4488ff}' style
+#&gt;
+param()
+
+if (-not $this.'.style') {
+    $this | Add-Member NoteProperty '.style' @() -Force
+}
+
+return $this.'.style'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets a Turtle's Style
+.DESCRIPTION
+    Sets any CSS styles associated with the Turtle.
+
+    These styles will be declared in a `&lt;style&gt;` element, just beneath a Turtle's `&lt;svg&gt;`
+.EXAMPLE
+    turtle style '.myClass { color: #4488ff}' style
+#&gt;
+param(
+[PSObject]
+$Style
+)
+
+$styleList = $this.Style
+$styleList += $style
+$this | Add-Member NoteProperty '.style' $styleList -Force 
+
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>

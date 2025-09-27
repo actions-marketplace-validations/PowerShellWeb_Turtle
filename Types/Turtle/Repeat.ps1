@@ -30,6 +30,8 @@
         }
     )
     ~~~
+
+    Because repeat parses each step each time, repeat is likely to be one of the slower ways to repeat.
 .EXAMPLE
     turtle repeat 3 [rotate (360/3) forward 42] save ./tri.svg
 .EXAMPLE
@@ -50,7 +52,8 @@
     ) forward 4.2]]] save ./r3.svg
 #>
 param(
-# The repeat count.  This will be rounded down to the nearest integer.
+# The repeat count.
+# This will be rounded down to the nearest integer and converted into an absolute value.
 [double]
 $RepeatCount,
 
@@ -64,9 +67,7 @@ $Command
 if (-not $RepeatCount) {  return $this }
 $floorCount  = [Math]::Abs([Math]::Floor($RepeatCount))
 
-if ($floorCount -ge 1) {
-    foreach ($repetition in 1..$floorCount) {
-        $this = $this | turtle @command
-    }
+if ($floorCount -ge 1) {    
+    $this = $this | turtle @($Command * $floorCount)
 }
 return $this

@@ -531,14 +531,63 @@ function Get-Turtle {
                     $arg -split '\s{1,}'
                 } else {
                     $arg
-                }                
+                }                                
             } else {
                 # otherwise, leave the argument alone.
                 $arg
             }
         })
 
-        # Now that we have a series of words, we can process them.
+        # If any brackets are used, we want to balance them all now, and error if they appear unbalanced.
+        $bracketsOnly = $wordsAndArguments -replace '^[\[\]]' -join ''
+        
+        # Since we want to know the exact index, we walk thru matches
+        $depth = 0
+        # and keep track of when it became unbalanced.
+        $unbalancedAt = $null        
+        foreach ($match in [Regex]::Matches(
+                ($wordsAndArguments -join ' ' ), '[\[\]]'
+            )
+        ) {
+            # To do this, we increment or decrement depth for brackets `[]`
+            if ($match.Value -eq '[') { $depth++}
+            if ($match.Value -eq ']') { $depth--}
+            # and, if the depth is ever negative, we are unbalanced.
+            if ($depth -lt 0) { 
+                $unbalancedAt = $match; break
+            }            
+        }
+
+        # If the depth is still positive when we are done,
+        # we are also unbalanced
+        if ($depth -gt 0) {
+            # and we can consider our last bracket the point that needs to be balanced
+            $unbalancedAt = $match
+        }
+
+        # If we are unbalanced,
+        if ($unbalancedAt) {
+            # write an error
+            Write-Error -Message "Unbalanced at index $($match.Index)
+$(
+    # (try to make it a nice error by pointing out the match)    
+    $str = $match.Result('$_')
+    if ($match.Index -ge 1) {
+        $str.Substring(0, $match.Index - 1)
+        if ($match.Index -lt ($str.Length - 1)) {
+            '-->'
+        }        
+    }
+    $match.Value
+    '<--'
+    if ($match.Index -lt ($str.Length - 1)) {
+        $str.Substring($match.Index + 1)
+    }           
+) - $depth brackets off" # and by letting people know the depth difference.
+            return
+        }        
+
+        # Now that we have a series of balanced words, we can process them.
         # We want to keep track of the current member, 
         # and continue to the next word until we find a member name.        
         $currentMember = $null
@@ -580,7 +629,8 @@ function Get-Turtle {
             ) {
                 # Count our brackets
                 if ($wordsAndArguments[$methodArgIndex] -is [string]) {
-                    foreach ($bracket in [regex]::Matches("$($wordsAndArguments[$methodArgIndex])",'[\[\]]')) {
+                    $brackets = $wordsAndArguments[$methodArgIndex] -replace '[^\[\]]'
+                    foreach ($bracket in $brackets.ToCharArray()) {
                         if ("$bracket" -eq '[') { $bracketDepth++ }
                         if ("$bracket" -eq ']') { $bracketDepth-- } 
                     }
@@ -602,12 +652,12 @@ function Get-Turtle {
                     $debracketCount = 0
                     foreach ($word in $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)]) {
                         # If the word started with a bracket, and we haven't removed any
-                        if ($word -match '^\[' -and -not $debracketCount) {                            
+                        if ("$word".StartsWith('[') -and -not $debracketCount) {
                             $word = $word -replace '^\[' # remove it
                             $debracketCount++ # and increment our removal counter.
                         }
                         # If the word ended with a bracket, and we have debracketed once
-                        if ($word -match '\]$' -and $debracketCount -eq 1) {
+                        if ("$word".EndsWith(']') -and $debracketCount -eq 1) {
                             # remove the closing bracket
                             $word = $word -replace '\]$'
                             # and increment our removal counter
@@ -635,7 +685,7 @@ function Get-Turtle {
                             # (this allows more complex binding, like ValueFromRemainingArguments)
                             . $currentTurtle.$currentMember.Script @argList
                         } else {
-                            # Otherwise, we pass the parameters directly to the method                            
+                            # Otherwise, we pass the parameters directly to the method
                             $currentTurtle.$currentMember.Invoke($argList)
                         }
                         

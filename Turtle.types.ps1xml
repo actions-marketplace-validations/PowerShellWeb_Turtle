@@ -2513,16 +2513,23 @@ return $this.Rotate((360 / $SideCount) * $remainder).Forward($remainder * $Size)
       <ScriptMethod>
         <Name>Pop</Name>
         <Script>
-                        if ($this.'.Stack' -isnot [Collections.Stack]) {
-    return
-}
+                        &lt;#
+.SYNOPSIS
+    Pops the Turtle Stack
+.DESCRIPTION
+    Pops the Turtle back to the last location and heading in the stack.    
 
-if ($this.'.Stack'.Count -eq 0) {
-    return
-}
+    By pushing and popping, we can draw multiple branches.
+.EXAMPLE
+    # Draws a T shape by pushing and popping
+    turtle rotate -90 forward 42 push rotate 90 forward 21 pop rotate -90 forward 21 show
+#&gt;
+if ($this.'.Stack' -isnot [Collections.Stack]) { return }
+
+if ($this.'.Stack'.Count -eq 0) { return }
 
 $popped = $this.'.Stack'.Pop()
-$this.PenUp().Goto($popped.Position.X, $popped.Position.Y).PenDown()
+$null = $this.PenUp().Goto($popped.Position.X, $popped.Position.Y).PenDown()
 $this.Heading = $popped.Heading
 return $this
                     </Script>
@@ -2530,10 +2537,19 @@ return $this
       <ScriptMethod>
         <Name>Push</Name>
         <Script>
-                        if (-not $this.'.Stack') {
+                        &lt;#
+.SYNOPSIS
+    Pushes the Turtle Stack
+.DESCRIPTION
+    Pushes the current state of this Turtle onto a stack.
+
+    If this stack is popped, the Turtle will teleport back to the location where it was pushed.
+
+    By pushing and popping, we can draw multiple branches.
+#&gt;
+if (-not $this.'.Stack') {
     $this | Add-Member NoteProperty '.Stack' ([Collections.Stack]::new()) -Force
 }
-
 $this.'.Stack'.Push(@{
     Position = [Ordered]@{X=$this.Position.X;Y=$this.Position.Y}
     Heading = $this.Heading

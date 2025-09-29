@@ -45,6 +45,7 @@
     # Technically accurate aliases to more helpful names
     Href = 'Link'    
     Defs = 'Defines'
+    MarkerMid = 'MarkerMiddle'
         
     # Aliasing plurals
     Keyframes = 'Keyframe'

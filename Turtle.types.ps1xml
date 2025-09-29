@@ -100,6 +100,10 @@
         <ReferencedMemberName>Left</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>MarkerMid</Name>
+        <ReferencedMemberName>MarkerMiddle</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>MoveTo</Name>
         <ReferencedMemberName>Teleport</ReferencedMemberName>
       </AliasProperty>
@@ -4413,7 +4417,7 @@ $this | Add-Member NoteProperty '.Link' $link -Force
 .EXAMPLE
     turtle viewbox 200 teleport 0 100 forward 100 markerEnd (
         turtle viewbox 10 rotate -90 polygon 10 3 fill context-fill stroke context-stroke
-    ) strokewidth '3%' save ./marker.svg
+    ) strokewidth '3%' fill currentColor save ./marker.svg
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/marker
 #&gt;
@@ -4424,7 +4428,7 @@ $markerAttributes = [Ordered]@{
     id="$($this.id)-marker"
     viewBox="$($this.ViewBox)"
     orient='auto-start-reverse'
-    refX=0
+    refX=$this.Width/2
     refY=$this.Height/2
     markerWidth=5 
     marketHeight=5
@@ -4501,11 +4505,132 @@ $attributeValue =
         if ($value.pstypenames -contains 'Turtle') {
             $Value.id += "-end"
             $this.Defines+=$Value.Marker.OuterXml
-            "url(#$($value.id)-end-marker)"
+            "url(#$($value.id)-marker)"
         }
     }
 
 $this.PathAttribute['marker-end'] = $attributeValue
+
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>MarkerMiddle</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle's middle marker
+.DESCRIPTION
+    Gets the middle marker used on the line drawn by the turtle.
+
+    This marker will be drawn on all vertices that are not the start or the end.
+.EXAMPLE
+    turtle viewbox 200 start 10 200 rotate -60 @(
+        'forward',42,'rotate',30,'forward',42,'rotate',-30 * 4
+    ) markerMiddle (
+        turtle circle 10 fill red 
+    ) strokewidth '3%' save ./marker.svg
+#&gt;
+return $this.PathAttribute['marker-mid']
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the middle marker
+.DESCRIPTION
+    Sets the middle marker used on the line drawn by the turtle.
+
+    If this is set to a string without spaces, it will be be treated as an identifier.
+.EXAMPLE
+    turtle viewbox 200 start 10 200 rotate -60 @(
+        'forward',42,'rotate',30,'forward',42,'rotate',-30 * 4
+    ) markerMiddle (
+        turtle circle 10 fill red 
+    ) strokewidth '3%' save ./marker.svg
+#&gt;
+param($Value)
+
+$attributeValue = 
+    if ($value -is [string]) {
+        if ($value -notmatch '\s' -and $value -notmatch '^url') {
+            $Value = "url(`"$Value`")"
+        } else {
+            $value
+        }
+    }
+    else {
+        if ($value.pstypenames -contains 'Turtle') {
+            $Value.id += "-mid"
+            $this.Defines+=$Value.Marker.OuterXml
+            "url(#$($value.id)-marker)"
+        }
+    }
+
+$this.PathAttribute['marker-mid'] = $attributeValue
+
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>MarkerStart</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle's start marker
+.DESCRIPTION
+    Gets the start marker used on the line drawn by the turtle
+.EXAMPLE
+    turtle viewbox 200 start 50 50 rotate 45 forward 100 markerStart (
+        turtle rotate -90 turtleMonotile -42 fill context-fill stroke context-stroke
+    ) fill 'currentColor' strokewidth '3%' save ./marker.svg
+.EXAMPLE
+    turtle viewbox 200 start 50 50 rotate 45 forward 100 markerStart (
+        turtle rotate -90 polygon 42 3 fill context-fill stroke context-stroke
+    ) fill 'currentColor' strokewidth '3%' save ./marker.svg
+#&gt;
+return $this.PathAttribute['marker-start']
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the start marker
+.DESCRIPTION
+    Sets the start marker used on the line drawn by the turtle.
+
+    If this is set to a string without spaces, it will be be treated as an identifier.
+.EXAMPLE
+    turtle viewbox 200 start 50 100 rotate 45 forward 100 markerEnd (
+        turtle rotate -90 polygon 10 3 fill context-fill stroke context-stroke
+    ) fill '#4488ff' stroke '#224488' strokewidth '3%' save ./marker.svg
+.EXAMPLE
+    turtle viewbox 200 teleport 50 100 forward 100 markerEnd (
+        turtle viewbox 20 rotate -90 polygon 10 3 morph @(
+            turtle rotate -90 polygon 20 3
+            turtle rotate -90 polygon 20 3
+        )
+    ) strokewidth '3%' save ./marker.svg
+#&gt;
+param($Value)
+
+$attributeValue = 
+    if ($value -is [string]) {
+        if ($value -notmatch '\s' -and $value -notmatch '^url') {
+            $Value = "url(`"$Value`")"
+        } else {
+            $value
+        }
+    }
+    else {
+        if ($value.pstypenames -contains 'Turtle') {
+            $Value.id += "-start"
+            $this.Defines+=$Value.Marker.OuterXml
+            "url(#$($value.id)-marker)"
+        }
+    }
+
+$this.PathAttribute['marker-start'] = $attributeValue
 
 
                     </SetScriptBlock>

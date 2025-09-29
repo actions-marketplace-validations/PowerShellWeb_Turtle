@@ -6,7 +6,7 @@
 .EXAMPLE
     turtle viewbox 200 teleport 0 100 forward 100 markerEnd (
         turtle viewbox 10 rotate -90 polygon 10 3 fill context-fill stroke context-stroke
-    ) strokewidth '3%' save ./marker.svg
+    ) strokewidth '3%' fill currentColor save ./marker.svg
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/marker
 #>

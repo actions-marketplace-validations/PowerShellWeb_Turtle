@@ -41,6 +41,19 @@ function Show-Turtle
                 Invoke-Item $gotItem.FullName
             }
         }
+        elseif ($InputObject -is [xml]) {
+            $fileName = if ($InputObject.svg) {
+                "./$($InputObject.id).svg"
+            }   
+            elseif ($InputObject.html) {
+                "./$($InputObject.id).html"
+            }
+
+            if ($fileName) {
+                New-Item -ItemType File -Path $fileName -Value "$($InputObject.OuterXml)" -Force |
+                    Invoke-Item
+            }
+        }
         else {
             Write-Error "Nothing to see here"
         }     

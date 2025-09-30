@@ -12,7 +12,8 @@
 .EXAMPLE
     turtle text "hello world" textElement
 #>
-
+[OutputType([xml])]
+param()
 
 if (-not $this.Text) { return }
 

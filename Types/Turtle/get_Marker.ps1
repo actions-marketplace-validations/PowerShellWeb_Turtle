@@ -10,6 +10,7 @@
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/marker
 #>
+[OutputType([xml])]
 param()
 
 # The default settings for markers

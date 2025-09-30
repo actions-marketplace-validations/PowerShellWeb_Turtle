@@ -4,8 +4,8 @@
 .DESCRIPTION
     Gets this turtle and any nested turtles as a single Scalable Vector Graphic.
 #>
+[OutputType([xml])]
 param()
-@(
 
 $svgAttributes = [Ordered]@{
     xmlns='http://www.w3.org/2000/svg'
@@ -35,6 +35,7 @@ foreach ($key in $this.SVGAttribute.Keys) {
     $svgAttributes[$key] = $this.SVGAttribute[$key]
 }
 
+$svgElement = @(
 "<svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     if ($attributeName -match '/') { continue }
     " $attributeName='$($svgAttributes[$attributeName])'"
@@ -75,7 +76,7 @@ foreach ($key in $this.SVGAttribute.Keys) {
     }
 
     # Declare any SVG animations
-    if ($this.SVGAnimation) {$this.SVGAnimation}    
+    if ($this.SVGAnimation) {$this.SVGAnimation}
     if ($this.BackgroundColor) {
         "<rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' />"
     }
@@ -113,4 +114,5 @@ foreach ($key in $this.SVGAttribute.Keys) {
         "</a>"
     }
 "</svg>"
-) -join '' -as [xml]
+)
+[xml]$svgElement

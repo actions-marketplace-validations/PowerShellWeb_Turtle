@@ -11,13 +11,14 @@
     Move-Turtle Flower |
         Select-Object -ExpandProperty Symbol
 #>
+[OutputType([xml])]
 param()
 
-@(    
-    "<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'>"
-        "<symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'>"
-            $($this.SVG.OuterXml)
-        "</symbol>"        
-        "<use href='#$($this.ID)-symbol' width='100%' height='100%' transform-origin='50% 50%' />"
-    "</svg>"
-) -join '' -as [xml]
+[xml]@(
+"<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'>"
+    "<symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'>"
+        $($this.SVG.OuterXml)
+    "</symbol>"
+    "<use href='#$($this.ID)-symbol' width='100%' height='100%' transform-origin='50% 50%' />"
+"</svg>"
+)

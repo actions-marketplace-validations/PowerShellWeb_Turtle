@@ -5,8 +5,11 @@
     Gets the Path Element of a Turtle.
 
     This contains the path of the Turtle's motion.
+.EXAMPLE
+    turtle forward 42 rotate 90 forward 42 pathElement
 #>
-
+[OutputType([xml])]
+param()
 # Set our core attributes
 $coreAttributes = [Ordered]@{
     id="$($this.id)-path"
@@ -26,7 +29,15 @@ foreach ($pathAttributeName in $this.PathAttribute.Keys) {
     $coreAttributes[$pathAttributeName] = $($this.PathAttribute[$pathAttributeName])
 }
 
-@(
+# Path attributes can be defined within .SVGAttribute or .Attribute
+foreach ($attributeCollectionName in 'SVGAttribute', 'Attribute') {
+    $attributeCollection = $this.$attributeCollectionName
+    foreach ($attributeName in $attributeCollection.Keys -match '^path/') {
+        $coreAttributes[$attributeName -replace '^path/'] = $attributeCollection[$attributeName]
+    }
+}
+
+[xml]@(
 "<path$(
     foreach ($attributeName in $coreAttributes.Keys) {
         " $attributeName='$($coreAttributes[$attributeName])'"
@@ -34,4 +45,4 @@ foreach ($pathAttributeName in $this.PathAttribute.Keys) {
 )>"
 if ($this.PathAnimation) {$this.PathAnimation}
 "</path>"
-) -as [xml]
+)

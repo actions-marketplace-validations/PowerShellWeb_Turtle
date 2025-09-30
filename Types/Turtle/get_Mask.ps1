@@ -34,6 +34,7 @@
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/mask
 #>
+[OutputType([xml])]
 param()
 
 $keyPattern = '^mask/'

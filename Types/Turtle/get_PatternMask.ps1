@@ -37,6 +37,7 @@
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/mask
 #>
+[OutputType([xml])]
 param()
 $keyPattern = '^pattern-?mask/'
 $defaultId  = "$($this.Id)-pattern-mask" 
@@ -65,4 +66,4 @@ $segments = @(
 "</mask>"
 )
 # join them and cast to XML.
-[xml]($segments -join '')
+[xml]$segments

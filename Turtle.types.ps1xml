@@ -4421,6 +4421,7 @@ $this | Add-Member NoteProperty '.Link' $link -Force
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/marker
 #&gt;
+[OutputType([xml])]
 param()
 
 # The default settings for markers
@@ -4674,6 +4675,7 @@ $this.PathAttribute['marker-start'] = $attributeValue
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/mask
 #&gt;
+[OutputType([xml])]
 param()
 
 $keyPattern = '^mask/'
@@ -5006,8 +5008,11 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @(
     Gets the Path Element of a Turtle.
 
     This contains the path of the Turtle's motion.
+.EXAMPLE
+    turtle forward 42 rotate 90 forward 42 pathElement
 #&gt;
-
+[OutputType([xml])]
+param()
 # Set our core attributes
 $coreAttributes = [Ordered]@{
     id="$($this.id)-path"
@@ -5027,7 +5032,15 @@ foreach ($pathAttributeName in $this.PathAttribute.Keys) {
     $coreAttributes[$pathAttributeName] = $($this.PathAttribute[$pathAttributeName])
 }
 
-@(
+# Path attributes can be defined within .SVGAttribute or .Attribute
+foreach ($attributeCollectionName in 'SVGAttribute', 'Attribute') {
+    $attributeCollection = $this.$attributeCollectionName
+    foreach ($attributeName in $attributeCollection.Keys -match '^path/') {
+        $coreAttributes[$attributeName -replace '^path/'] = $attributeCollection[$attributeName]
+    }
+}
+
+[xml]@(
 "&lt;path$(
     foreach ($attributeName in $coreAttributes.Keys) {
         " $attributeName='$($coreAttributes[$attributeName])'"
@@ -5035,7 +5048,7 @@ foreach ($pathAttributeName in $this.PathAttribute.Keys) {
 )&gt;"
 if ($this.PathAnimation) {$this.PathAnimation}
 "&lt;/path&gt;"
-) -as [xml]
+)
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -5202,6 +5215,7 @@ $b64 = [Convert]::ToBase64String($OutputEncoding.GetBytes($thisPattern.outerXml)
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/mask
 #&gt;
+[OutputType([xml])]
 param()
 $keyPattern = '^pattern-?mask/'
 $defaultId  = "$($this.Id)-pattern-mask" 
@@ -5230,7 +5244,7 @@ $segments = @(
 "&lt;/mask&gt;"
 )
 # join them and cast to XML.
-[xml]($segments -join '')
+[xml]$segments
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -5592,8 +5606,8 @@ $this | Add-Member NoteProperty '.style' $styleList -Force
 .DESCRIPTION
     Gets this turtle and any nested turtles as a single Scalable Vector Graphic.
 #&gt;
+[OutputType([xml])]
 param()
-@(
 
 $svgAttributes = [Ordered]@{
     xmlns='http://www.w3.org/2000/svg'
@@ -5623,6 +5637,7 @@ foreach ($key in $this.SVGAttribute.Keys) {
     $svgAttributes[$key] = $this.SVGAttribute[$key]
 }
 
+$svgElement = @(
 "&lt;svg $(@(foreach ($attributeName in $svgAttributes.Keys) {
     if ($attributeName -match '/') { continue }
     " $attributeName='$($svgAttributes[$attributeName])'"
@@ -5663,7 +5678,7 @@ foreach ($key in $this.SVGAttribute.Keys) {
     }
 
     # Declare any SVG animations
-    if ($this.SVGAnimation) {$this.SVGAnimation}    
+    if ($this.SVGAnimation) {$this.SVGAnimation}
     if ($this.BackgroundColor) {
         "&lt;rect width='10000%' height='10000%' x='-5000%' y='-5000%' fill='$($this.BackgroundColor)' transform-origin='50% 50%' /&gt;"
     }
@@ -5701,7 +5716,8 @@ foreach ($key in $this.SVGAttribute.Keys) {
         "&lt;/a&gt;"
     }
 "&lt;/svg&gt;"
-) -join '' -as [xml]
+)
+[xml]$svgElement
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -5813,16 +5829,17 @@ foreach ($key in $SVGAttribute.Keys) {
     Move-Turtle Flower |
         Select-Object -ExpandProperty Symbol
 #&gt;
+[OutputType([xml])]
 param()
 
-@(    
-    "&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
-        "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
-            $($this.SVG.OuterXml)
-        "&lt;/symbol&gt;"        
-        "&lt;use href='#$($this.ID)-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
-    "&lt;/svg&gt;"
-) -join '' -as [xml]
+[xml]@(
+"&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' transform-origin='50% 50%'&gt;"
+    "&lt;symbol id='$($this.ID)-symbol' viewBox='$($this.ViewBox)' transform-origin='50% 50%'&gt;"
+        $($this.SVG.OuterXml)
+    "&lt;/symbol&gt;"
+    "&lt;use href='#$($this.ID)-symbol' width='100%' height='100%' transform-origin='50% 50%' /&gt;"
+"&lt;/svg&gt;"
+)
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -5981,7 +5998,8 @@ foreach ($key in $TextAttribute.Keys) {
 .EXAMPLE
     turtle text "hello world" textElement
 #&gt;
-
+[OutputType([xml])]
+param()
 
 if (-not $this.Text) { return }
 

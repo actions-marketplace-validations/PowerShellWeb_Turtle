@@ -38,6 +38,7 @@ foreach ($collection in $this.SVGAttribute, $this.Attribute) {
     }
 }
 
+# Create the elements in an array, and cast it to XML.
 [xml]@(
 "<path$(
     foreach ($attributeName in $coreAttributes.Keys) {

@@ -30,10 +30,10 @@ foreach ($pathAttributeName in $this.PathAttribute.Keys) {
 }
 
 # Path attributes can be defined within .SVGAttribute or .Attribute
-foreach ($attributeCollectionName in 'SVGAttribute', 'Attribute') {
-    $attributeCollection = $this.$attributeCollectionName
-    foreach ($attributeName in $attributeCollection.Keys -match '^path/') {
-        $coreAttributes[$attributeName -replace '^path/'] = $attributeCollection[$attributeName]
+$prefix = [Regex]::new('^/?path/', 'IgnoreCase')
+foreach ($collection in $this.SVGAttribute, $this.Attribute) {
+    foreach ($key in $collection.Keys -match $prefix) {
+        $coreAttributes[$attributeName -replace $prefix] = $collection[$attributeName]
     }
 }
 

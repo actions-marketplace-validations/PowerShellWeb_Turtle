@@ -427,7 +427,7 @@ function Get-Turtle {
     .EXAMPLE
         # We can draw a 'Sierpinski Snowflake' with multiple Sierpinski Triangles.
         turtle @('rotate', 30, 'SierpinskiTriangle',42,4 * 12)
-    .EXAMPLE        
+    .EXAMPLE
         turtle @('rotate', 45, 'SierpinskiTriangle',42,4 * 24)
     #>
     [CmdletBinding(PositionalBinding=$false)]
@@ -456,14 +456,33 @@ function Get-Turtle {
     # If the input object is not a turtle object, it will be ignored and a new turtle object will be created.
     [Parameter(ValueFromPipeline)]
     [PSObject]
-    $InputObject
+    $InputObject,
+
+    [switch]
+    $AsJob
     )
 
     begin {
         # Get information about our turtle pseudo-type.
-        $turtleType = Get-TypeData -TypeName Turtle
+        $turtleType = Get-TypeData -TypeName Turtle                
+        $turtleTypes = @(
+            $turtleType
+            # Real types would work to, and we may support them in the future
+            # [Math]
+        )
+        
         # any member name is a potential command
-        $memberNames = $turtleType.Members.Keys
+        $memberNames = @(
+            foreach ($typeInfo in $turtleTypes) {
+                if ($typeInfo.Members -is [Collections.IDictionary]) {
+                    $typeInfo.Members.Keys
+                }
+                
+                <#elseif ($typeInfo -is [Type]) {
+                    $typeInfo | Get-Member -Static | Select-Object -ExpandProperty Name
+                }#>
+            }
+        )
 
         # We want to sort the member names by length, in case we need them in a pattern or want to sort quickly.
         $memberNames = $memberNames | Sort-Object @{Expression={ $_.Length };Descending=$true}, name
@@ -495,14 +514,41 @@ function Get-Turtle {
         }        
     }
 
-    process {        
+    process {
+        # If we were piped in a Turtle,
         if ($PSBoundParameters.InputObject -and 
             $PSBoundParameters.InputObject.pstypenames -eq 'Turtle') {
+            # make it the current turtle
             $currentTurtle = $PSBoundParameters.InputObject
         } elseif ($PSBoundParameters.InputObject) {
             # If input was passed, and it was not a turtle, pass it through.
             return $PSBoundParameters.InputObject
         }
+
+        #region -AsJob
+        # If we wanted to run a background job        
+        if ($PSBoundParameters.AsJob) {
+            # remove the -AsJob variable from our parameters
+            $null = $PSBoundParameters.Remove('AsJob')            
+            
+            # and then start a thread job that will import the module and run the command.
+            return Start-ThreadJob -ScriptBlock {
+                param([Collections.IDictionary]$IO)
+                Import-Module -Name $io.ModulePath
+                $argList = @($IO.ArgumentList)
+                if ($IO.InputObject) {
+                    $io.InputObject | & $io.CommandName @argList
+                } else {
+                    & $io.CommandName @argList
+                }
+            } -ArgumentList (
+                [Ordered]@{
+                    ModulePath = $MyInvocation.MyCommand.ScriptBlock.Module.Path -replace '\.psm1$', '.psd1'
+                    CommandName = $MyInvocation.MyCommand.Name
+                } + $PSBoundParameters
+            )
+        }
+        #endregion -AsJob
 
         if (-not $currentTurtle.Invocations) {
             $currentTurtle | Add-Member NoteProperty Invocations -Force @(,$invocationInfo) 
@@ -531,16 +577,14 @@ function Get-Turtle {
                     $arg -split '\s{1,}'
                 } else {
                     $arg
-                }                                
+                }
             } else {
                 # otherwise, leave the argument alone.
                 $arg
             }
         })
 
-        # If any brackets are used, we want to balance them all now, and error if they appear unbalanced.
-        $bracketsOnly = $wordsAndArguments -replace '^[\[\]]' -join ''
-        
+        # If any brackets are used, we want to balance them all now, and error if they appear unbalanced.        
         # Since we want to know the exact index, we walk thru matches
         $depth = 0
         # and keep track of when it became unbalanced.
@@ -600,7 +644,11 @@ $(
             $arg = $wordsAndArguments[$argIndex]
             # If the argument is not in the member names list, we can complain about it.
             if ($arg -notin $memberNames) {                
-                if (-not $currentMember -and $arg -is [string] -and "$arg".Trim()) {
+                if (
+                    # (we might not want to, if it starts with a bracket)
+                    -not $currentMember -and $arg -is [string] -and
+                    "$arg".Trim() -and $arg -notmatch '^\['
+                ) {
                     Write-Warning "Unknown command '$arg'."
                 }
                 continue
@@ -610,6 +658,18 @@ $(
             # If we have a current member, we can invoke it or get it.
             $currentMember = $arg
             $memberInfo = $turtleType.Members[$currentMember]
+
+            if (-not $memberInfo) {
+                $memberInfo = foreach ($typeInfo in $turtleTypes) {
+                    if ($typeInfo.Members -is [Collections.IDictionary] -and $typeInfo.Members[$currentMember]) {
+                        $typeInfo; break
+                    }
+                    if ($typeInfo::$currentMember) {
+                        $typeInfo::$currentMember
+                        break
+                    }
+                }
+            }
 
             # If it's an alias
             if ($memberInfo.ReferencedMemberName) {
@@ -684,11 +744,14 @@ $(
                             # and call the script, splatting positional parameters
                             # (this allows more complex binding, like ValueFromRemainingArguments)
                             . $currentTurtle.$currentMember.Script @argList
-                        } else {
-                            # Otherwise, we pass the parameters directly to the method
+                        } 
+                        elseif ($currentTurtle.$currentMember.Invoke) {
                             $currentTurtle.$currentMember.Invoke($argList)
-                        }
-                        
+                        } elseif ($memberInfo.Invoke) {
+                            $memberInfo.Invoke($argList)
+                        } elseif ($memberInfo -is [ValueType]) {
+                            $memberInfo
+                        }                        
                     } else {
                         # otherwise, just invoke the method with no arguments.
                         $currentTurtle.$currentMember.Invoke()
@@ -716,7 +779,13 @@ $(
                         }
                     } else {
                         # otherwise, lets get the property
-                        $currentTurtle.$currentMember
+
+                        if ($null -ne $currentTurtle.$currentMember) {
+                            $currentTurtle.$currentMember
+                        } elseif ($memberInfo -is [ValueType]) {
+                            $memberInfo
+                        }
+                        
                     }
                 }
 

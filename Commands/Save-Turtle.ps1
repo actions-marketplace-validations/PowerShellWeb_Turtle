@@ -3,11 +3,13 @@ function Save-Turtle {
     .SYNOPSIS
         Saves a turtle.
     .DESCRIPTION
-        Saves a turtle graphics pattern to a file.
+        Saves Turtle graphics to a file.
     .EXAMPLE
-        New-Turtle | 
-            Move-Turtle SierpinskiTriangle 20 3 |
-            Save-Turtle "./SierpinskiTriangle.svg"
+        turtle SierpinskiTriangle 42 4 |
+            Save-Turtle ./SierpinskiTriangle-42-4.svg
+    .EXAMPLE
+        turtle Flower 42 |
+            Save-Turtle ./Flower-42.svg Pattern
     .EXAMPLE
         Move-Turtle BoxFractal 15 5 |
             Set-Turtle Stroke '#4488ff' |
@@ -37,7 +39,7 @@ function Save-Turtle {
         }
     })]
     [string]
-    $Property = 'Symbol',
+    $Property = 'SVG',
 
     # The turtle input object.
     [Parameter(ValueFromPipeline)]
@@ -47,27 +49,55 @@ function Save-Turtle {
     )
 
     process {
+        # If there is no input, return
         if (-not $inputObject) { return }
-        switch -regex ($FilePath) {
-            '\.png$' { if ($Property -eq 'Symbol') { $Property = 'PNG' } }
-            '\.jpe?g$' { if ($Property -eq 'Symbol') { $Property = 'JPEG' } }
-            '\.webp$' { if ($Property -eq 'Symbol') { $Property = 'WEBP' } }
-        }
-        $toExport = $inputObject.$Property
+        # Auto detect property names from file names
+        $defaultToProperty =
+            switch -regex ($FilePath) {
+                '\.png$' { 'PNG' } 
+                '\.jpe?g$' { 'JPEG' }
+                '\.webp$' { 'WEBP' }
+                default { 'SVG' }
+            }
+
+        # If we have not provided a property and we know of a viable default, use that
+        if ($defaultToProperty -and -not $PSBoundParameters['Property']) {
+            $property = $PSBoundParameters['Property'] = $defaultToProperty
+        }        
+        
+        # Get the value of our property
+        $toExport = $inputObject.$Property        
+        
+        # If there is nothing there, return
         if (-not $toExport) { return }
+
+        # Find the file path
         $unresolvedPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($FilePath)
+        # and create a file
         $null = New-Item -ItemType File -Force -Path $unresolvedPath
-        if ($toExport -is [xml]) {
+        # If we are exporting XML
+        if ($toExport -is [xml])
+        {
+            # save it to that path
             $toExport.Save("$unresolvedPath")
         }
-        elseif ($toExport -is [byte[]]) {
-            Set-Content -Path $unresolvedPath -Value $toExport -AsByteStream
-        } else {                        
+        # If we are outputting bytes
+        elseif ($toExport -is [byte[]])
+        {
+            # write them to the file
+            [IO.File]::WriteAllBytes("$unresolvedPath", $toExport)            
+        }
+        # If we are outputting anything else
+        else
+        {
+            # simply redirect to the file
             $toExport > $unresolvedPath
         }
 
+        # If the last command worked
         if ($?) {
-            Get-Item -Path $unresolvedPath
+            # return the file
+            return (Get-Item -Path $unresolvedPath)
         }
     }
 }

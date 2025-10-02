@@ -8,8 +8,13 @@ function Save-Turtle {
         turtle SierpinskiTriangle 42 4 |
             Save-Turtle ./SierpinskiTriangle-42-4.svg
     .EXAMPLE
+        # We can save a turtle as a pattern by using `-Property Pattern`
         turtle Flower 42 |
-            Save-Turtle ./Flower-42.svg Pattern
+            Save-Turtle ./Flower-42.svg -Property Pattern
+    .EXAMPLE
+        # We can also save a turtle as a pattern by naming the file with `Pattern` in it.
+        turtle Flower 42 10 6 36 |
+            Save-Turtle ./HexFlowerPattern.svg
     .EXAMPLE
         Move-Turtle BoxFractal 15 5 |
             Set-Turtle Stroke '#4488ff' |
@@ -57,6 +62,8 @@ function Save-Turtle {
                 '\.png$' { 'PNG' } 
                 '\.jpe?g$' { 'JPEG' }
                 '\.webp$' { 'WEBP' }
+                'Pattern' { 'Pattern'}
+                'Symbol' { 'Symbol' }
                 default { 'SVG' }
             }
 

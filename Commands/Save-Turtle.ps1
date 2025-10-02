@@ -62,8 +62,10 @@ function Save-Turtle {
                 '\.png$' { 'PNG' } 
                 '\.jpe?g$' { 'JPEG' }
                 '\.webp$' { 'WEBP' }
-                'Pattern' { 'Pattern'}
-                'Symbol' { 'Symbol' }
+                'PatternMask' { 'PatternMask'; break }
+                'Mask' { 'Mask'; break }
+                'Pattern' { 'Pattern'; break }
+                'Symbol' { 'Symbol'; break }
                 default { 'SVG' }
             }
 

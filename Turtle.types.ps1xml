@@ -530,17 +530,28 @@ return $this
       <ScriptMethod>
         <Name>BinaryTree</Name>
         <Script>
-                        param(
-    [double]$Size = 20,
-    [int]$Order = 4,
-    [double]$Angle = 45
+                        &lt;#
+.SYNOPSIS
+    Draws a binary tree
+.DESCRIPTION
+    Draws a binary tree using an L-system.      
+.LINK
+    https://en.wikipedia.org/wiki/L-system#Example_2:_fractal_(binary)_tree
+#&gt;
+param(
+# The size of each segment
+[double]$Size = 42,
+# The order of magnitude (the number of times the L-system is expanded)
+[int]$Order = 4,
+# The angle
+[double]$Angle = 45
 )
 return $this.Rotate(-90).LSystem('0',  [Ordered]@{
     '1' = '11'
     '0' = '1[0]0'    
 }, $Order, [Ordered]@{
     '[01]'    = { $this.Forward($Size) }
-    '\['      = { $this.Rotate($Angle * -1).Push() }
+    '\['      = { $this.Push().Rotate($Angle * -1) }
     '\]'      = { $this.Pop().Rotate($Angle) }
 })
 
@@ -1231,21 +1242,36 @@ return $this.Step($x, $y)
       <ScriptMethod>
         <Name>FractalPlant</Name>
         <Script>
-                        param(
-    [double]$Size = 20,
+                        &lt;#
+.SYNOPSIS
+    Draws a Fractal Plant
+.DESCRIPTION
+    Draws a Fractal Plant as an L-System
+.LINK
+    https://en.wikipedia.org/wiki/L-system#Example_7:_fractal_plant
+.EXAMPLE
+    turtle FractalPlant save ./FractalPlant.svg
+.EXAMPLE
+    turtle FractalPlant morph  save ./FractalPlantMorph.svg
+#&gt;  
+param(
+    # The size of each segment
+    [double]$Size = 42,
+    # The order of magnitude (the number of times the L-system is expanded)
     [int]$Order = 4,
-    [double]$Angle = 25
+    # The angle of each segment
+    [double]$Angle = -25
 )
 return $this.Rotate(-90).LSystem('-X',  [Ordered]@{
     'X' = 'F+[[X]-X]-F[-FX]+X'
-    'F' = 'FF'    
+    'F' = 'FF'
 }, $Order, [Ordered]@{
-    'F'    = { $this.Forward($Size) }
-    '\['      = { $this.Rotate($Angle * -1).Push() }
-    '\]'      = { $this.Pop().Rotate($Angle) }
+    'F'  = { $this.Forward($Size) }
+    '\+' = { $this.Rotate($angle)}
+    '\-' = { $this.Rotate($angle * -1)}
+    '\[' = { $this.Push() }
+    '\]' = { $this.Pop() }
 })
-
-
                     </Script>
       </ScriptMethod>
       <ScriptMethod>

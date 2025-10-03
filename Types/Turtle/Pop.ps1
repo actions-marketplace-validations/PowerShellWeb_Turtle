@@ -9,11 +9,16 @@
     # Draws a T shape by pushing and popping
     turtle rotate -90 forward 42 push rotate 90 forward 21 pop rotate -90 forward 21 show
 #>
-if ($this.'.Stack' -isnot [Collections.Stack]) { return }
+param()
 
-if ($this.'.Stack'.Count -eq 0) { return }
-
+# If the stack is not a stack, return ourself
+if ($this.'.Stack' -isnot [Collections.Stack]) { return $this }
+# If the stack is empty, return ourself
+if ($this.'.Stack'.Count -eq 0) { return $this }
+# Pop the stack
 $popped = $this.'.Stack'.Pop()
-$null = $this.PenUp().Goto($popped.Position.X, $popped.Position.Y).PenDown()
-$this.Heading = $popped.Heading
-return $this
+
+$this. # Rotate by the differene in heading, 
+    Rotate($popped.Heading - $this.Heading).
+    # then teleport to the popped location
+    Teleport($popped.Position.X, $popped.Position.Y)

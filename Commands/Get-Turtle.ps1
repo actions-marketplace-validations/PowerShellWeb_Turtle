@@ -33,25 +33,29 @@ function Get-Turtle {
 
         Any parameter that begins with whitespace will be split into multiple words.
     .EXAMPLE
-        # We can write shapes as a series of steps
-        turtle "
-            rotate 120
-            forward 42 
-            rotate 120 
-            forward 42 
-            rotate 120 
-            forward 42
-        "
+        # We can write shapes as a series of steps.
+        # Let's start with a simple diagonal line
+        turtle rotate 45 forward 42
     .EXAMPLE
-        # We can also use a method.
+        # Let's draw a triangle
+        turtle forward 42 rotate 120 forward 42 rotate 120 forward 42         
+    .EXAMPLE
+        # Typing that might get tedious.
+        # Instead, let's use a method.
         # Polygon will draw an an N-sided polygon.
         turtle polygon 10 5
     .EXAMPLE
-        # A simple case of this is a square
-        turtle square 42
+        # There's also a method for squares
+        turtle square 42    
     .EXAMPLE
         # If we rotate 45 degrees first, our square becomes a rhombus
         turtle rotate 45 square 42
+    .EXAMPLE
+        # We can also draw a rectangle
+        turtle rectangle 42 4.2
+    .EXAMPLE
+        # If we only provide the first parameter, we get a golden rectangle
+        turtle rectangle 42
     .EXAMPLE
         # We can draw a circle 
         turtle circle 10
@@ -497,10 +501,11 @@ function Get-Turtle {
                     
         # Peek at our callstack
         $myCallstack = @(Get-PSCallStack)
-        # and try to get our most recent two callers
-        foreach ($possibleCaller in $myCallstack[-1..-2]) {
+        # and try to get our most recent few callers
+        foreach ($possibleCaller in $myCallstack[-1..-3]) {
             # If we can, find the CommandAst that called us.
             # (this will have the arugment list in a more useful form, and will help us recreate a call)
+            if (-not $possibleCaller.InvocationInfo.MyCommand.ScriptBlock.Ast) { continue }
             $myCommandAst = 
                 $possibleCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
                     param($ast) 

@@ -4991,7 +4991,7 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @(
     $precision = $this.Precision
     filter roundToPrecision { [Math]::Round($_, $precision)}
     
-    if ($this.Start.X -and $this.Start.Y) {
+    if ($null -ne $this.Start.X -and $null -ne $this.Start.Y) {
         if ($precision) {
             "m $($this.Start.x | roundToPrecision) $($this.Start.y | roundToPrecision)"
         } else {

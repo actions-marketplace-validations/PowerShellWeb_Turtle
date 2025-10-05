@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
-    <pattern id="turtle-pattern" patternUnits="userSpaceOnUse" width="640.000000000007" height="640.000000000002" transform-origin="50% 50%" patternTransform="scale(1)">
+    <pattern id="turtle-pattern" patternUnits="userSpaceOnUse" width="640" height="640" transform-origin="50% 50%" patternTransform="scale(1)">
       <animateTransform type="scale" values="0.66;0.33;0.66" repeatCount="indefinite" dur="23s" additive="sum" attributeType="XML" attributeName="patternTransform" />
       <animateTransform type="rotate" values="0;360" repeatCount="indefinite" dur="41s" additive="sum" attributeType="XML" attributeName="patternTransform" />
       <animateTransform type="translate" values="0 0;42 42;0 0" repeatCount="indefinite" additive="sum" dur="117s" attributeType="XML" attributeName="patternTransform" />

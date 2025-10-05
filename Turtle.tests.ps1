@@ -66,5 +66,23 @@ describe Turtle {
         }
     }
 
-    
+    context 'Turtle Security' {
+        it 'Can run in a data block' {
+            $dataBlockTurtle = data -supportedCommand turtle, Get-Random {
+                turtle rotate 45 forward (Get-Random -Min 21 -Max 42)
+            }
+            $dataBlockTurtle.Heading | Should -Be 45
+        }
+        it 'Will not show a turtle in non-interactive mode' {
+            if ([Environment]::UserInteractive) {
+                Write-Warning "Cannot test non-iteractivity interactively"
+            } else {
+                $dataBlockTurtle = data -supportedCommand turtle, Get-Random {
+                    turtle rotate 45 forward (Get-Random -Min 21 -Max 42) show
+                }
+                $dataBlockTurtle.Heading | Should -Be 45   
+            }
+        }
+    }
 }
+

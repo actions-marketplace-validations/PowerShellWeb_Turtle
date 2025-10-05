@@ -29,6 +29,12 @@ function Show-Turtle
         $extensionPattern = "(?>$($validExtensions -replace '\.','\.' -join '|'))$"
     }
     process {
+        # If we are not running interactively,
+        # we obviously do not want to try to show something on the screen.
+        if (-not [Environment]::UserInteractive) {
+            # Instead, just pass thru our input.
+            return $InputObject
+        }
         if ($InputObject -is [IO.FileInfo] -and $InputObject.Extension -match $extensionPattern) {
             Invoke-Item $InputObject.Fullname
         } elseif ($InputObject.pstypenames -contains 'Turtle') {            

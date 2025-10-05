@@ -31,7 +31,7 @@ function Show-Turtle
     process {
         # If we are not running interactively,
         # we obviously do not want to try to show something on the screen.
-        if (-not [Environment]::UserInteractive) {
+        if (-not [Environment]::UserInteractive -or $env:GITHUB_WORKFLOW) {
             # Instead, just pass thru our input.
             return $InputObject
         }

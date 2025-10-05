@@ -74,7 +74,7 @@ describe Turtle {
             $dataBlockTurtle.Heading | Should -Be 45
         }
         it 'Will not show a turtle in non-interactive mode' {
-            if ([Environment]::UserInteractive) {
+            if ([Environment]::UserInteractive -and -not $env:GITHUB_WORKFLOW) {
                 Write-Warning "Cannot test non-iteractivity interactively"
             } else {
                 $dataBlockTurtle = data -supportedCommand turtle, Get-Random {

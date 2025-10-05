@@ -488,6 +488,26 @@ function Get-Turtle {
             }
         )
 
+        $helpfulKeywords = @(
+            '?'
+            '--help'
+            'help'
+            '/help'
+            '/?'
+        )
+
+        filter getScriptHelp {
+            $scriptBlock = $_
+            $Name = $args -join ''
+            $ExecutionContext.SessionState.PSVariable.Set("function:$Name",$scriptBlock)
+            if ($switches -is [Collections.IDictionary]) {
+                Get-Help $Name @switches
+            } else {
+                Get-Help $Name
+            }
+            $ExecutionContext.SessionState.PSVariable.Remove("function:$Name")
+        }
+
         # We want to sort the member names by length, in case we need them in a pattern or want to sort quickly.
         $memberNames = $memberNames | Sort-Object @{Expression={ $_.Length };Descending=$true}, name
         # Create a new turtle object in case we have no turtle input.
@@ -593,7 +613,7 @@ function Get-Turtle {
         # Since we want to know the exact index, we walk thru matches
         $depth = 0
         # and keep track of when it became unbalanced.
-        $unbalancedAt = $null        
+        $unbalancedAt = $null
         foreach ($match in [Regex]::Matches(
                 ($wordsAndArguments -join ' ' ), '[\[\]]'
             )
@@ -711,11 +731,41 @@ $(
 
             # And we can determine if we have any parameters.
             # (it is important that we always force any parameters into an array)
+            $HelpWanted = $false
+            $switches = [Ordered]@{}
+
             $argList = 
                 @(if ($methodArgIndex -ne ($argIndex + 1)) {
                     # We only want to remove one pair of brackets
                     $debracketCount = 0
                     foreach ($word in $wordsAndArguments[($argIndex + 1)..($methodArgIndex - 1)]) {
+                        if ($word -in $helpfulKeywords) {
+                            $HelpWanted = $true
+                            continue
+                        }
+                        if ($HelpWanted -and $word -in 'example', 'examples', 'parameter','parameters','online') {
+                            if ($word -in 'example','examples') {
+                                $switches['Examples'] = $true
+                            }
+                            if ($word -in 'parameter','parameters') {
+                                $switches['Parameters'] = '*'
+                            }
+                            if ($word -eq 'online') {
+                                $switches['Online'] = $true
+                            }
+                            continue
+                        }
+                        if ($word -match '^[-/]+?\D') {
+                            $switchInfo = $word -replace '^[-/]+'
+                            $switchName, $switchValue = $switchInfo -split ':', 2
+                            $switches[$switchName] =
+                                if ($switchValue) {
+                                    $switchValue
+                                } else {
+                                    $true
+                                }
+                            continue
+                        }
                         # If the word started with a bracket, and we haven't removed any
                         if ("$word".StartsWith('[') -and -not $debracketCount) {
                             $word = $word -replace '^\[' # remove it
@@ -732,7 +782,7 @@ $(
                     }
                     $argIndex = $methodArgIndex - 1
                 })
-            
+                                                
             # Now we want to get the output from the step.
             $stepOutput =
                 if (
@@ -742,13 +792,19 @@ $(
                 ) {                    
                     # If we have arguments,
                     if ($argList) {
-                        # and we have a script method
+                        # and a script method
                         if ($memberInfo -is [Management.Automation.Runspaces.ScriptMethodData]) {
-                            # set this to the current turtle
-                            $this = $currentTurtle
-                            # and call the script, splatting positional parameters
-                            # (this allows more complex binding, like ValueFromRemainingArguments)
-                            . $currentTurtle.$currentMember.Script @argList
+                            # Check to see if we want help.
+                            if ($HelpWanted) {
+                                # If we do, get some help.
+                                $memberInfo.Script | getScriptHelp $memberInfo.Name
+                            } else {
+                                # Otherwise, set `$this` to the current turtle
+                                $this = $currentTurtle
+                                # and call the script, splatting positional parameters
+                                # (this allows more complex binding, like ValueFromRemainingArguments).
+                                . $currentTurtle.$currentMember.Script @argList
+                            }                            
                         } 
                         elseif ($currentTurtle.$currentMember.Invoke) {
                             $currentTurtle.$currentMember.Invoke($argList)
@@ -757,40 +813,61 @@ $(
                         } elseif ($memberInfo -is [ValueType]) {
                             $memberInfo
                         }                        
-                    } else {
-                        # otherwise, just invoke the method with no arguments.
-                        $currentTurtle.$currentMember.Invoke()
+                    }
+                    # If we don't have any arguments, but are still dealing with a method
+                    else {
+                        # If we want help,
+                        if ($HelpWanted -and $memberInfo.Script) {
+                            # get some help.
+                            $memberInfo.Script | getScriptHelp $memberInfo.Name                            
+                        } else {
+                            # otherwise, invoke the method with no parameters.
+                            $currentTurtle.$currentMember.Invoke()
+                        }
                     }                    
                 } else {
                     # If the member is a property, we can get it or set it.
 
                     # If we have any arguments,
                     if ($argList) {
-                        # Check to see if they are strongly typed
-                        if ($memberInfo -is [Management.Automation.Runspaces.ScriptPropertyData]) {
-                            $desiredType = $memberInfo.SetScriptBlock.Ast.ParamBlock.Parameters.StaticType
-                            if ($desiredType -is [Type] -and
-                                $argList.Length -eq 1 -and
-                                $argList[0] -as $desiredType) {
-                                $argList = $argList[0] -as $desiredType
+                        # and we want help
+                        if ($HelpWanted -and $memberInfo.SetScriptBlock) {                            
+                            # get help about the set.
+                            $memberInfo.SetScriptBlock | getScriptHelp $memberInfo.Name                            
+                        } else {
+                            # Otherwise, check to see if the arguments are strongly typed.
+                            if ($memberInfo -is [Management.Automation.Runspaces.ScriptPropertyData]) {
+                                $desiredType = $memberInfo.SetScriptBlock.Ast.ParamBlock.Parameters.StaticType
+                                if ($desiredType -is [Type] -and
+                                    $argList.Length -eq 1 -and
+                                    $argList[0] -as $desiredType) {
+                                    $argList = $argList[0] -as $desiredType
+                                }                            
+                            }
+                            
+                            # And try to set the property.
+                            try {
+                                $currentTurtle.$currentMember = $argList
+                            } catch {
+                                # If that fails,
+                                $ex  = $_
+                                # use .WriteError for a cleaner error.
+                                $PSCmdlet.WriteError($ex)
                             }
                         }
-                        # lets try to set it.
-                        try {
-                            $currentTurtle.$currentMember = $argList
-                        } catch {
-                            $ex  = $_
-                            $PSCmdlet.WriteError($ex)
-                        }
+                        
                     } else {
                         # otherwise, lets get the property
-
-                        if ($null -ne $currentTurtle.$currentMember) {
+                        # If we are getting a script and we want help
+                        if ($memberInfo.GetScriptBlock -and $HelpWanted) {
+                            # momentarily turn that script into a function
+                            $memberInfo.GetScriptBlock | getScriptHelp $memberName                            
+                        }
+                        elseif ($null -ne $currentTurtle.$currentMember) {
                             $currentTurtle.$currentMember
                         } elseif ($memberInfo -is [ValueType]) {
                             $memberInfo
-                        }
-                        
+                        }                        
                     }
                 }
 

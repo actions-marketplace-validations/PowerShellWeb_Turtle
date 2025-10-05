@@ -4,10 +4,16 @@ function Show-Turtle
     .SYNOPSIS
         Shows a Turtle
     .DESCRIPTION
-        Shows a Turtle by opening it with the default file association.
+        Shows a Turtle by opening it with the default file association.        
     .NOTES
         It is highly recommended that you show turtles in a browser;
-        not all drawing programs support the full capabilities of SVG.        
+        not all drawing programs support the full capabilities of SVG.
+        
+        There are a few circumstances where the Turtle will refuse to show.
+
+        * If the session is not interactive
+        * If $env:GITHUB_WORKFLOW is present
+        * If $env:TURTLE_BOT is present
     #>
     [CmdletBinding(PositionalBinding=$false)]
     param(
@@ -31,7 +37,7 @@ function Show-Turtle
     process {
         # If we are not running interactively,
         # we obviously do not want to try to show something on the screen.
-        if (-not [Environment]::UserInteractive -or $env:GITHUB_WORKFLOW) {
+        if (-not [Environment]::UserInteractive -or $env:GITHUB_WORKFLOW -or $env:TURTLE_BOT) {
             # Instead, just pass thru our input.
             return $InputObject
         }

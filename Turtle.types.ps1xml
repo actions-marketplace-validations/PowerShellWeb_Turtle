@@ -4763,16 +4763,20 @@ $segments = @(
         <GetScriptBlock>
                         &lt;#
 .SYNOPSIS
-    Gets the turtle maximum point.
+    Gets the turtle's highest point.
 .DESCRIPTION
-    Gets the maximum point reached by the turtle.
+    Gets the maximum point vector visited by the turtle.
 
-    Keeping track of this as we go is far more efficient than calculating it from the path.
+    This would the highest point that the turtle has been.
 #&gt;
-if ($this.'.Maximum') {
-    return $this.'.Maximum'
+[OutputType([Numerics.Vector2])]
+param()
+if (-not $this.'.Maximum') {
+    $this | Add-Member NoteProperty '.Maximum' ([Numerics.Vector2]::new(0,0)) -Force
 }
-return ([pscustomobject]@{ X = 0; Y = 0 })
+
+return $this.'.Maximum'
+
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>

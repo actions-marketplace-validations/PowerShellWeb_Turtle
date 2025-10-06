@@ -24,18 +24,21 @@ describe Turtle {
         $t = turtle ArcRight $Radius 360
         $Heading = 180.0
         [Math]::Round($t.Width,1) | Should -Be ($Radius * 2)
+        [Math]::Round($t.Height,1) | Should -Be ($Radius * 2)
         [Math]::Round($t.Heading,1) | Should -Be 360.0
 
         $Radius = 1
         $Heading = 180.0
         $t = turtle ArcRight $Radius 180
-        [Math]::Round($t.Width,1) | Should -Be ($Radius * 2)
+        [Math]::Round($t.Width,1) | Should -Be $Radius
+        [Math]::Round($t.Height,1) | Should -Be ($Radius * 2)
         [Math]::Round($t.Heading,1) | Should -Be $Heading
 
         $Radius = 1
         $Heading = 90.0
         $t = turtle ArcRight $Radius $Heading
-        [Math]::Round($t.Width,1) | Should -Be ($Radius * 4)
+        [Math]::Round($t.Width,1) | Should -Be $Radius
+        [Math]::Round($t.Height,1) | Should -Be $Radius
         [Math]::Round($t.Heading,1) | Should -Be $Heading        
     }
 

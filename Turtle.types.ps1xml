@@ -6646,4 +6646,31 @@ Position
       </NoteProperty>
     </Members>
   </Type>
+  <Type>
+    <Name>Turtle.History</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>Start</Name>
+              <Name>End</Name>
+              <Name>Delta</Name>
+              <Name>Instruction</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+      <NoteProperty>
+        <Name>DefaultDisplay</Name>
+        <Value>Start
+End
+Delta
+Instruction
+</Value>
+      </NoteProperty>
+    </Members>
+  </Type>
 </Types>

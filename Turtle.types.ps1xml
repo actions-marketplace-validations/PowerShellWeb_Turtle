@@ -6663,6 +6663,13 @@ Position
           </PropertySet>
         </Members>
       </MemberSet>
+      <ScriptMethod>
+        <Name>ToString</Name>
+        <Script>
+                        $this.Instruction
+
+                    </Script>
+      </ScriptMethod>
       <NoteProperty>
         <Name>DefaultDisplay</Name>
         <Value>Start

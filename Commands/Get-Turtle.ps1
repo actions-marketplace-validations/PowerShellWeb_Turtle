@@ -861,7 +861,7 @@ $(
                         # If we are getting a script and we want help
                         if ($memberInfo.GetScriptBlock -and $HelpWanted) {
                             # momentarily turn that script into a function
-                            $memberInfo.GetScriptBlock | getScriptHelp $memberName                            
+                            $memberInfo.GetScriptBlock | getScriptHelp $memberInfo.Name                            
                         }
                         elseif ($null -ne $currentTurtle.$currentMember) {
                             $currentTurtle.$currentMember

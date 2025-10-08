@@ -4,25 +4,25 @@
 .DESCRIPTION
     This script uses turtle graphics to draw a pie graph based on the provided data.
 .EXAMPLE
-    turtle PieGraph 400 400 80 20 save ./80-20.svg
+    turtle PieGraph 400 80 20 save ./80-20.svg
 .EXAMPLE
-    turtle PieGraph 400 400 5 10 15 20 15 10 5 | Save-Turtle ./PieGraph.svg
+    turtle PieGraph 400 5 10 15 20 15 10 5 | Save-Turtle ./PieGraph.svg
 .EXAMPLE
-    turtle width 400 height 400 PieGraph 400 400 @{value=20;fill='red'} @{value=40;fill='blue'} save ./PieGraphColor.svg   
+    turtle PieGraph 400 @{value=20;fill='red'} @{value=40;fill='blue'} save ./PieGraphColor.svg   
 .EXAMPLE
-    turtle PieGraph 400 400 @(
+    turtle PieGraph 400 @(
         5,10,15,20,15,10,5 | Sort-Object -Descending
     ) | Save-Turtle ./PieGraphDescending.svg
 .EXAMPLE
-    turtle rotate (Get-Random -Max 360) PieGraph 400 400 @(
+    turtle rotate (Get-Random -Max 360) PieGraph 400 @(
         5,10,15,20,15,10,5 | Sort-Object -Descending
     ) | Save-Turtle ./PieGraphDescendingRotated.svg
 .EXAMPLE
-    turtle PieGraph 200 200 (
+    turtle PieGraph 200 (
         @(1..50) | 
             Get-Random -Count (Get-Random -Minimum 5 -Maximum 20)
     ) save ./RandomPieGraph.svg
-.EXAMPLE    
+.EXAMPLE
     turtle rotate -90 piegraph 100 @(
         $allTokens = Get-Module Turtle |
             Split-Path |
@@ -107,16 +107,16 @@
         turtle PieGraph 200 200 @(1..50 | Get-Random -Count $n)
     ) save ./RandomPieGraphMorph.svg
 .EXAMPLE
-    turtle PieGraph 200 200 (
+    turtle PieGraph 200 (
         @(1..50;-1..-50) | 
             Get-Random -Count (Get-Random -Minimum 5 -Maximum 20)
     ) save ./RandomPieGraphWithNegative.svg
 .EXAMPLE
-    $randomNegativePie = turtle PieGraph 200 200 (
+    $randomNegativePie = turtle PieGraph 200 (
             @(1..50;-1..-50) | 
                 Get-Random -Count 10
         )
-    turtle width 200 height 200 morph @(
+    turtle viewbox 200 morph @(
         $randomNegativePie
         turtle PieGraph 200 200 (
             @(1..50;-1..-50) | 

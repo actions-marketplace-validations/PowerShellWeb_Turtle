@@ -11,13 +11,15 @@
     
     This format can also be used as a [Path2D](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D) in a Canvas element.
 
-    It can also be used in WPF, where it is simply called [Path Markup](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/path-markup-syntax) 
+    It can also be used in WPF, where it is simply called [Path Markup](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/path-markup-syntax)
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/Paths
 .LINK
     https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D
 .LINK
-    https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/path-markup-syntax    
+    https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/path-markup-syntax?wt.mc_id=MVP_321542    
+.EXAMPLE
+    turtle square 42 pathdata
 #>
 @(
     # Let's call this trick Schrödinger's rounding.
@@ -35,34 +37,9 @@
         } else {
             "m $($this.Start.x) $($this.Start.y)"
         }
-        
     }
     else {
-        @("m"
-        # If the viewbox has been manually set 
-        if ($this.'.ViewBox') {
-            0, 0 # do not adjust our starting position
-        } else {
-            # otherwise, translate by the minimum point.
-            if ($this.Minimum.X -lt 0) {
-                if ($precision) {
-                    -1 * $this.Minimum.X | roundToPrecision
-                } else {
-                    -1 * $this.Minimum.X
-                }                
-            }
-            else { 0 }
-
-            if ($this.Minimum.Y -lt 0) {
-                if ($precision) {
-                    -1 * $this.Minimum.Y | roundToPrecision
-                } else {
-                    -1 * $this.Minimum.Y
-                }
-                
-            }
-            else { 0 }
-        }) -join ' '
+        "m 0 0"
     }
     
     # Walk over our steps

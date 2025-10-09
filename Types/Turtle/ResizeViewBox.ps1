@@ -46,33 +46,33 @@ elseif ($boundingPoints -eq 4) {
 
 # Make sure we have a place to store our position
 if (-not $this.'.Position') {
-    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value ([pscustomobject]@{ X = 0; Y = 0 })
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value ([Numerics.Vector2]@{ X = 0; Y = 0 })
 }
 
 # and minimum
 if (-not $this.'.Minimum') {
-    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Minimum' -Value ([pscustomobject]@{ X = 0; Y = 0 })
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Minimum' -Value ([Numerics.Vector2]@{ X = 0; Y = 0 })
 }
 # and maximum
 if (-not $this.'.Maximum') {
-    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Maximum' -Value ([pscustomobject]@{ X = 0; Y = 0 })
+    $this |  Add-Member -MemberType NoteProperty -Force -Name '.Maximum' -Value ([Numerics.Vector2]@{ X = 0; Y = 0 })
 }
 
 # Resize our bounds as appropriate.
-if ($this.Maximum.X -lt ($this.Position.X + $maxX)) {
-    $this.Maximum.X = $this.Position.X + $maxX
+if ($this.'.Maximum'.X -lt ($this.Position.X + $maxX)) {
+    $this.'.Maximum'.X = $this.Position.X + $maxX
 }
 
-if ($this.Minimum.X -gt ($this.Position.X + $minX)) {
-    $this.Minimum.X = $this.Position.X + $minX
+if ($this.'.Minimum'.X -gt ($this.Position.X + $minX)) {
+    $this.'.Minimum'.X = $this.Position.X + $minX
 }
 
-if ($this.Maximum.Y -lt ($this.Position.Y + $maxY)) {
-    $this.Maximum.Y = $this.Position.Y + $maxY
+if ($this.'.Maximum'.Y -lt ($this.Position.Y + $maxY)) {
+    $this.'.Maximum'.Y = $this.Position.Y + $maxY
 }
 
-if ($this.Minimum.Y -gt ($this.Position.Y + $minY)) {
-    $this.Minimum.Y = $this.Position.Y + $minY
+if ($this.'.Minimum'.Y -gt ($this.Position.Y + $minY)) {
+    $this.'.Minimum'.Y = $this.Position.Y + $minY
 }
 
 return $this

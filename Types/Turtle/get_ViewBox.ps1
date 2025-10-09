@@ -18,6 +18,6 @@ if ($this.'.ViewBox') { return $this.'.ViewBox' }
 $viewBox = $this.Maximum - $this.Minimum
 
 # and return the viewbox
-return $this.Minimum.X, $this.Minimum.Y, $viewBox.width, $viewBox.height
+return $this.Minimum.X, $this.Minimum.Y, $viewBox.X, $viewBox.Y
 
 

@@ -4,6 +4,7 @@
     a = 'Arc'
     c = 'CubicBezierCurve'
     l = 'Step'
+    h = 'HorizontalLine'
     s = 'BezierCurve'
     q = 'QuadraticBezierCurve'
 

@@ -5,8 +5,9 @@
     c = 'CubicBezierCurve'
     l = 'Step'
     h = 'HorizontalLine'
-    s = 'BezierCurve'
     q = 'QuadraticBezierCurve'
+    s = 'BezierCurve'
+    v = 'VerticalLine'
 
     # Shorter forms:
     Pie = 'PieGraph'

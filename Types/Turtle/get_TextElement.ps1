@@ -11,46 +11,73 @@
     https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/text
 .EXAMPLE
     turtle text "hello world" textElement
+.EXAMPLE
+    turtle text "hello world" title "Hi!" textElement
 #>
 [OutputType([xml])]
 param()
 
+# If there is no text, there's no text element
 if (-not $this.Text) { return }
 
-$textAttributes = [Ordered]@{}
+# Collect all of our text attributes
+$textAttributes = [Ordered]@{
+    id="$($this.ID)-text"
+}
 
+# If there are no steps
 if (-not $this.Steps) {
+    # default the text to the middle
     $textAttributes['dominant-baseline'] = 'middle'
     $textAttributes['text-anchor'] = 'middle'
     $textAttributes['x'] = '50%'
     $textAttributes['y'] = '50%'
 }
 
-foreach ($collection in 'SVGAttribute','Attribute') {
+# Text Attributes can exist in Attribute or SVGAttribute, as long as they are prefixed.
+$prefix = '^/?text/'
+foreach ($collection in 'Attribute','SVGAttribute') {
+    if (-not $this.$Collection.Count) { continue }
     foreach ($key in $this.$collection.Keys) {
-        if ($key -match '^text/') {
-            $textAttributes[$key -replace '^text/'] = $this.$collection[$key]
+        if ($key -match $prefix) {
+            $textAttributes[$key -replace $prefix] = $this.$collection[$key]
         }
     }
 }
 
+# Explicit text attributes will be copied last, so they take precedent.
 foreach ($key in $this.TextAttribute.Keys) {
     $textAttributes[$key] = $this.TextAttribute[$key]
 }
 
+# Return a constructed element
 return [xml]@(
-"<text id='$($this.ID)-text' $(
+# Create the text element
+"<text$(    
     foreach ($TextAttributeName in $TextAttributes.Keys) {
         " $TextAttributeName='$($TextAttributes[$TextAttributeName])'"
     }
 )>"
-if ($this.TextAnimation) {$this.TextAnimation}
-if ($this.Steps) {
-    "<textPath href='#$($this.id)-path'>$([Security.SecurityElement]::Escape($this.Text))</textPath>"
-} else {
-    $([Security.SecurityElement]::Escape($this.Text))
+
+# If there is a title
+if ($this.Title) {
+    # embed it here (so that the text is accessible).
+    "<title>$([Security.SecurityElement]::Escape($this.Title))</title>"
 }
+
+# If there are any text animations, include them here.
+if ($this.TextAnimation) {$this.TextAnimation}
+
+# Escape our text
+$escapedText = [Security.SecurityElement]::Escape($this.Text)
+# If we have steps,
+if ($this.Steps) {
+    # put the escaped text within a `<textPath>`.
+    "<textPath href='#$($this.id)-path'>$escapedText</textPath>"
+} else {
+    # otherwise, include the escaped text as the content
+    $escapedText
+}
+# close the element and return our XML.
 "</text>"
 )
-
-

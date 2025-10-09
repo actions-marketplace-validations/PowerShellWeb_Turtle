@@ -45,6 +45,7 @@ foreach ($collection in $this.SVGAttribute, $this.Attribute) {
         " $attributeName='$($coreAttributes[$attributeName])'"
     }
 )>"
+if ($this.Title) { "<title>$([Security.SecurityElement]::Escape($this.Title))</title>" }
 if ($this.PathAnimation) {$this.PathAnimation}
 "</path>"
 )

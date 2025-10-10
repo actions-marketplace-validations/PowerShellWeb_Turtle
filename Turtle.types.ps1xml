@@ -2299,9 +2299,12 @@ return $this
             Add-Member ScriptProperty Fill {
                 "#{0:x6}" -f (Get-Random -Maximum 0xffffff)
             } -Force -PassThru |
-             Add-Member ScriptProperty Link {
-                "https://learn.microsoft.com/en-us/dotnet/api/$($this.Name.ToLower())"
-            } -Force -PassThru        
+            Add-Member ScriptProperty Title {
+                $this.Name
+            } -Force -PassThru |
+            Add-Member ScriptProperty Link {
+                "https://learn.microsoft.com/en-us/dotnet/api/$($this.Name.ToLower())?wt.mc_id=MVP_321542"
+            } -Force -PassThru
     ) save ./TurtleDotNetTypesPieGraph.svg
 .EXAMPLE
     $n = Get-Random -Min 5 -Max 10
@@ -2467,13 +2470,11 @@ else {
     $heading = $this.Heading
     if (-not $heading) { $heading = 0.0 }    
     # Calulate the midpoint of the circle
-    $midX = $this.X + ($dx - $this.X)/2
-    $midY = $this.Y + ($dy - $this.Y)/2
     for ($sliceNumber =0 ; $sliceNumber -lt $Slices.Length; $sliceNumber++) {
         $Angle = $relativeSlices[$sliceNumber] * 360
-        $sliceName = "slice$sliceNumber"        
+        $sliceName = "slice$sliceNumber"
         # created a nested turtle at the midpoint
-        $nestedTurtles["slice$sliceNumber"] = turtle teleport $this.X $this.Y 
+        $nestedTurtles["slice$sliceNumber"] = turtle start $dx $dy
         # with the current heading
         $nestedTurtles["slice$sliceNumber"].Heading = $this.Heading
         # and arc by the angle
@@ -2507,6 +2508,7 @@ else {
     }
     # and set our nested turtles.
     $this.Turtles = $nestedTurtles
+    # $null = $this.ResizeViewBox($Radius)
 }
  
 return $this
@@ -5299,41 +5301,40 @@ $this |  Add-Member -MemberType NoteProperty -Force -Name '.PathClass' -Value @(
     # This is a much less common request than moving the turtle forward.
     $precision = $this.Precision
     filter roundToPrecision { [Math]::Round($_, $precision)}
-    $viewBox = $this.'.Viewbox'
     
     if ($null -ne $this.Start.X -and $null -ne $this.Start.Y) {
         if ($precision) {
             "m $($this.Start.x | roundToPrecision) $($this.Start.y | roundToPrecision)"
         } else {
             "m $($this.Start.x) $($this.Start.y)"
-        }        
-    }    
+        }
+        
+    }
     else {
         @("m"
         # If the viewbox has been manually set 
-        if ($viewBox) {
+        if ($this.'.ViewBox') {
             0, 0 # do not adjust our starting position
         } else {
-            $viewBox = $this.ViewBox
-            if ([Math]::Round($this.Mimimum.X) -lt 0) {
+            # otherwise, translate by the minimum point.
+            if ($this.Minimum.X -lt 0) {
                 if ($precision) {
-                    $viewBox[-2]  | roundToPrecision
+                    -1 * $this.Minimum.X | roundToPrecision
                 } else {
-                    $viewBox[-2]
+                    -1 * $this.Minimum.X
+                }                
+            }
+            else { 0 }
+
+            if ($this.Minimum.Y -lt 0) {
+                if ($precision) {
+                    -1 * $this.Minimum.Y | roundToPrecision
+                } else {
+                    -1 * $this.Minimum.Y
                 }
                 
-            } else {
-                0
             }
-            if ([Math]::Round($this.Minimum.Y) -lt 0) {
-                if ($precision) {
-                    $viewBox[-1]  | roundToPrecision
-                } else {
-                    $viewBox[-1]
-                }
-            } else {
-                0
-            }                                    
+            else { 0 }
         }) -join ' '
     }
     

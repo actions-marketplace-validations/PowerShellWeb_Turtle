@@ -95,9 +95,12 @@
             Add-Member ScriptProperty Fill {
                 "#{0:x6}" -f (Get-Random -Maximum 0xffffff)
             } -Force -PassThru |
-             Add-Member ScriptProperty Link {
-                "https://learn.microsoft.com/en-us/dotnet/api/$($this.Name.ToLower())"
-            } -Force -PassThru        
+            Add-Member ScriptProperty Title {
+                $this.Name
+            } -Force -PassThru |
+            Add-Member ScriptProperty Link {
+                "https://learn.microsoft.com/en-us/dotnet/api/$($this.Name.ToLower())?wt.mc_id=MVP_321542"
+            } -Force -PassThru
     ) save ./TurtleDotNetTypesPieGraph.svg
 .EXAMPLE
     $n = Get-Random -Min 5 -Max 10
@@ -263,13 +266,11 @@ else {
     $heading = $this.Heading
     if (-not $heading) { $heading = 0.0 }    
     # Calulate the midpoint of the circle
-    $midX = $this.X + ($dx - $this.X)/2
-    $midY = $this.Y + ($dy - $this.Y)/2
     for ($sliceNumber =0 ; $sliceNumber -lt $Slices.Length; $sliceNumber++) {
         $Angle = $relativeSlices[$sliceNumber] * 360
-        $sliceName = "slice$sliceNumber"        
+        $sliceName = "slice$sliceNumber"
         # created a nested turtle at the midpoint
-        $nestedTurtles["slice$sliceNumber"] = turtle teleport $this.X $this.Y 
+        $nestedTurtles["slice$sliceNumber"] = turtle start $dx $dy
         # with the current heading
         $nestedTurtles["slice$sliceNumber"].Heading = $this.Heading
         # and arc by the angle
@@ -303,6 +304,7 @@ else {
     }
     # and set our nested turtles.
     $this.Turtles = $nestedTurtles
+    # $null = $this.ResizeViewBox($Radius)
 }
  
 return $this

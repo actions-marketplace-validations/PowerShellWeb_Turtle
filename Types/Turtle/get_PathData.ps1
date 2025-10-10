@@ -30,16 +30,42 @@
     # This is a much less common request than moving the turtle forward.
     $precision = $this.Precision
     filter roundToPrecision { [Math]::Round($_, $precision)}
+    $viewBox = $this.'.Viewbox'
     
     if ($null -ne $this.Start.X -and $null -ne $this.Start.Y) {
         if ($precision) {
             "m $($this.Start.x | roundToPrecision) $($this.Start.y | roundToPrecision)"
         } else {
             "m $($this.Start.x) $($this.Start.y)"
-        }
-    }
+        }        
+    }    
     else {
-        "m 0 0"
+        @("m"
+        # If the viewbox has been manually set 
+        if ($viewBox) {
+            0, 0 # do not adjust our starting position
+        } else {
+            $viewBox = $this.ViewBox
+            if ([Math]::Round($this.Mimimum.X) -lt 0) {
+                if ($precision) {
+                    $viewBox[-2]  | roundToPrecision
+                } else {
+                    $viewBox[-2]
+                }
+                
+            } else {
+                0
+            }
+            if ([Math]::Round($this.Minimum.Y) -lt 0) {
+                if ($precision) {
+                    $viewBox[-1]  | roundToPrecision
+                } else {
+                    $viewBox[-1]
+                }
+            } else {
+                0
+            }                                    
+        }) -join ' '
     }
     
     # Walk over our steps

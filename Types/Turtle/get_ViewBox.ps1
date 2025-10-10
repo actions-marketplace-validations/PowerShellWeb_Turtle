@@ -15,9 +15,17 @@ param()
 if ($this.'.ViewBox') { return $this.'.ViewBox' }
 
 # Otherwise, subtract max from minimum to get a bounding box
-$viewBox = $this.Maximum - $this.Minimum
+$viewBox = ($this.Maximum - $this.Minimum)
+
+$precision = $this.Precision
+filter roundToPrecision { [Math]::Round($_, $precision)}
 
 # and return the viewbox
-return $this.Minimum.X, $this.Minimum.Y, $viewBox.X, $viewBox.Y
+if ($precision) {
+    return 0, 0, $viewBox.X, $viewBox.Y | roundToPrecision
+} else {
+    return 0, 0, $viewBox.X, $viewBox.Y
+}
+
 
 

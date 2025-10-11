@@ -40,6 +40,9 @@
     HLineBy = 'HorizontalLine'
     VLineBy = 'VerticalLine'
 
+    # Usability aliases
+    Arm = 'Leg'
+
     # Common transposition errors
     FlowerStar = 'StarFlower'
     FlowerGolden = 'GoldenFlower'

@@ -42,6 +42,11 @@
 
     # Usability aliases
     Arm = 'Leg'
+    Sticks = 'Spokes'
+    
+    # Synonyms
+    Cobweb = 'Spiderweb'
+    Web = 'Spiderweb'
 
     # Common transposition errors
     FlowerStar = 'StarFlower'
@@ -55,6 +60,8 @@
     # Aliasing plurals
     Keyframes = 'Keyframe'
     Styles = 'Style'
+    Spoke = 'Spokes'
+    Stick = 'Sticks'    
 
     # Anglican color property names
     BackgroundColour = 'BackgroundColor'    

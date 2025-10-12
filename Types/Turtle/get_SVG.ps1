@@ -15,6 +15,11 @@ $svgAttributes = [Ordered]@{
     height='100%'
 }
 
+# If opacity is set, it should apply to the entire SVG.
+if ($null -ne $this.opacity) {
+    $svgAttributes['opacity'] = $this.opacity
+}
+
 # If the viewbox would have zero width or height
 if ($this.ViewBox[-1] -eq 0 -or $this.ViewBox[-2] -eq 0) {
     # It's not much of a viewbox at all, and we will omit the attribute.
@@ -73,7 +78,7 @@ $svgElement = @(
             "$($this.Style -join (';' + [Environment]::NewLine))"
         }
         "</style>"
-    }
+    }    
 
     # Declare any SVG animations
     if ($this.SVGAnimation) {$this.SVGAnimation}

@@ -1,14 +1,10 @@
 <#
 .SYNOPSIS
-    Gets the turtle opacity
+    Gets a Turtle's opacity
 .DESCRIPTION
-    Gets the opacity of the turtle path.
+    Gets the opacity of a Turtle
+.EXAMPLE
+    turtle opacity .5 
 #>
-if (-not $this.'.PathAttribute') {
-    $this | Add-Member -MemberType NoteProperty -Name '.PathAttribute' -Value ([Ordered]@{}) -Force
-}
-if ($this.'.PathAttribute'.'opacity') {
-    return $this.'.PathAttribute'.'opacity'
-} else {
-    return 1.0
-}
+param()
+return $this.'.Opacity'

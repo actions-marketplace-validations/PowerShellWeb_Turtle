@@ -58,6 +58,10 @@
     }) | 
         Save-Turtle "./SierpinskiTrianglePattern.svg" Pattern | 
         Show-Turtle
+.LINK
+    https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/Patterns
+.LINK
+    https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/pattern
 #>
 [OutputType([xml])]
 param()
@@ -65,15 +69,17 @@ param()
 # Get our viewbox
 $viewBox = $this.ViewBox
 # and get the width and height
-$null, $null, $viewX, $viewY = $viewBox
+$viewX, $viewY, $viewWidth, $viewHeight = $viewBox
 
 # Initialize our core attributes.
 # These may be overwritten by user request.
 $coreAttributes = [Ordered]@{
     'id'                = "$($this.ID)-pattern"
     'patternUnits'      = 'userSpaceOnUse'
-    'width'             = $ViewX
-    'height'            = $viewY
+    'x'                 = $viewX
+    'y'                 = $viewY
+    'width'             = $viewWidth
+    'height'            = $viewHeight
     'transform-origin'  = '50% 50%'
 }
 

@@ -35,6 +35,12 @@
         }
     ) save ./RandomWebRotate.svg show
 .EXAMPLE
+    turtle viewbox 1080 start (1080/2) (1080/2) web (1080/2) (
+        Get-Random -Min 3 -Max 13
+    ) (
+        Get-Random -Min 3 -Max (13 * 3)
+    ) backgroundcolor 'black' stroke 'yellow' pathclass 'yellow-stroke' save ./RandomWebColor.svg save ./RandomWebColor.png 
+.EXAMPLE
     turtle rotate (
         Get-Random -Max 360
     ) web 42 (
@@ -45,7 +51,7 @@
         [Ordered]@{
             type = 'rotate'   ; values = 0, 360 ;repeatCount = 'indefinite'; dur = "41s"
         }
-    ) backgroundcolor 'black' stroke 'yellow' pathclass 'yellow-stroke' save ./RandomWebRotateColor.svg show     
+    ) backgroundcolor 'black' stroke 'yellow' pathclass 'yellow-stroke' save ./RandomWebRotateColor.svg show
 .EXAMPLE
     turtle rotate (
         Get-Random -Max 360

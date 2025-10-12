@@ -31,8 +31,17 @@ if (-not $this.Steps) {
     $textAttributes['dominant-baseline'] = 'middle'
     $textAttributes['text-anchor'] = 'middle'
     $textAttributes['x'] = '50%'
-    $textAttributes['y'] = '50%'
+    $textAttributes['y'] = '50%'    
 }
+
+if ($this.fill -ne 'transparent') {
+    $textAttributes['stroke'] = $this.stroke
+    $textAttributes['fill'] = $this.fill
+} else {
+    $textAttributes['fill'] = $this.stroke
+}
+
+
 
 # Text Attributes can exist in Attribute or SVGAttribute, as long as they are prefixed.
 $prefix = '^/?text/'

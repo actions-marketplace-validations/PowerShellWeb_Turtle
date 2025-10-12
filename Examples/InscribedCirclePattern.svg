@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
-    <pattern id="turtle-pattern" patternUnits="userSpaceOnUse" width="42" height="42" transform-origin="50% 50%">
+    <pattern id="turtle-pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="42" height="42" transform-origin="50% 50%">
       <path id="turtle-path" d="m 0 0" stroke="currentcolor" stroke-width="0.25%" fill="transparent" class="foreground-stroke" transform-origin="50% 50%" xmlns="http://www.w3.org/2000/svg">
       </path>
       <g id="turtle-children" xmlns="http://www.w3.org/2000/svg">

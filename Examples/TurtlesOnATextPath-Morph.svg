@@ -2,7 +2,7 @@
   <path id="turtle-path" d="m 0 50   m 0 50 l 173.205081 -100" stroke="currentcolor" stroke-width="0.25%" fill="transparent" class="foreground-stroke" transform-origin="50% 50%">
     <animate attributeName="d" values="m 0 0   m 0 50 l 196.961551 -34.729636;m 0 0   m 0 50 l 199.23894 -17.431149;m 0 0   m 0 50 l 196.961551 -34.729636" repeatCount="indefinite" dur="4.2s" attributeType="XML" />
   </path>
-  <text id="turtle-text">
+  <text id="turtle-text" fill="currentcolor">
     <animate attributeName="fill" values="#4488ff;#224488;#4488ff" repeatCount="indefinite" dur="4.2s" attributeType="XML" />
     <animate attributeName="font-size" values="1em;1.3em;1em" repeatCount="indefinite" dur="4.2s" attributeType="XML" />
     <animate attributeName="textLength" values="100%;1%;100%" repeatCount="indefinite" dur="4.2s" attributeType="XML" />

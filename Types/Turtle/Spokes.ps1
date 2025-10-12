@@ -4,15 +4,17 @@
 .DESCRIPTION
     Draws spokes of a wheel, or sticks around a point.
 .NOTES
-    This was adapter from Cynthia Solomon's example on LogoThings
+    This was adapted from Cynthia Solomon's example on LogoThings
 .LINK
     https://logothings.github.io/logothings/logo/Sticks.html
+.EXAMPLE
+    turtle spokes 42 4
 .EXAMPLE
     turtle spokes 42 5
 .EXAMPLE
     turtle spokes 42 6
 .EXAMPLE
-    turtle spokes 42 8
+    turtle spokes 42 8   
 .EXAMPLE
     turtle spokes 42 6 morph @(
         turtle spokes 42 6
@@ -87,6 +89,6 @@ $SpokeCount = 6
 $spokeAngle = 360 / $SpokeCount
 
 foreach ($n in 1..$([Math]::Abs($SpokeCount))) {
-    $this = $this.Forward($radius).Backward($radius * 2).Forward($radius).Rotate($spokeAngle)
+    $this = $this.Forward($radius).Backward($radius).Rotate($spokeAngle)
 }
 return $this

@@ -58,6 +58,9 @@
     MarkerMid = 'MarkerMiddle'
         
     # Aliasing plurals
+    Arguments = 'ArgumentList'
+    Args = 'ArgumentList'
+    Argument = 'ArgumentList'
     Keyframes = 'Keyframe'
     Styles = 'Style'
     Spoke = 'Spokes'

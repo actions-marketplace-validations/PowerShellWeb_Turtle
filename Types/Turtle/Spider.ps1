@@ -13,6 +13,15 @@
         turtle spider 42 15
         turtle spider 42 10
     ) show
+.EXAMPLE
+    turtle rotate 90 forward 120 rotate -90 spider 42
+.EXAMPLE
+    turtle rotate 90 forward 120 rotate -90 spider 42 morph @(
+        turtle rotate 90 forward 1.2 rotate -90 spider 42 10
+        turtle rotate 90 forward 120 rotate -90 spider 42 15
+        turtle rotate 90 forward 1.2 rotate -90 spider 42 10
+    ) |
+        Save-Turtle ./SpiderDescendingMorph.svg
 .LINK
     https://logothings.github.io/logothings/AppleLogo.html
 #>

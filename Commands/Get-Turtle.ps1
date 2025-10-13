@@ -355,6 +355,95 @@ function Get-Turtle {
             'rotate',180 * 2
         )
     .EXAMPLE
+        # Want a Piece of Pie?
+        Turtle Pie 100 4
+        Turtle Pie 100 6
+        Turtle Pie 100 8
+    .EXAMPLE
+        # Want a quarter?
+        Turtle Pie 100 (1/4)
+    .EXAMPLE
+        # How about a range of slices?
+        Turtle Pie 100 (1..10)
+    .EXAMPLE
+        # What about some colorful slices?
+        Turtle Pie 100 @(
+            foreach ($color in 'red', 'green', 'blue') {
+                @{
+                    Value = 1
+                    PathClass = "$color-fill foreground-stroke"
+                    Fill = $color
+                    Title = $color
+                }
+            }
+        )
+    .EXAMPLE
+        # What about some random colorful slices?
+        Turtle Pie 100 @(
+            foreach ($color in 'red', 'green', 'blue', 'yellow', 'magenta','cyan') {
+                @{
+                    Value = (Get-Random -Max 100)
+                    PathClass = "$color-fill foreground-stroke"
+                    Fill = $color
+                    Title = $color
+                }
+            }
+        )
+    .EXAMPLE
+        # Turtles can contain turtles.
+        # Let's make a circle inscribed into a square
+        turtle viewbox 42 turtles ([Ordered]@{
+            'square' = turtle square 42 
+            'circle' = turtle circle 21
+        })
+    .EXAMPLE
+        # Each turtle can have a distinct color or CSS class
+        turtle viewbox 42 turtles ([Ordered]@{
+            'square' = turtle square 42 pathclass 'blue-fill foreground-stroke'
+            'circle' = turtle circle 21 pathclass 'cyan-fill foreground-stroke' 
+        })
+    .EXAMPLE
+        # Lets make some colorful boxes
+        turtle viewbox 42 turtles @([Ordered]@{
+            'q1' = turtle start 0 0 square 21 pathclass 'red-fill foreground-stroke'
+            'q2' = turtle start 21 0 square 21 pathclass 'green-fill foreground-stroke'
+            'q3' = turtle start 21 21 square 21 pathclass 'yellow-fill foreground-stroke'
+            'q4' = turtle start 0 21 square 21 pathclass 'blue-fill foreground-stroke'
+        })
+    .EXAMPLE
+        # Nested turtles can morph!
+        # Let's move these squares around.
+        turtle viewbox 42 turtles @([Ordered]@{
+            'q1' = turtle viewbox 21 fill red pathclass 'red-fill foreground-stroke' morph @(
+                turtle start 0 0 square 21
+                turtle start 21 0 square 21
+                turtle start 21 21 square 21
+                turtle start 0 21 square 21
+                turtle start 0 0 square 21
+            )
+            'q2' = turtle viewbox 21 fill green pathclass 'green-fill foreground-stroke' morph @(
+                turtle start 21 0 square 21
+                turtle start 21 21 square 21
+                turtle start 0 21 square 21
+                turtle start 0 0 square 21
+                turtle start 21 0 square 21
+            )
+            'q3' = turtle viewbox 21 fill yellow pathclass 'yellow-fill foreground-stroke' morph @(
+                turtle start 21 21 square 21
+                turtle start 0 21 square 21
+                turtle start 0 0 square 21
+                turtle start 21 0 square 21
+                turtle start 21 21 square 21
+            ) 
+            'q4' = turtle viewbox 21 fill blue pathclass 'blue-fill foreground-stroke' morph @(                
+                turtle start 0 21 square 21
+                turtle start 0 0 square 21
+                turtle start 21 0 square 21
+                turtle start 21 21 square 21
+                turtle start 0 21 square 21
+            )
+        })
+    .EXAMPLE
         # Turtle can draw a number of fractals        
         turtle BoxFractal 42 4
     .EXAMPLE
@@ -499,9 +588,13 @@ function Get-Turtle {
         filter getScriptHelp {
             $scriptBlock = $_
             $Name = $args -join ''
-            $ExecutionContext.SessionState.PSVariable.Set("function:$Name",$scriptBlock)
+            $ExecutionContext.SessionState.PSVariable.Set("function:$Name",$scriptBlock)            
             if ($switches -is [Collections.IDictionary]) {
-                Get-Help $Name @switches
+                if ($switches.Syntax) {
+                    Get-Command $Name -Syntax
+                } else {
+                    Get-Help $Name @switches
+                }                
             } else {
                 Get-Help $Name
             }
@@ -755,16 +848,18 @@ $(
                             }
                             continue
                         }
-                        if ($word -match '^[-/]+?\D') {
+                        if ($word -match '^[-/]+?[\D-[\.]]') {
                             $switchInfo = $word -replace '^[-/]+'
                             $switchName, $switchValue = $switchInfo -split ':', 2
-                            $switches[$switchName] =
-                                if ($switchValue) {
-                                    $switchValue
-                                } else {
-                                    $true
-                                }
-                            continue
+                            if ($null -eq ($switchName -as [double])) {
+                                $switches[$switchName] =
+                                    if ($switchValue) {
+                                        $switchValue
+                                    } else {
+                                        $true
+                                    }
+                                continue
+                            }                            
                         }
                         # If the word started with a bracket, and we haven't removed any
                         if ("$word".StartsWith('[') -and -not $debracketCount) {

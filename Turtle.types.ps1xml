@@ -8066,4 +8066,13 @@ Instruction
       </NoteProperty>
     </Members>
   </Type>
+  <Type>
+    <Name>Turtle.js</Name>
+    <Members>
+      <NoteProperty>
+        <Name>get_heading.js</Name>
+        <Value>heading: 0.0</Value>
+      </NoteProperty>
+    </Members>
+  </Type>
 </Types>

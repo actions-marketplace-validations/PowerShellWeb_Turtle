@@ -8082,6 +8082,10 @@ Instruction
         <Name>heading.js</Name>
         <Value>heading: 0.0</Value>
       </NoteProperty>
+      <NoteProperty>
+        <Name>isPenDown.js</Name>
+        <Value>isPenDown: true</Value>
+      </NoteProperty>
     </Members>
   </Type>
 </Types>

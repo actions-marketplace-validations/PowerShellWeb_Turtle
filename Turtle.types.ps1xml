@@ -8087,8 +8087,32 @@ Instruction
         <Value>heading: 0.0</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>height.js</Name>
+        <Value>height: 0.0</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>isPenDown.js</Name>
         <Value>isPenDown: true</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>max.js</Name>
+        <Value>max: ({x:0.0, y:0.0})</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>min.js</Name>
+        <Value>min: ({x:0.0, y:0.0})</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>resize.js</Name>
+        <Value>function resize() {
+    if (this.x &gt; this.max.x) { this.max.x = this.x }
+    if (this.y &gt; this.max.y) { this.max.y = this.y }
+    if (this.x &lt; this.min.x) { this.min.x = this.x }
+    if (this.y &lt; this.min.y) { this.min.y = this.y }
+    this.width = this.max.x - this.min.x
+    this.height = this.max.y - this.min.y
+    return this
+}</Value>
       </NoteProperty>
       <NoteProperty>
         <Name>rotate.js</Name>
@@ -8106,6 +8130,10 @@ Instruction
 </Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>steps.js</Name>
+        <Value>steps: []</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>teleport.js</Name>
         <Value>function teleport(x,y) {
     var penState = this.penDown
@@ -8114,6 +8142,18 @@ Instruction
     this.penDown = penState
     return this
 }</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>width.js</Name>
+        <Value>width: 0.0</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>x.js</Name>
+        <Value>x: 0.0</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>y.js</Name>
+        <Value>y: 0.0</Value>
       </NoteProperty>
     </Members>
   </Type>

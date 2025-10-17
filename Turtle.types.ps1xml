@@ -8091,6 +8091,10 @@ Instruction
         <Value>isPenDown: true</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>rotate.js</Name>
+        <Value>function rotate(angle) { this.heading += Number(angle); return this }</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>step.js</Name>
         <Value>function step(dx,dy) {
     if (this.isPenDown) { this.steps.push(` l ${dx} ${dy} `) }

@@ -8107,6 +8107,14 @@ Instruction
         <Value>function pathData() { return `m ${this.min.x * -1} ${this.min.y * -1} ${this.steps.join(' ')} ` }</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>polygon.js</Name>
+        <Value>function polygon(size, sides = 6) {    
+    for (let side = 0; side &lt; sides; side++) {
+        turtle.forward(size).rotate(360/sides)
+    }
+}</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>resize.js</Name>
         <Value>function resize() {
     if (this.x &gt; this.max.x) { this.max.x = this.x }

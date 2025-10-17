@@ -8079,6 +8079,10 @@ Instruction
 }</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>goto.js</Name>
+        <Value>function goto(x,y) { return this.step(x - this.x, y - this.y) }</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>heading.js</Name>
         <Value>heading: 0.0</Value>
       </NoteProperty>
@@ -8096,6 +8100,16 @@ Instruction
 }
 
 </Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>teleport.js</Name>
+        <Value>function teleport(x,y) {
+    var penState = this.penDown
+    this.penDown = false
+    step(x - this.x, y - this.y)
+    this.penDown = penState
+    return this
+}</Value>
       </NoteProperty>
     </Members>
   </Type>

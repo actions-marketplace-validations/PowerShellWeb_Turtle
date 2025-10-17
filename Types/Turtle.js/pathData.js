@@ -1,0 +1,1 @@
+function pathData() { return `m ${this.min.x * -1} ${this.min.y * -1} ${this.steps.join(' ')} ` }

@@ -8103,6 +8103,10 @@ Instruction
         <Value>min: ({x:0.0, y:0.0})</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>pathData.js</Name>
+        <Value>function pathData() { return `m ${this.min.x * -1} ${this.min.y * -1} ${this.steps.join(' ')} ` }</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>resize.js</Name>
         <Value>function resize() {
     if (this.x &gt; this.max.x) { this.max.x = this.x }

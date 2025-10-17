@@ -8070,7 +8070,16 @@ Instruction
     <Name>Turtle.js</Name>
     <Members>
       <NoteProperty>
-        <Name>get_heading.js</Name>
+        <Name>forward.js</Name>
+        <Value>function forward(distance) {
+    return this.step(
+        distance * Math.cos(this.heading * Math.PI / 180),
+        distance * Math.sin(this.heading * Math.PI / 180)
+    )
+}</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>heading.js</Name>
         <Value>heading: 0.0</Value>
       </NoteProperty>
     </Members>

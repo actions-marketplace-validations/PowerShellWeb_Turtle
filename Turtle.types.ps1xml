@@ -7896,6 +7896,55 @@ return $this.'.Turtles'
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Variable</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Turtle Variables
+.DESCRIPTION
+    Gets variables associated with the Turtle.
+
+    Variables that start with -- will become CSS variables
+#&gt;
+param()
+
+if (-not $this.'.Variables') {
+    $this | Add-Member NoteProperty '.Variables' ([Ordered]@{}) -Force
+}
+
+return $this.'.Variables'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets Turtle variables
+.DESCRIPTION
+    Sets arbitrary variables for the current Turtle.
+
+    Variables that begin with -- will become CSS variables.    
+.EXAMPLE
+    turtle variable @{
+        '--red' = '#ff0000'
+        '--green' = '#00ff00'
+        '--blue' = '#0000ff'
+    } style
+#&gt;
+param(
+# Any variables to set
+[Collections.IDictionary[]]
+$Variable = [Ordered]@{}
+)
+
+$myVariables = $this.Variable
+foreach ($variableSet in $Variable) {
+    foreach ($key in $variableSet.Keys) {
+        $myVariables[$key] = $variableSet[$key]
+    }
+}
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ViewBox</Name>
         <GetScriptBlock>
                         &lt;#

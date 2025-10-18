@@ -52,33 +52,11 @@ $svgElement = @(
         "</defs>"
     }
     
-    if ($this.Keyframe.Count -or $this.Style) {        
-        $keyframe = $this.Keyframe
-        "<style>"
-        @(foreach ($keyframeName in $keyframe.Keys) {
-            $keyframeKeyframes = $keyframe[$keyframeName]
-            "@keyframes $keyframeName {"
-            foreach ($percent in $keyframeKeyframes.Keys) {
-                "  $percent {"
-                $props = $keyframeKeyframes[$percent]
-                foreach ($prop in $props.Keys) {
-                    $value = $props.$prop
-                    "    ${prop}: $value;"
-                }
-                "  }"
-            }
-            "}"
-            ".$keyframeName {"
-            "    animation-name: $keyframeName;"
-            "    animation-duration: $($this.Duration.TotalSeconds)s;"
-            "    animation-iteration-count: infinite;"
-            "}"
-        }) -join [Environment]::NewLine
-        if ($this.Style) {
-            "$($this.Style -join (';' + [Environment]::NewLine))"
-        }
-        "</style>"
-    }    
+    $style = $this.Style
+    if ($style -is [xml]) {
+        $style.OuterXml
+    }
+        
 
     # Declare any SVG animations
     if ($this.SVGAnimation) {$this.SVGAnimation}

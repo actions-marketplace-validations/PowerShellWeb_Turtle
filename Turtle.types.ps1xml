@@ -8171,12 +8171,12 @@ param()
 }</Value>
       </NoteProperty>
       <NoteProperty>
-        <Name>goto.js</Name>
-        <Value>function goto(x,y) { return this.step(x - this.x, y - this.y) }</Value>
+        <Name>get_heading.js</Name>
+        <Value>heading: 0.0</Value>
       </NoteProperty>
       <NoteProperty>
-        <Name>heading.js</Name>
-        <Value>heading: 0.0</Value>
+        <Name>goto.js</Name>
+        <Value>function goto(x,y) { return this.step(x - this.x, y - this.y) }</Value>
       </NoteProperty>
       <NoteProperty>
         <Name>height.js</Name>
@@ -8221,6 +8221,20 @@ param()
       <NoteProperty>
         <Name>rotate.js</Name>
         <Value>function rotate(angle) { this.heading += Number(angle); return this }</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>set_heading.js</Name>
+        <Value>function set_heading(value) {
+    let _ = this
+    try {
+        _['#heading'] = new Number(value)
+    } catch {
+        
+        _['#heading'] = 0.0
+    }
+    
+    return _
+}</Value>
       </NoteProperty>
       <NoteProperty>
         <Name>step.js</Name>

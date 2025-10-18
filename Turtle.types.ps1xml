@@ -8199,6 +8199,22 @@ param()
         <Value>function pathData() { return `m ${this.min.x * -1} ${this.min.y * -1} ${this.steps.join(' ')} ` }</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>penDown.js</Name>
+        <Value>function penDown() {
+    let $this = this
+    $this.isPenDown = false
+    return $this
+}</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>penUp.js</Name>
+        <Value>function penUp() {
+    let $this = this
+    $this.isPenUp = false
+    return $this
+}</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>polygon.js</Name>
         <Value>function polygon(size, sides = 6) {    
     for (let side = 0; side &lt; sides; side++) {

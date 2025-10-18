@@ -7134,6 +7134,68 @@ if (-not $this.'.style') {
     $this | Add-Member NoteProperty '.style' @() -Force
 }
 
+$keyframe = $this.Keyframe
+$myVariables = $this.Variable
+$cssTypePattern = '^(?&lt;type&gt;\&lt;[\w-].+?\&gt;)[\:\=]?'
+$myCssVariables = foreach ($variableKey in $myVariables.Keys -match '^--') {
+    $variableValue = $myVariables[$variableKey]            
+    if ($variableValue -match $cssTypePattern) {
+        $variableValue = $variableValue -replace $cssTypePattern
+        "@property $variableKey { syntax: '$(
+            [Security.SecurityElement]::Escape($matches.type)
+        )'; initial-value: $($variableValue -replace $cssTypePattern)}"
+    }
+    "$variableKey",':', $variableValue -join ''
+}
+$styleElementParts = @(
+if ($myCssVariables) {
+    "#$($this.id)-path, #$($this.id)-text {"
+        ($myCssVariables -join (';' + [Environment]::NewLine + (' ' * 4)))
+    "}"            
+}
+foreach ($keyframeName in $keyframe.Keys) {
+    $keyframeKeyframes = $keyframe[$keyframeName]
+    "@keyframes $keyframeName {"
+    foreach ($percent in $keyframeKeyframes.Keys) {
+        "  $percent {"
+        $props = $keyframeKeyframes[$percent]
+        foreach ($prop in $props.Keys) {
+            $value = $props.$prop
+            "    ${prop}: $value;"
+        }
+        "  }"
+    }
+    "}"
+    ".$keyframeName {"
+    "    animation-name: $keyframeName;"
+    "    animation-duration: $($this.Duration.TotalSeconds)s;"
+    "    animation-iteration-count: infinite;"
+    "}"
+}
+if ($this.'.Style') {
+    "$($this.'.Style' -join (';' + [Environment]::NewLine))"
+}
+) 
+
+if ($styleElementParts) {
+    # Style elements are one of the only places where we can be reasonably certain there will not be child elements
+    try {
+        # so if we have an error with unescaped content
+        return [xml]@("&lt;style&gt;"
+        $styleElementParts -join [Environment]::NewLine
+        "&lt;/style&gt;")    
+    } catch {
+        # catch it and escape the content
+        return [xml]@(
+            "&lt;style&gt;"
+                [Security.SecurityElement]::Escape($styleElementParts -join [Environment]::NewLine)
+            "&lt;/style&gt;"
+        )
+    }
+} else {
+    return ''
+}
+
 return $this.'.style'
                     </GetScriptBlock>
         <SetScriptBlock>
@@ -7146,15 +7208,79 @@ return $this.'.style'
     These styles will be declared in a `&lt;style&gt;` element, just beneath a Turtle's `&lt;svg&gt;`
 .EXAMPLE
     turtle style '.myClass { color: #4488ff}' style
+.EXAMPLE
+    turtle style abc
+.EXAMPLE
+    turtle style "@import url('https://fonts.googleapis.com/css?family=Abel')" text 'Hello World' textattribute @{'font-family'='Abel';'font-size'='3em'} fill 'red' save ./t.png show 
 #&gt;
 param(
-[PSObject]
+[PSObject[]]
 $Style
 )
 
-$styleList = $this.Style
-$styleList += $style
-$this | Add-Member NoteProperty '.style' $styleList -Force 
+filter toCss {
+    # Capture the input,
+    $in = $_    
+    # know myself,
+    $mySelf = $MyInvocation.MyCommand.ScriptBlock
+    # and determine our depth
+    $depth = 0
+    # (with a little callstack peeking).    
+    foreach ($frame in Get-PSCallStack) {
+        if ($frame.InvocationInfo.MyCommand.ScriptBlock -eq $mySelf) {
+            $depth++
+        }
+    }
+    # Always substract one so we don't indent the root.
+    $depth--
+    
+    if ($in -is [string]) {
+        $in # Directly output strings
+    } elseif ($in -is [Collections.IDictionary]) {
+        # Join dictionaries by semicolons and indentation
+        ($in.GetEnumerator() | &amp; $mySelf) -join (
+            ';' + [Environment]::NewLine + (' ' * 2 * $depth)
+        )
+    } elseif ($in.Key -and $in.Value) {
+        # Key/value pairs containing dictionaries
+        if ($in.Value -is [Collections.IDictionary]) {
+            # become `selector { rules }`
+            (
+                "$($in.Key) {", (
+                    (' ' * 2) + ($in.Value | &amp; $mySelf)
+                ) -join (
+                    [Environment]::NewLine + (' ' * 2 * $depth)
+                )
+            ) + (
+                    [Environment]::NewLine + (' ' * 2 * ($depth - 1))
+            ) + '}'
+        } 
+        elseif ($in.Value -is [TimeSpan]) {
+            "$($in.Key):$($in.Value.TotalSeconds)s"
+        }
+        else {
+            # Other key/value pairs are placed inline
+            "$($in.Key):$($in.Value)"
+        }
+    }     
+    elseif ($in -is [PSObject]) {
+        # turn non-dictionaries into dictionaries
+        $inDictionary = [Ordered]@{}
+        foreach ($property in $in.psobject.properties) {
+            $inDictionary[$property.Name] = $in.($property.Name)
+        }
+        if ($inDictionary.Count) {
+            # and recurse.
+            $inDictionary | &amp; $mySelf
+        }
+    }
+}
+
+if (-not $this.'.style') {
+    $this | Add-Member NoteProperty '.style' @() -Force 
+}
+$this.'.style' += $style |toCss
+
 
                     </SetScriptBlock>
       </ScriptProperty>
@@ -7215,33 +7341,11 @@ $svgElement = @(
         "&lt;/defs&gt;"
     }
     
-    if ($this.Keyframe.Count -or $this.Style) {        
-        $keyframe = $this.Keyframe
-        "&lt;style&gt;"
-        @(foreach ($keyframeName in $keyframe.Keys) {
-            $keyframeKeyframes = $keyframe[$keyframeName]
-            "@keyframes $keyframeName {"
-            foreach ($percent in $keyframeKeyframes.Keys) {
-                "  $percent {"
-                $props = $keyframeKeyframes[$percent]
-                foreach ($prop in $props.Keys) {
-                    $value = $props.$prop
-                    "    ${prop}: $value;"
-                }
-                "  }"
-            }
-            "}"
-            ".$keyframeName {"
-            "    animation-name: $keyframeName;"
-            "    animation-duration: $($this.Duration.TotalSeconds)s;"
-            "    animation-iteration-count: infinite;"
-            "}"
-        }) -join [Environment]::NewLine
-        if ($this.Style) {
-            "$($this.Style -join (';' + [Environment]::NewLine))"
-        }
-        "&lt;/style&gt;"
-    }    
+    $style = $this.Style
+    if ($style -is [xml]) {
+        $style.OuterXml
+    }
+        
 
     # Declare any SVG animations
     if ($this.SVGAnimation) {$this.SVGAnimation}

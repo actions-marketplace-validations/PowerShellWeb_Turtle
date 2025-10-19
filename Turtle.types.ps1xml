@@ -4584,6 +4584,75 @@ foreach ($arg in $this.Invocations.BoundParameters['ArgumentList']) {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Attribute</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Turtle attributes
+.DESCRIPTION
+    Gets attributes of the turtle.
+    
+    These attributes apply directly to the Turtle as an `.Element`.
+
+    They can also be targeted to apply to an aspect of the turtle, such as it's Pattern, Path, Text, Mask, or Marker.
+
+    To set an attribute that targets an aspect of the turtle, prefix it with the name followed by a slash.
+
+    (for example `path/data-key` would set an attribute on the path)
+.EXAMPLE
+    turtle attribute @{someKey='someValue'} attribute
+#&gt;
+if (-not $this.'.Attributes') { 
+    $this | Add-Member NoteProperty '.Attributes' ([Ordered]@{}) -Force    
+}
+return $this.'.Attributes'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets Turtle attributes
+.DESCRIPTION
+    Sets arbitrary attributes for the current Turtle.
+
+    Attributes generally apply to the topmost tag.  
+    
+    If an attribute contains a slash, it will be targeted to tags of that type.
+.EXAMPLE
+    turtle attribute @{foo='bar'} attribute
+.EXAMPLE
+    turtle attribute 'foo=bar' attribute
+#&gt;
+param(
+[PSObject[]]
+$Attribute = [Ordered]@{}
+)
+
+$myAttributes = $this.Attribute
+foreach ($attrSet in $Attribute) {
+    if ($attrSet -is [Collections.IDictionary]) {
+        foreach ($key in $attrSet.Keys) {
+            $myAttributes[$key] = $attrSet[$key]
+        }
+    }
+    elseif ($attrSet -is [string]) {
+        if ($attrSet -match '[:=]') {
+            $key, $value = $attrSet -split '[:=]', 2
+            $myAttributes[$key] = $value
+        } else {
+            $myAttributes[$key] = ''
+        }
+    }
+    elseif ($attrSet -is [PSObject]) {
+        foreach ($key in $attrSet.psobject.properties.name) {
+            $myAttributes[$key] = $attrSet.$key
+        }
+    }
+    
+}
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>BackgroundColor</Name>
         <GetScriptBlock>
                         param()

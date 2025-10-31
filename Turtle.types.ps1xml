@@ -7781,7 +7781,6 @@ if ($this.fill -ne 'transparent') {
 }
 
 
-
 # Text Attributes can exist in Attribute or SVGAttribute, as long as they are prefixed.
 $prefix = '^/?text/'
 foreach ($collection in 'Attribute','SVGAttribute') {
@@ -7811,6 +7810,9 @@ return [xml]@(
 if ($this.Title) {
     # embed it here (so that the text is accessible).
     "&lt;title&gt;$([Security.SecurityElement]::Escape($this.Title))&lt;/title&gt;"
+} else {
+    # otherwise, use the text as the title.
+    "&lt;title&gt;$([Security.SecurityElement]::Escape($this.Text))&lt;/title&gt;"
 }
 
 # If there are any text animations, include them here.

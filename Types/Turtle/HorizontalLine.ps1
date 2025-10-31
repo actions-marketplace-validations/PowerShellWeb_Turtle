@@ -23,3 +23,4 @@ $instruction =
     }
 $this.Position = $Distance,0
 $this.Steps.Add($instruction)
+return $this

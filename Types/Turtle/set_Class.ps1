@@ -10,4 +10,4 @@ param(
 $Class
 )
 
-$this.SVGAttribute['class'] = $Class -join ' '
+$this.Attribute['class'] = $this.SVGAttribute['class'] = $this.PathAttribute['class']  = $Class -join ' '

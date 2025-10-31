@@ -45,7 +45,7 @@ if ($this.'.Element'.ElementName) {
             )>$(
                 # Now include any child elements.
                 # First, if we have drawn anything in our turtle, include that
-                if ($this.Steps -or $this.Text -or $this.Turtles) {
+                if ($this.Steps -or $this.Text -or $this.Turtles.Count) {
                     $this.SVG.OuterXml
                 }
                 @(foreach ($childCollection in 'child','ChildNodes','Children','Content') {

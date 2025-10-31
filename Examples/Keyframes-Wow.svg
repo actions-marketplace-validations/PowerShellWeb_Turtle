@@ -29,6 +29,7 @@
   <path id="wow-wow-wow-wow-wow-path" d="m 0 0" stroke="currentcolor" stroke-width="0.25%" fill="transparent" class="foreground-stroke" transform-origin="50% 50%">
   </path>
   <text id="wow-wow-wow-wow-wow-text" dominant-baseline="middle" text-anchor="middle" x="50%" y="50%" fill="currentcolor" class="bigger-font">
+    <title>wow</title>
 wow
 </text>
 </svg>

@@ -375,7 +375,7 @@ $iteration  = $angle / [Math]::Floor($absAngle)
 # If we have no step count
 if (-not $StepCount) {
     # default to half of the angle.
-    $StepCount = [Math]::Round($absAngle / 2)    
+    $StepCount = [Math]::Round($absAngle / 2)
 }
 # Turn this into a ratio (by default, this ratio would be `2`).
 $stepSize = $absAngle / $StepCount
@@ -526,10 +526,10 @@ return $this
 .DESCRIPTION
     Draws a simple Bezier curve.  
 .EXAMPLE
-    turtle BezierCurve 0 -100 100 -100 save ./b.svg
+    turtle BezierCurve 0 -100 100 -100 save ./b1.svg
 .EXAMPLE
     turtle BezierCurve 0 -100 100 -100 BezierCurve 100 100 100 100 save ./b2.svg
-.EXAMPLE
+.EXAMPLE    
     turtle @(
         'BezierCurve', 0, -100, 100, -100
         'BezierCurve', 100, 100, 100, 100
@@ -540,7 +540,7 @@ return $this
         'BezierCurve', 0, -100, 100, -100
         'BezierCurve', 100, 100, 100, 100
         'BezierCurve', 0, 100, -100, 100
-        'BezierCurve', -100, -100, -100, -100
+        'BezierCurve', -100, -100, -100, -100        
     ) save ./b4.svg
 .LINK
     https://en.wikipedia.org/wiki/B%C3%A9zier_curve
@@ -564,16 +564,15 @@ $DeltaY
 )
 
 
-
 if ($DeltaX -or $DeltaY) {
-    $this.Position = $DeltaX, $DeltaY
+    $this.Position = $DeltaX,$DeltaY
     # If the pen is down
     if ($this.IsPenDown) {
         # draw the curve
-        $this.Steps.Add("s $ControlX $ControlY $DeltaX $DeltaY")
+        $this.Steps.Add("s $controlX $controlY $deltaX $deltaY")
     } else {        
         # otherwise, move to the deltaX/deltaY
-        $this.Steps.Add("m $DeltaX $DeltaY")
+        $this.Steps.Add("m $deltaX $deltaY")
     }
 }
 
@@ -3995,7 +3994,6 @@ param(
 # The DeltaY
 [double]$DeltaY = 0
 )
-
 # If both coordinates are empty, there is no step
 if ($DeltaX -or $DeltaY) {
     $this.Position = $DeltaX, $DeltaY
@@ -4174,7 +4172,7 @@ $X,
 $Y
 )
 
-$deltaX = $x - $this.X 
+$deltaX = $x - $this.X
 $deltaY = $y - $this.Y
 $penState = $this.IsPenDown
 $this.IsPenDown = $false
@@ -6035,7 +6033,7 @@ return $this.PathAttribute['marker-start']
 
     If this is set to a string without spaces, it will be be treated as an identifier.
 .EXAMPLE
-    turtle viewbox 200 start 50 100 rotate 45 forward 100 markerEnd (
+    turtle viewbox 200 start 50 100 rotate 45 forward 100 markerStart (
         turtle rotate -90 polygon 10 3 fill context-fill stroke context-stroke
     ) fill '#4488ff' stroke '#224488' strokewidth '3%' save ./marker.svg
 .EXAMPLE
@@ -6309,8 +6307,9 @@ $newAnimation = @(foreach ($animation in $PathAnimation) {
     }
 })
 
-if ($this.PathAnimation) {
-    $newAnimation = @($this.PathAnimation) + $newAnimation
+$pathAnimation = $this.PathAnimation
+if ($pathAnimation) {
+    $newAnimation = @($pathAnimation) + $newAnimation
 }
 $this | Add-Member -MemberType NoteProperty -Force -Name '.PathAnimation' -Value $newAnimation
 
@@ -7079,6 +7078,7 @@ $x, $y = $xy
 if (-not $this.'.Position') {
     $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value ([Numerics.Vector2]@{ X = 0; Y = 0 })
 }
+
 # Modify the position without creating a new object
 $this.'.Position'.X += $x
 $this.'.Position'.Y += $y

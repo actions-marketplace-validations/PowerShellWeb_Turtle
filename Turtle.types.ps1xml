@@ -1655,7 +1655,7 @@ $instruction =
     }
 $this.Position = $Distance,0
 $this.Steps.Add($instruction)
-
+return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -4489,7 +4489,7 @@ $instruction =
     }
 $this.Position = 0, $Distance
 $this.Steps.Add($instruction)
-
+return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>

@@ -6,7 +6,7 @@
 
     If this is set to a string without spaces, it will be be treated as an identifier.
 .EXAMPLE
-    turtle viewbox 200 start 50 100 rotate 45 forward 100 markerEnd (
+    turtle viewbox 200 start 50 100 rotate 45 forward 100 markerStart (
         turtle rotate -90 polygon 10 3 fill context-fill stroke context-stroke
     ) fill '#4488ff' stroke '#224488' strokewidth '3%' save ./marker.svg
 .EXAMPLE

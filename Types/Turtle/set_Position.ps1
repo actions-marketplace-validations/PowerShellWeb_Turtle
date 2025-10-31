@@ -15,6 +15,7 @@ $x, $y = $xy
 if (-not $this.'.Position') {
     $this |  Add-Member -MemberType NoteProperty -Force -Name '.Position' -Value ([Numerics.Vector2]@{ X = 0; Y = 0 })
 }
+
 # Modify the position without creating a new object
 $this.'.Position'.X += $x
 $this.'.Position'.Y += $y

@@ -56,8 +56,9 @@ $newAnimation = @(foreach ($animation in $PathAnimation) {
     }
 })
 
-if ($this.PathAnimation) {
-    $newAnimation = @($this.PathAnimation) + $newAnimation
+$pathAnimation = $this.PathAnimation
+if ($pathAnimation) {
+    $newAnimation = @($pathAnimation) + $newAnimation
 }
 $this | Add-Member -MemberType NoteProperty -Force -Name '.PathAnimation' -Value $newAnimation
 

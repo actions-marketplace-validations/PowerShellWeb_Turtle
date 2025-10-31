@@ -42,7 +42,7 @@ $iteration  = $angle / [Math]::Floor($absAngle)
 # If we have no step count
 if (-not $StepCount) {
     # default to half of the angle.
-    $StepCount = [Math]::Round($absAngle / 2)    
+    $StepCount = [Math]::Round($absAngle / 2)
 }
 # Turn this into a ratio (by default, this ratio would be `2`).
 $stepSize = $absAngle / $StepCount

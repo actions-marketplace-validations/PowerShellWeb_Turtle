@@ -4938,6 +4938,212 @@ if (($this.'.Duration' -is [TimeSpan]) -and $this.PathAnimation) {
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Element</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Turtle as an Element    
+.DESCRIPTION
+    We can treat any Turtle as any arbitrary markup element.
+
+    To do this, all we need to do is set an element name, and, optionally, add some attributes or children.
+.EXAMPLE
+    # Any bareword can become the name of an element, as long as it is not a method name
+    turtle element div element
+.EXAMPLE
+    # We can provide anything that will cast to XML as an element
+    turtle element '&lt;div/&gt;' element
+.EXAMPLE
+    # We can provide an element and attributes
+    turtle element '&lt;div class='myClass' /&gt;' element
+.EXAMPLE
+    # We can put a turtle inside of an aribtrary element
+    turtle SpiderWeb element '&lt;div /&gt;'
+#&gt;
+
+# If we have set an element name
+if ($this.'.Element'.ElementName) {
+
+    # make this little filter to recursively turn the element back into XML
+    filter toElement {
+        $in = $_
+        # If the input was a dictionary with an element name
+        if ($in -is [Collections.IDictionary] -and $in.ElementName) {
+            # start the markup
+            "&lt;$($in.ElementName)$(
+                # and pop in any element attributes
+                foreach ($attributeCollection in 'attr','attribute','attributes') {
+                    if (-not $in.$attributeCollection) { continue }
+                    if ($in.$attributeCollection -is [Collections.IDictionary]) {
+                        foreach ($attributeName in $in.$attributeCollection.Keys) {
+                            if ($attributeName -match '/') { continue }
+                            ' ', $attributeName,"='",$in.$attributeCollection[$attributeName],"'" -join ''
+                        }
+                    } elseif ($in.$attributeCollection -is [string]) {
+                        $in.$attributeCollection
+                    }
+                    break
+                }
+            )&gt;$(
+                # Now include any child elements 
+                if ($this.Steps -or $this.Text) {
+                    $this.SVG.OuterXml
+                }
+                @(foreach ($childCollection in 'child','ChildNodes','Children','Content') {
+                    if (-not $in.$childCollection) {
+                        continue
+                    }
+                    foreach ($child in $in.$childCollection) {
+                        # strings are directly included
+                        if ($child -is [string]) {
+                            $child
+                        } elseif ($child -is [xml] -or $child -is [xml.xmlElement]) {
+                            # xml elements will embed themselves
+                            $child.OuterXml
+                        } elseif ($child -is [Collections.IDictionary] -and $child.ElementName) {
+                            # and dictionaries with an element name will recurisvely call ourselves.
+                            $child | &amp; $MyInvocation.MyCommand.ScriptBlock
+                        } else {
+                            # Any other input will be stringified
+                            "$child"
+                        }
+                    }
+                    break
+                }) -join ([Environment]::NewLine)
+            )&lt;/$($in.ElementName)&gt;"
+        }
+        if ($_ -is [string]) {
+            $_
+        }
+    }
+
+    $elementMarkup = $this.'.Element' | toElement
+    $elementXml = $elementMarkup -as [xml]
+    if ($elementXml) {
+        $elementXml
+    } else {
+        $elementMarkup
+    }
+    return
+}
+else {
+    return $this.SVG    
+}
+
+return
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets the Turtle element
+.DESCRIPTION
+    Sets the Turtle to an arbitrary element.
+
+    This lets us write web pages and xml entirely in turtle.
+.EXAMPLE
+    # Any bareword can become the name of an element, as long as it is not a method name
+    turtle element div element
+.EXAMPLE
+    # We can provide anything that will cast to XML as an element
+    turtle element '&lt;div/&gt;' element
+.EXAMPLE
+    # We can provide an element and attributes
+    turtle element '&lt;div class='myClass' /&gt;' element
+.EXAMPLE
+    # We can put a turtle inside of an aribtrary element
+    turtle SpiderWeb element '&lt;div /&gt;'
+#&gt;
+
+param()
+
+if (-not $this.'.Element') {
+    $this | Add-Member NoteProperty '.Element' -Value ([Ordered]@{
+        ElementName=''
+        Attribute=$this.Attribute
+        Children=@()
+    })
+}
+
+$unrolledArgs = $args |. {process { $_ }}
+
+foreach ($element in $unrolledArgs){
+    if ($element -is [string] -and 
+        (-not ($element -as [xml])) -and 
+        $element -notmatch '\s'
+    ) {
+        $this.'.Element'.ElementName = $Element
+        continue
+    }
+
+    if ($element -is [xml] -or $Element -as [xml]) {
+        if ($Element -isnot [xml]) {
+            $element = $Element -as [xml]
+        }
+        $this.'.Element'.ElementName = $Element.ChildNodes[0].LocalName
+        foreach ($attribute in $element.ChildNodes[0].Attributes) {
+            $this.'.Element'.Attribute[$attribute.Name] = $attribute.Value
+        }
+        foreach ($grandchild in $element.ChildNodes[0].ChildNodes) {
+            $this.'.Element'.Children += $grandchild
+        }
+        continue
+    }
+    
+    if ($element -is [Collections.IDictionary]) {
+        $elementKeys = 'ElementName','Name','E'
+        foreach ($potentialName in $elementKeys) {
+            if ($element.$potentialName) {
+                $this.'.Element'.ElementName = $element.$potentialName
+                break
+            }        
+        }
+        $attributeKeys = 'Attribute', 'Attributes', 'A'
+        foreach ($potentialAttributeName in $attributeKeys) {
+            if ($element.$potentialAttributeName -is [Collections.IDictionary] -and 
+                $element.$potentialAttributeName.Count) {
+                foreach ($attributeName in $element.$potentialAttributeName.Keys) {
+                    $this.'.Element'.Attribute[$attributeName] = $element.$potentialAttributeName[$attributeName]
+                }
+                break
+            }
+        }
+        $childKeys = 'Child', 'Children', 'ChildNodes','Content', 'C'
+        
+        foreach ($potentialChildrenName in $childKeys) {
+            $children = $element.$potentialChildrenName
+            if (-not $children) { continue }
+            $this.'.Element'.Children += $children
+            break
+        }
+
+        $specialKeys = @(
+            $elementKeys
+            $attributeKeys
+            $childKeys
+        )
+        
+        foreach ($elementKey in $element.Keys) {
+            if ($elementKey -in $specialKeys) { continue }
+            $elementValue = $element[$elementKey]
+            if ($elementValue -is [ValueType] -or (
+                $elementValue -is [string] -and $elementValue -notmatch '[\r\n]'
+            )) {
+                $this.'.Element'.Attribute[$elementKey] = $elementValue
+            }
+        }
+        continue        
+    }
+
+    if ($elementName) {
+        
+    }
+}
+
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Fill</Name>
         <GetScriptBlock>
                         &lt;#

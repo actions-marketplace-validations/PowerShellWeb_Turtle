@@ -8397,6 +8397,16 @@ param()
         <Value>heading: 0.0</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>go.js</Name>
+        <Value>function go() {
+    const parsedArgs = this.parse.call(this, ...arguments)
+    let $this = this
+    for (let parsed of parsedArgs) {
+        let result = $this[parsed.method](...parsed.arguments)
+    }
+}</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>goto.js</Name>
         <Value>function goto(x,y) { return this.step(x - this.x, y - this.y) }</Value>
       </NoteProperty>

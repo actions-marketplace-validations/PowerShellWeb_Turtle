@@ -1,7 +1,7 @@
 function teleport(x,y) {
     var penState = this.penDown
     this.penDown = false
-    step(x - this.x, y - this.y)
+    this.step(x - this.x, y - this.y)
     this.penDown = penState
     return this
 }

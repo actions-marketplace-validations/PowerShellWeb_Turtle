@@ -57,6 +57,7 @@ function Get-Turtle {
         # If we only provide the first parameter, we get a golden rectangle
         turtle rectangle 42
     .EXAMPLE
+        #### Circles
         # We can draw a circle 
         turtle circle 10
     .EXAMPLE
@@ -138,6 +139,7 @@ function Get-Turtle {
         # Let's do the same thing, but with a smaller angle
         turtle ('polygon', 23, 6, 'rotate', -40 * 9)
     .EXAMPLE
+        #### Flowers
         # A flower is a series of repeated polygons and rotations
         turtle Flower    
     .EXAMPLE
@@ -160,6 +162,7 @@ function Get-Turtle {
             turtle Flower 50 10 $sideCount 72
         )        
     .EXAMPLE
+        ### Petals and Flowers
         # We can draw a pair of arcs and turn back after each one.
         # 
         # We call this a 'petal'.
@@ -198,6 +201,37 @@ function Get-Turtle {
             $flowerPetals
         )
     .EXAMPLE
+        #### Arcs and Suns
+        # We can arc right or left
+        turtle arcRight 42 120
+        turtle arcLeft 42 120 
+    .EXAMPLE
+        # We can arc right and then left to produce a ray or wave shape
+        turtle arcRight 42 120 arcLeft 42 120
+    .EXAMPLE
+        # We can rotate and repeat that rays to make a sun
+        $Length = 42
+        $Angle = 160
+        $RayAngle = 90
+        $StepCount = 9
+        turtle sun $Length $Angle $RayAngle $StepCount
+    .EXAMPLE
+        # If we reverse the ray angle and morph, the sun really shines!
+        turtle Sun 100 135 60 8 morph @(
+            turtle Sun 100 135 60 8
+            turtle Sun 100 135 -60 8
+            turtle Sun 100 135 60 8
+        ) 
+    .EXAMPLE
+        # We can add multiple fixed colors to make a gradient
+        # Then the sun is truly bright.
+        turtle Sun 100 135 60 8 fill 'yellow' 'goldenrod' stroke 'goldenrod' 'yellow' morph @(
+            turtle Sun 100 135 60 8
+            turtle Sun 100 135 -60 8
+            turtle Sun 100 135 60 8
+        ) 
+    .EXAMPLE
+        #### Stars
         # We can create a Star with N points
         turtle star 42 5
 
@@ -216,6 +250,7 @@ function Get-Turtle {
 
         turtle @('star',42,8,'rotate',45 * 8)
     .EXAMPLE
+        #### Starflowers
         # When we do this, we call it a Star Flower
         turtle StarFlower 42
     .EXAMPLE
@@ -250,6 +285,7 @@ function Get-Turtle {
             turtle StarFlower 42 12 5 30
         )
     .EXAMPLE
+        #### Scissors
         # We can construct a 'scissor' by drawing two lines at an angle
         turtle Scissor 42 60
     .EXAMPLE
@@ -272,6 +308,7 @@ function Get-Turtle {
             Turtle ScissorPoly 16 $n $n
         }
     .EXAMPLE
+        #### Step Spirals
         # We can draw an outward spiral by growing a bit each step
         turtle StepSpiral
     .EXAMPLE
@@ -329,6 +366,7 @@ function Get-Turtle {
             turtle @('StepSpiral',3, 120, 'rotate',60 * 6)
         )
     .EXAMPLE
+        #### Spirolaterals
         turtle spirolateral
     .EXAMPLE
         turtle spirolateral 50 60 10
@@ -339,6 +377,80 @@ function Get-Turtle {
     .EXAMPLE
         turtle spirolateral 23 72 8
     .EXAMPLE
+        #### Bezier Curves
+        # We can draw simple Bezier Curves.
+        # Imagine a string being tugged by a point
+        turtle bezierCurve 0 100 100 100
+    .EXAMPLE
+        # A morph can help us understand bezier curve movement
+        turtle bezierCurve 0 100 100 100 morph @(
+            turtle bezierCurve 0 100 100 100
+            turtle bezierCurve 100 0 100 100
+            turtle bezierCurve 0 100 100 100
+        )
+    .EXAMPLE
+        # Lets make it more exaggerated
+        turtle viewbox 150 bezierCurve 0 100 100 100 morph @(
+            turtle bezierCurve 0 200 100 100
+            turtle bezierCurve 200 0 100 100
+            turtle bezierCurve 0 200 100 100
+        )    
+    .EXAMPLE
+        # We use the shorthand 's' for a simple bezier curve
+        turtle s 100 0 100 100
+    .EXAMPLE
+        # This helps make beautifully short moprhs
+        turtle s 100 0 100 100 morph @(
+            turtle s 100 0 100 100
+            turtle s 0 100 100 100
+            turtle s 100 0 100 100
+        )
+    .EXAMPLE
+        # We can also draw quadratic bezier curves
+        turtle quadraticbezierCurve 0 100 100 100
+    .EXAMPLE
+        # We can use the alias q, and morph them, too.
+        turtle q 0 100 100 100 morph @(
+            turtle q 100 0 100 100
+            turtle q 0 100 100 100
+            turtle q 100 0 100 100
+        )
+    .EXAMPLE
+        # We can also draw cubic bezier curves
+        # For these, imaging a string being pulled by two other strings.        
+        turtle cubicBezierCurve 0 100 100 0 100 100
+    .EXAMPLE
+        # We can shorten this to `c`, and morph it in beautiful ways        
+        turtle width 200 height 200 morph @(
+            turtle c 0   0 0   0 200 200 
+            turtle c 0 200 200 0 200 200 
+            turtle c 0   0 0   0 200 200
+            turtle c 200 0 0 200 200 200
+            turtle c 0   0 0   0 200 200 
+        )
+
+        turtle width 200 height 200 start 200 200 morph @(
+            turtle c 0    0 0    0 -200 200 
+            turtle c 0  200 -200 0 -200 200 
+            turtle c 0    0 0    0 -200 200
+            turtle c -200 0 0  200 -200 200
+            turtle c 0    0 0    0 -200 200 
+        )        
+    .EXAMPLE
+        # We can start at a given location, and morph along an axis.
+        turtle width 200 height 200 morph @(
+            turtle start 100 0 c 0 0 0 0 0 200
+            turtle start 100 0 c -100 0 100 200 0 200
+            turtle start 100 0 c 0 0 0 0 0 200
+        )
+    .EXAMPLE
+        turtle width 200 height 200 morph @(
+            turtle start 0 100 c 0 0 0 0 200 0
+            turtle start 0 100 c 0 -100 200 100 200 0
+            turtle start 0 100 c 0 0 0 0 200 0
+        )    
+    .EXAMPLE
+        #### Bar Graphs
         # Lets get practical.  Turtle can easily make a bar graph.
         turtle BarGraph 200 300 (1..10)
     .EXAMPLE
@@ -355,6 +467,7 @@ function Get-Turtle {
             'rotate',180 * 2
         )
     .EXAMPLE
+        #### Pie Graphs        
         # Want a Piece of Pie?
         Turtle Pie 100 4
         Turtle Pie 100 6
@@ -390,12 +503,148 @@ function Get-Turtle {
             }
         )
     .EXAMPLE
+        #### Circle Arcs
+        # Pie graphs are made out of circle arcs
+        Turtle id Quadrants @(
+            'CircleArc',42, 90,
+            'Rotate', 90 * 4
+        )
+        Turtle id Sextants @(
+            'CircleArc',42, 60,
+            'Rotate', 60 * 6
+        )
+        Turtle id Octants @(
+            'CircleArc',42, 45,
+            'Rotate', 45 * 8
+        )        
+    .EXAMPLE
+        # We can alternate rotations and arcs to create radial stripes
+        Turtle 'Rotate', -22.5 @(
+            'Rotate', 15,
+            'CircleArc',42, 15,
+            'Rotate', 15 * 24
+        )
+        
+        Turtle 'Rotate', -15 @(
+            'Rotate', 30,
+            'CircleArc',42, 30,
+            'Rotate', 30 * 12
+        )
+            
+        Turtle @(
+            'Rotate', 60,
+            'CircleArc',42, 60,
+            'Rotate', 60 * 6
+        )
+    .EXAMPLE
+        # We can draw negative circle arcs
+        Turtle CircleArc 42 -90    
+
+        # Negative quadrants
+        Turtle @(
+            'CircleArc',42, -90,
+            'Rotate', 90 * 4
+        )
+        # Negative sextants
+        Turtle @(
+            'CircleArc',42, -60,
+            'Rotate', 60 * 6
+        )
+        # Negative octants
+        Turtle @(
+            'CircleArc',42, -45,
+            'Rotate', 45 * 8
+        )
+    .EXAMPLE
+        # We can combine negative arcs and positive movement to make a swirl
+        turtle @(
+            'circlearc', -42, -60,
+            'rotate',60,
+            'forward',42  * 6 
+        )
+    .EXAMPLE
+        # We can create cool shapes by combining polygons and arcs
+        turtle @(
+            'circlearc', 42, -60,
+            'rotate',60,
+            'forward',42  * 6 
+        )
+        
+        # And we can morph them
+        
+        turtle @(
+            'circlearc', 42, -60,
+            'rotate',60,
+            'forward',42  * 6 
+        ) morph @(
+            turtle @(
+                'circlearc', 42, -60,
+                'rotate',60,
+                'forward',42  * 6 
+            )
+            turtle @(
+                'circlearc', 42, 60,
+                'rotate',60,
+                'forward',42  * 6 
+            )
+            turtle @(
+                'circlearc', 42, -60,
+                'rotate',60,
+                'forward',42  * 6 
+            )
+        )
+    .EXAMPLE
+        # Lets morph positive quadrants into negative quadrants
+        $quadrants = Turtle @(
+            'CircleArc',42, 90,
+            'Rotate', 90 * 4
+        )
+        $quadrants | turtle morph @(
+            $quadrants
+            Turtle @(
+                'CircleArc',42, -90,
+                'Rotate', 90 * 4
+            )
+            $quadrants
+        )
+        
+    .EXAMPLE
+        # Lets morph positive sextants into negative sextants
+        $sextants = Turtle id Sextants @(
+            'CircleArc',42, 60,
+            'Rotate', 60 * 6
+        )
+        $sextants | turtle morph @(
+            $sextants
+            Turtle @(
+                'CircleArc',42, -60,
+                'Rotate', 60 * 6
+            )
+            $sextants
+        )
+    .EXAMPLE
+        # Lets morph positive octants into negative octants
+        $octants = Turtle id Octants @(
+            'CircleArc',42, 45,
+            'Rotate', 45 * 8
+        )
+        
+        $octants | turtle morph @(
+            $octants
+            Turtle @(
+                'CircleArc',42, -45,
+                'Rotate', 45 * 8
+            )
+            $octants
+        )        
+    .EXAMPLE
+        #### Turtles all the way down
         # Turtles can contain turtles.
         # Let's make a circle inscribed into a square
         turtle viewbox 42 turtles ([Ordered]@{
             'square' = turtle square 42 
             'circle' = turtle circle 21
-        })
+        })        
     .EXAMPLE
         # Each turtle can have a distinct color or CSS class
         turtle viewbox 42 turtles ([Ordered]@{
@@ -444,7 +693,71 @@ function Get-Turtle {
             )
         })
     .EXAMPLE
-        # Turtle can draw a number of fractals        
+        # Let's make a colorful cubic morph
+        $Colors = @('fill', '#4488ff','stroke','#224488','pathclass', 'brightBlue-fill','blue-stroke')
+        turtle width 200 height 200 turtles @(
+            turtle morph @(
+                turtle c 0   0 0   0 200 200 
+                turtle c 0 200 200 0 200 200 
+                turtle c 0   0 0   0 200 200
+                turtle c 200 0 0 200 200 200
+                turtle c 0   0 0   0 200 200 
+            ) @colors
+            turtle morph @(
+                turtle c 0    0 0    0 -200 200 
+                turtle c 0  200 -200 0 -200 200 
+                turtle c 0    0 0    0 -200 200
+                turtle c -200 0 0  200 -200 200
+                turtle c 0    0 0    0 -200 200 
+            ) @colors
+            turtle morph @(
+                turtle teleport 100 0 c 0 0 0 0 0 200
+                turtle teleport 100 0 c -100 0 100 200 0 200
+                turtle teleport 100 0 c 0 0 0 0 0 200
+            ) @colors
+            turtle morph @(
+                turtle teleport 0 100 c 0 0 0 0 200 0
+                turtle teleport 0 100 c 0 -100 200 100 200 0
+                turtle teleport 0 100 c 0 0 0 0 200 0
+            ) @colors
+        )
+    .EXAMPLE
+        #### Spiderwebs
+        # Turtle can draw spiderwebs
+        Turtle Spiderweb
+    .EXAMPLE
+        # Turtle can draw spiderwebs with any number of spokes and rings
+        Turtle Spiderweb 7 13
+    .EXAMPLE
+        Turtle Spiderweb 7 13
+    .EXAMPLE
+        # We can draw random spiderwebs
+        $spokes = Get-Random -Min 3 -Max 13
+        $rings =  Get-Random -Min 3 -Max (13 * 3)
+        turtle web 42 $spokes $rings morph @(
+            turtle web 42 $spokes $rings 
+            turtle rotate (
+                Get-Random -Max 360
+            ) web 42 $spokes $rings 
+            turtle web 42 $spokes $rings 
+        ) stroke 'yellow' pathclass 'yellow-stroke'
+    .EXAMPLE
+        # We can draw a spiderweb with color and class
+        Turtle Spiderweb 7 13 stroke yellow pathclass 'yellow-stroke'
+    .EXAMPLE
+        # We can draw a spiderweb with color and class
+        $spokes = Get-Random -Min 3 -Max 13
+        $rings  = Get-Random -Min 3 -Max (13 * 3)
+        turtle web 42 $spokes $rings morph @(
+            turtle web 42 $spokes $rings 
+            turtle rotate (
+                Get-Random -Max 360
+            ) web 42 $spokes $rings
+            turtle web 42 $spokes $rings
+        ) stroke yellow pathclass 'yellow-stroke'
+    .EXAMPLE
+        #### L-Systems
+        # Turtle can draw a number of fractals
         turtle BoxFractal 42 4
     .EXAMPLE
         # We can make a Board Fractal
@@ -469,7 +782,7 @@ function Get-Turtle {
         turtle KochCurve 42 
     .EXAMPLE
         # We can make a Koch Snowflake
-        turtle KochSnowflake 42 
+        turtle KochSnowflake 42
     .EXAMPLE
         # We can draw the Levy Curve
         turtle LevyCurve 42 6
@@ -486,8 +799,11 @@ function Get-Turtle {
         # We can show a binary tree
         turtle BinaryTree 42 4
     .EXAMPLE
-        # We can also mimic plant growth
+        # We can make fractal plants
         turtle FractalPlant 42 4
+    .EXAMPLE
+        # We can also make fractal shrubs
+        turtle FractalShrub 42 4
     .EXAMPLE
         # The SierpinskiArrowHead Curve is pretty          
         turtle SierpinskiArrowheadCurve 42 4
@@ -551,6 +867,7 @@ function Get-Turtle {
     [PSObject]
     $InputObject,
 
+    # If set, will run as a background job.
     [switch]
     $AsJob
     )
@@ -761,16 +1078,16 @@ $(
         for ($argIndex =0; $argIndex -lt $wordsAndArguments.Length; $argIndex++) {
             $arg = $wordsAndArguments[$argIndex]
             # If the argument is not in the member names list, we can complain about it.
-            if ($arg -notin $memberNames) {                
+            if ($arg -notin $memberNames) {
                 if (
                     # (we might not want to, if it starts with a bracket)
                     -not $currentMember -and $arg -is [string] -and
                     "$arg".Trim() -and $arg -notmatch '^\['
                 ) {
-                    Write-Warning "Unknown command '$arg'."
+                    Write-Warning "Unknown command '$arg'."                    
                 }
                 continue
-            }
+            }            
             
             
             # If we have a current member, we can invoke it or get it.
@@ -907,7 +1224,7 @@ $(
                             $memberInfo.Invoke($argList)
                         } elseif ($memberInfo -is [ValueType]) {
                             $memberInfo
-                        }                        
+                        }
                     }
                     # If we don't have any arguments, but are still dealing with a method
                     else {

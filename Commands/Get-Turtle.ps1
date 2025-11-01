@@ -556,43 +556,12 @@ function Get-Turtle {
             'Rotate', 45 * 8
         )
     .EXAMPLE
-        # We can combine negative arcs and positive movement to make a swirl
+        # We can combine arcs and movement to make a pinwheel
         turtle @(
-            'circlearc', -42, -60,
+            'circlearc', 42, 60,
             'rotate',60,
             'forward',42  * 6 
-        )
-    .EXAMPLE
-        # We can create cool shapes by combining polygons and arcs
-        turtle @(
-            'circlearc', 42, -60,
-            'rotate',60,
-            'forward',42  * 6 
-        )
-        
-        # And we can morph them
-        
-        turtle @(
-            'circlearc', 42, -60,
-            'rotate',60,
-            'forward',42  * 6 
-        ) morph @(
-            turtle @(
-                'circlearc', 42, -60,
-                'rotate',60,
-                'forward',42  * 6 
-            )
-            turtle @(
-                'circlearc', 42, 60,
-                'rotate',60,
-                'forward',42  * 6 
-            )
-            turtle @(
-                'circlearc', 42, -60,
-                'rotate',60,
-                'forward',42  * 6 
-            )
-        )
+        )    
     .EXAMPLE
         # Lets morph positive quadrants into negative quadrants
         $quadrants = Turtle @(
@@ -636,7 +605,44 @@ function Get-Turtle {
                 'Rotate', 45 * 8
             )
             $octants
-        )        
+        )
+    .EXAMPLE
+        # We can overlap pinwheels to make even more exotic shapes
+        turtle @(
+            @(
+                'circlearc', 21, -60,
+                'rotate',60,
+                'forward',42  * 6 
+                'rotate', 30
+            ) * 12
+        )
+    .EXAMPLE        
+        # We can morph these exotic shapes to create hypnotic animations
+
+        $exoticShape = turtle (
+            @(                
+                'circlearc', 21, -60,
+                'rotate',60,
+                'forward',42  * 6 
+                
+                'rotate', 30
+            ) * 12
+        )
+        
+        $exoticShape | 
+            turtle morph @(
+                $exoticShape
+                turtle (
+                    @(                
+                        'circlearc', 21, 60,
+                        'rotate',60,
+                        'forward',42  * 6 
+                        
+                        'rotate', 30
+                    ) * 12
+                )
+                $exoticShape
+            )
     .EXAMPLE
         #### Turtles all the way down
         # Turtles can contain turtles.

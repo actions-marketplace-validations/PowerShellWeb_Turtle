@@ -8640,6 +8640,23 @@ return $javaScript
     These are portions of the class.
 
     To create our class, we simply join these properties together, and output a javascript object.
+.NOTES
+    This is an experimental feature and is subject to change and improvement.
+.EXAMPLE    
+    $turtleJs = [PSCustomObject]@{PSTypeName='Turtle.js'}
+    $html = @(    
+        "&lt;html&gt;&lt;body&gt;"
+        "&lt;svg id='output' width='100%' height='100%'&gt;"
+            "&lt;path id='outputPath' stroke='#4488ff' /&gt;"
+        "&lt;/svg&gt;"
+        "&lt;script&gt;"
+        "const turtle = $turtleJS"
+        "turtle.go('ROTATE', 45,'forward', 42)"
+        "document.getElementById('outputPath').setAttribute('d',turtle.pathData)"
+        "document.getElementById('output').setAttribute('viewBox', ``0 0 `${turtle.width} `${turtle.height}`` )"
+        "&lt;/script&gt;"
+        "&lt;/body&gt;&lt;/html&gt;"
+    ) &gt; ./TurtleTest.html
 #&gt;
 param()
 

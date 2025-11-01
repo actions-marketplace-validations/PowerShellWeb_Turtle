@@ -8695,6 +8695,33 @@ foreach ($javaScriptProperty in $this.psobject.properties | Sort-Object Name) {
 }</Value>
       </NoteProperty>
       <NoteProperty>
+        <Name>get_heading.js</Name>
+        <Value>function get_heading() {
+    const _ = this
+    if ( _['#heading'] === undefined ) {
+        _['#heading'] = 0.0
+    }
+    return _['#heading']
+}
+</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>get_pathData.js</Name>
+        <Value>function get_pathData() {
+    let startX = 0;
+    let startY = 0;
+    if (!this.min)  { this.min = { x: 0.0, y: 0.0}}
+    if (!this.max)  { this.max = { x: 0.0, y: 0.0}}
+    if (this.min.x &lt; 0) {
+        startX = (this.min.x) * -1
+    }
+    if (this.min.y &lt; 0) {
+        startY = (this.min.y) * -1
+    }
+    return `m ${startX} ${startY} ${this.steps?.join(' ')}`
+}</Value>
+      </NoteProperty>
+      <NoteProperty>
         <Name>go.js</Name>
         <Value>function go() {
     const parsedArgs = this.parse.call(this, ...arguments)
@@ -8707,17 +8734,6 @@ foreach ($javaScriptProperty in $this.psobject.properties | Sort-Object Name) {
       <NoteProperty>
         <Name>goto.js</Name>
         <Value>function goto(x,y) { return this.step(x - this.x, y - this.y) }</Value>
-      </NoteProperty>
-      <NoteProperty>
-        <Name>heading.js</Name>
-        <Value>function get_heading() {
-    const _ = this
-    if ( _['#heading'] === undefined ) {
-        _['#heading'] = 0.0
-    }
-    return _['#heading']
-}
-</Value>
       </NoteProperty>
       <NoteProperty>
         <Name>height.js</Name>
@@ -8788,22 +8804,6 @@ foreach ($javaScriptProperty in $this.psobject.properties | Sort-Object Name) {
     }
 
     return parsed
-}</Value>
-      </NoteProperty>
-      <NoteProperty>
-        <Name>pathData.js</Name>
-        <Value>function pathData() {
-    let startX = 0;
-    let startY = 0;
-    if (!this.min)  { this.min = { x: 0.0, y: 0.0}}
-    if (!this.max)  { this.max = { x: 0.0, y: 0.0}}
-    if (this.min.x &lt; 0) {
-        startX = (this.min.x) * -1
-    }
-    if (this.min.y &lt; 0) {
-        startY = (this.min.y) * -1
-    }
-    return `m ${startX} ${startY} ${this.steps?.join(' ')}`
 }</Value>
       </NoteProperty>
       <NoteProperty>

@@ -1,4 +1,4 @@
-function get_pathData() {
+function pathData() {
     let startX = 0;
     let startY = 0;
     if (!this.min)  { this.min = { x: 0.0, y: 0.0}}

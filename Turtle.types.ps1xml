@@ -8695,10 +8695,6 @@ foreach ($javaScriptProperty in $this.psobject.properties | Sort-Object Name) {
 }</Value>
       </NoteProperty>
       <NoteProperty>
-        <Name>get_heading.js</Name>
-        <Value>heading: 0.0</Value>
-      </NoteProperty>
-      <NoteProperty>
         <Name>go.js</Name>
         <Value>function go() {
     const parsedArgs = this.parse.call(this, ...arguments)
@@ -8711,6 +8707,17 @@ foreach ($javaScriptProperty in $this.psobject.properties | Sort-Object Name) {
       <NoteProperty>
         <Name>goto.js</Name>
         <Value>function goto(x,y) { return this.step(x - this.x, y - this.y) }</Value>
+      </NoteProperty>
+      <NoteProperty>
+        <Name>heading.js</Name>
+        <Value>function get_heading() {
+    const _ = this
+    if ( _['#heading'] === undefined ) {
+        _['#heading'] = 0.0
+    }
+    return _['#heading']
+}
+</Value>
       </NoteProperty>
       <NoteProperty>
         <Name>height.js</Name>
@@ -8785,7 +8792,7 @@ foreach ($javaScriptProperty in $this.psobject.properties | Sort-Object Name) {
       </NoteProperty>
       <NoteProperty>
         <Name>pathData.js</Name>
-        <Value>function get_pathData() {
+        <Value>function pathData() {
     let startX = 0;
     let startY = 0;
     if (!this.min)  { this.min = { x: 0.0, y: 0.0}}
@@ -8844,14 +8851,12 @@ foreach ($javaScriptProperty in $this.psobject.properties | Sort-Object Name) {
       <NoteProperty>
         <Name>set_heading.js</Name>
         <Value>function set_heading(value) {
-    let _ = this
+    const _ = this
     try {
         _['#heading'] = new Number(value)
     } catch {
-        
         _['#heading'] = 0.0
     }
-    
     return _
 }</Value>
       </NoteProperty>

@@ -266,9 +266,9 @@ Write-Progress @progress
 document.querySelectorAll('pre > code').forEach(element => {
     const copyCodeButton = document.createElement('div')
     copyCodeButton.classList.add('copy-button')
-    copyCodeButton.onclick = () => navigator.clipboard.writeText(element.innerText)    
+    copyCodeButton.onclick = () => navigator.clipboard.writeText(element.innerText)
     copyCodeButton.innerHTML = ``$(. $site.includes.Feather -Icon 'clipboard')``
-    element.parentNode.parentNode.prepend(copyCodeButton)
+    element.parentNode.prepend(copyCodeButton)
 });
 </script>
 "@

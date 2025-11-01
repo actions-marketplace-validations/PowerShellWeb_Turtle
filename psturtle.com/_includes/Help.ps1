@@ -214,7 +214,7 @@ foreach ($example in $CommandHelp.examples.example) {
             $global:ExampleOutputCache[$codeBlock] = @(. $exampleCode)
         }
         # then run it and capture the output
-        $exampleOutputs = $script:ExampleOutputCache[$codeBlock]
+        $exampleOutputs = $global:ExampleOutputCache[$codeBlock]
         
         # Keep track of our example output count
         $exampleOutputNumber = 0

@@ -107,7 +107,7 @@
   * `Turtle.get_Mask/PatternMask` returns only the mask (#261)  
   * `Turtle.set_BackgroundColor` applies to SVG directly (#260)  
   * `Turtle.get_Maximum` is a vector (#275)
-  * `Turtle.get_Miniumum` is a vector (#276)
+  * `Turtle.get_Minimum` is a vector (#276)
   * `Turtle.get_Position` is a vector (#274)
   * `Turtle.set_Stroke` supports gradients (#295)
   * `Turtle.set_Fill` supports gradients (#294)

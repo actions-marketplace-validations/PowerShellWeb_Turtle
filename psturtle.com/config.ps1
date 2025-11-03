@@ -145,8 +145,12 @@ $site.Taskbar = [Ordered]@{
     'BlueSky' = 'https://bsky.app/profile/psturtle.com'
     'GitHub' = 'https://github.com/PowerShellWeb/Turtle'
     'RSS' = 'https://psturtle.com/RSS/index.rss'
-    'Help' = 'https://psturtle.com/Commands/Get-Turtle'
+    'Help' = '/Commands/Get-Turtle'
 }
+
+$env:TURTLE_BOT = $true
+
+$Site.Palette = "Cyberdyne"
 
 $site.Footer = @(
     . $site.includes.SelectPalette

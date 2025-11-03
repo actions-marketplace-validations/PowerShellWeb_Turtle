@@ -28,7 +28,12 @@ if (-not $site.PagesByUrl) {
 }
 $pagesByUrl = $site.PagesByUrl
 
-:nextFile foreach ($file in $allFiles) {
+$fileQueue = [Collections.Queue]::new()
+foreach ($file in $allFiles) { $fileQueue.Enqueue($file) }
+
+:nextFile while ($fileQueue.Count) {
+    $file = $fileQueue.Dequeue()
+    if ($file.FullName -match '/_[^\.]') { continue }
     if ($Site -and $Site.Exclude) {
         $included = $false
         :exclude do {
@@ -50,6 +55,7 @@ $pagesByUrl = $site.PagesByUrl
             }
             $included = $true
         } until ($included)
+        if (-not $included) { continue }
     }
     $fileRoot = $file.Directory.FullName
     Push-Location $fileRoot
@@ -83,15 +89,15 @@ $pagesByUrl = $site.PagesByUrl
             $gitDates = 
                 try {
                     # we can use `git log --follow --format=%ci` to get the dates in order
-                    (& $gitCommand log --follow --format=%ci --date default $file.FullName *>&1) -as [datetime[]]
+                    (& $gitCommand log --follow --format=%ci --date default $file.FullName *>&1) -as [datetime]
                 } catch {
                     $null
                 }
             # Because the file might not be in git, we want to always set the `$LASTEXITCODE` to 0
             $LASTEXITCODE = 0
-            # Set the date to the last date we find.
+            # Set the date to the first date we find.
             if ($gitDates) {
-                $page.Date = $gitDates[-1]                
+                $page.Date = $gitDates[0]
             }            
         }
     }
@@ -186,11 +192,37 @@ $pagesByUrl = $site.PagesByUrl
             }
             
         }
+        default {
+            Pop-Location
+            continue nextFile
+        }
     }
     #endregion Get Page Content
+
+    # We want to filter out files from the rest of output
+    $outputFiles = @()
+    $otherOutput = @(foreach ($out in $output) {
+        if ($out -is [IO.FileInfo]) {            
+            $outputFiles += $out
+        } else {
+            $out
+        }
+    })
+
+    # If there were any files output
+    if ($outputFiles) {
+        # queue them
+        foreach ($outputFile in $outputFiles) {
+            $fileQueue.Enqueue($outputFile)
+            $totalFiles++
+        }
+    }
+
+    # Set out output to any non-file output.
+    $output = $otherOutput
     
     # If we don't have output,
-    if ($null -eq $Output) {
+    if ($null -eq $OtherOutput) {
         Pop-Location
         continue nextFile # continue to the next file.
     }
@@ -330,6 +362,7 @@ $pagesByUrl = $site.PagesByUrl
                 if ($?) {
                     $page.OutputFile = Get-Item -Path $outFile
                     $page.OutputFile
+                    Pop-Location
                     continue nextFile
                 }                
             }
@@ -338,6 +371,7 @@ $pagesByUrl = $site.PagesByUrl
                 if ($?) {
                     $page.OutputFile = Get-Item -Path $outFile
                     $page.OutputFile
+                    Pop-Location
                     continue nextFile
                 }
             }
@@ -346,6 +380,7 @@ $pagesByUrl = $site.PagesByUrl
                 if ($?) {
                     $page.OutputFile = Get-Item -Path $outFile
                     $page.OutputFile
+                    Pop-Location
                     continue nextFile
                 }
             }
@@ -379,21 +414,26 @@ $pagesByUrl = $site.PagesByUrl
         # just output them directly.
         $outputFiles
     } else {
-        # otherwise, we'll save output to a file.
-
-        # If the file does not exists
-        if (-not (Test-Path -Path $outFile)) {
-            # create an empty file.
-            $null = New-Item -Path $outFile -ItemType File -Force
-        }
-
-        $output > $outFile
-        # and if that worked,
-        if ($?) {
-            # output the file.
-            $page.OutputFile = Get-Item -Path $outFile
-            $page.OutputFile
-        }
+        # otherwise, we'll save output to a file (assuming we have output).
+        if ("$output") {
+            # If the file does not exists
+            if (-not (Test-Path -Path $outFile)) {
+                # create an empty file.
+                $null = New-Item -Path $outFile -ItemType File -Force
+            }        
+            if ($outFile -like '*.svg') {
+                $null = $null
+            }
+            $output > $outFile
+            # and if that worked,
+            if ($?) {
+                # output the file.
+                $page.OutputFile = Get-Item -Path $outFile
+                $page.OutputFile
+            }
+        } else {
+            $null = $null
+        }        
     }
     #endregion Output
 

@@ -1,15 +1,15 @@
 function Get-Turtle {
     <#
     .SYNOPSIS
-        Gets Turtles
+        Turtle Graphics in PowerShell
     .DESCRIPTION
-        Gets turtles in a PowerShell.
+        Turtle Graphics in PowerShell.  Draw any image with turtles in a powershell.
     .NOTES
         Turtle Graphics are pretty groovy.
         
         They have been kicking it since 1966, and they are how computers first learned to draw.
 
-        They kicked off the first computer-aided design boom and inspired generations of artists, engineers, mathematicians, and physicists.
+        They kicked off the first computer-aided design boom and inspired generations.
 
         They are also _incredibly_ easy to build.
 
@@ -27,18 +27,18 @@ function Get-Turtle {
         
         We can describe more complex moves by combining these steps.
 
-        Each argument can be the name of a move of the turtle object.
+        As a PowerShell turtle, we can take any pipeline of objects and turn them into turtles.
+
+        Each argument can be the name of a method or property of the turtle object.        
 
         After a member name is encountered, subsequent arguments will be passed to the member as parameters.
-
-        Any parameter that begins with whitespace will be split into multiple words.
     .EXAMPLE
         # We can write shapes as a series of steps.
         # Let's start with a simple diagonal line
-        turtle rotate 45 forward 42
+        turtle rotate 45 forward 42    
     .EXAMPLE
-        # Let's draw a triangle
-        turtle forward 42 rotate 120 forward 42 rotate 120 forward 42         
+        # Let's draw an equilateral triangle        
+        turtle forward 42 rotate 120 forward 42 rotate 120 forward 42
     .EXAMPLE
         # Typing that might get tedious.
         # Instead, let's use a method.
@@ -46,7 +46,7 @@ function Get-Turtle {
         turtle polygon 10 5
     .EXAMPLE
         # There's also a method for squares
-        turtle square 42    
+        turtle square 42
     .EXAMPLE
         # If we rotate 45 degrees first, our square becomes a rhombus
         turtle rotate 45 square 42
@@ -539,17 +539,19 @@ function Get-Turtle {
     .EXAMPLE
         # We can draw negative circle arcs
         Turtle CircleArc 42 -90    
-
+    .EXAMPLE    
         # Negative quadrants
         Turtle @(
             'CircleArc',42, -90,
             'Rotate', 90 * 4
         )
+    .EXAMPLE    
         # Negative sextants
         Turtle @(
             'CircleArc',42, -60,
             'Rotate', 60 * 6
         )
+    .EXAMPLE    
         # Negative octants
         Turtle @(
             'CircleArc',42, -45,
@@ -617,8 +619,7 @@ function Get-Turtle {
             ) * 12
         )
     .EXAMPLE        
-        # We can morph these exotic shapes to create hypnotic animations
-
+        # We can morph and spin these exotic shapes to create hypnotic animations
         $exoticShape = turtle (
             @(                
                 'circlearc', 21, -60,
@@ -629,7 +630,7 @@ function Get-Turtle {
             ) * 12
         )
         
-        $exoticShape | 
+        $exoticShape |
             turtle morph @(
                 $exoticShape
                 turtle (
@@ -642,7 +643,11 @@ function Get-Turtle {
                     ) * 12
                 )
                 $exoticShape
-            )
+            ) pathAnimation @{
+                type = 'rotate'
+                values = 0, 360
+                repeatCount = 'indefinite'
+            }
     .EXAMPLE
         #### Turtles all the way down
         # Turtles can contain turtles.
@@ -728,8 +733,8 @@ function Get-Turtle {
             ) @colors
         )
     .EXAMPLE
-        #### Spiderwebs
-        # Turtle can draw spiderwebs
+        #### Webs
+        # Turtle can draw webs
         Turtle Spiderweb
     .EXAMPLE
         # Turtle can draw spiderwebs with any number of spokes and rings
@@ -737,7 +742,7 @@ function Get-Turtle {
     .EXAMPLE
         Turtle Spiderweb 7 13
     .EXAMPLE
-        # We can draw random spiderwebs
+        # We can draw random webs
         $spokes = Get-Random -Min 3 -Max 13
         $rings =  Get-Random -Min 3 -Max (13 * 3)
         turtle web 42 $spokes $rings morph @(
@@ -746,21 +751,21 @@ function Get-Turtle {
                 Get-Random -Max 360
             ) web 42 $spokes $rings 
             turtle web 42 $spokes $rings 
-        ) stroke 'yellow' pathclass 'yellow-stroke'
+        ) stroke 'goldenrod' pathclass 'yellow-stroke'
     .EXAMPLE
-        # We can draw a spiderweb with color and class
-        Turtle Spiderweb 7 13 stroke yellow pathclass 'yellow-stroke'
+        # We can draw a web with color and class
+        Turtle Spiderweb 7 13 stroke goldenrod pathclass 'yellow-stroke'
     .EXAMPLE
-        # We can draw a spiderweb with color and class
-        $spokes = Get-Random -Min 3 -Max 13
+        # We can draw a random web with color and class
+        $spokes = Get-Random -Min 5 -Max 13
         $rings  = Get-Random -Min 3 -Max (13 * 3)
         turtle web 42 $spokes $rings morph @(
             turtle web 42 $spokes $rings 
             turtle rotate (
-                Get-Random -Max 360
+                Get-Random -Min 90 -Max 360
             ) web 42 $spokes $rings
             turtle web 42 $spokes $rings
-        ) stroke yellow pathclass 'yellow-stroke'
+        ) stroke goldenrod pathclass 'yellow-stroke'
     .EXAMPLE
         #### L-Systems
         # Turtle can draw a number of fractals
@@ -819,9 +824,9 @@ function Get-Turtle {
     .EXAMPLE
         # We can morph with no parameters to try to draw step by step
         # 
-        # This will result in large files.
+        # This will result in large files, and may not work in all browsers
         # 
-        # This may not work in all browsers for all graphics.
+        # For best results, adjust the precision
         turtle SierpinskiTriangle 42 3 morph 
     .EXAMPLE
         # Let's draw two reflected Sierpinski Triangles

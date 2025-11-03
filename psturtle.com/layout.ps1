@@ -16,7 +16,7 @@ param(
     [string]
     $PaletteName = $(
         if ($Site -and $Site['PaletteName']) { $Site['PaletteName'] }
-        else { 'Konsolas' }    
+        else { 'Konsolas' }
     ),
 
     # The Google Font name
@@ -61,14 +61,14 @@ param(
     ),
 
     # The footer menu.
-    [Collections.IDictionary]
-    $FooterMenu = $(
-        if ($page -and $page.'FooterMenu' -is [Collections.IDictionary]) {
-            $page.'FooterMenu'
-        } elseif ($Site -and $site.'FooterMenu' -is [Collections.IDictionary]) {
-            $site.'FooterMenu'
+    [PSObject[]]
+    $Footer = @(
+        if ($page.Footer) {
+            $page.Footer
+        } elseif ($Site -and $site.Footer) {
+            $site.Footer
         } else {
-            [Ordered]@{}
+            ''
         }
     )
 )
@@ -145,28 +145,14 @@ $(
     if ($HeaderMenu) {
         # If the device is in landscape mode, use larger padding and gaps
         "@media (orientation: landscape) {"
-            ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5em }"
+            ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5em; position: sticky; top: 0px}"
             ".header-menu-item { text-align: center; padding: 0.5em; }"
         "}"
 
         # If the device is in portrait mode, use smaller padding and gaps
         "@media (orientation: portrait) {"
-            ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(66px, 1fr)); gap: 0.25em }"
+            ".header-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(66px, 1fr)); gap: 0.25em; position: sticky; top: 0px }"
             ".header-menu-item { text-align: center; padding: 0.25em; }"
-        "}"
-    }
-)
-
-$(
-    if ($FooterMenu) {
-        "@media (orientation: landscape) {"
-            ".footer-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5em }"
-            ".footer-menu-item { text-align: center; padding: 0.5em; }"
-        "}"
-
-        "@media (orientation: portrait) {"
-            ".footer-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.25em }"
-            ".footer-menu-item { text-align: center; padding: 0.25em; }"
         "}"
     }
 )
@@ -215,9 +201,8 @@ a:hover, a:focus {
     })
 }
 
-.taskbar {
-    float: right;
-    position: absolute;
+.taskbar {    
+    position: sticky;
     top: 0; right: 0; z-index: 10;    
     display: flex; flex-direction: row-reverse;
     align-content: right; align-items: flex-start;
@@ -315,10 +300,7 @@ $headerElements = @(
 
 # Now we declare the body elements
 $bodyElements = @(
-    # * The background layers
-
-    
-    
+    # * The background layers        
     "<svg class='background backdrop-svg' id='background-svg' width='100%' height='100%'>"
     if ($page.Background -is [xml]) {
         $page.Background.OuterXml
@@ -326,7 +308,7 @@ $bodyElements = @(
     elseif ($site.Background -is [xml]) {
         $site.Background.OuterXml
     }
-    "</svg>"    
+    "</svg>"
     "<canvas id='background backdrop-canvas' width='0' height='0'></canvas>"
     if ($taskbar) {
         # * Our taskbar
@@ -346,15 +328,16 @@ $bodyElements = @(
                         }                
                     }
                     else { $taskbarItem.Key }
-                if ($taskbarItem.Value -match '[<>]') {
+                $taskBarContent = $taskbarItem.Value                
+                if ($taskBarContent -match '[<>]') {
                     "<details>"
                     "<summary>"
                     $itemIconAndOrName
-                    "</summary>"                    
+                    "</summary>"
                     $taskbarItem.Value                    
                     "</details>"
                 } else {
-                    "<a href='$($taskbarItem.Value)' class='icon-link' target='_blank'>"
+                    "<a href='$($taskBarContent)' class='icon-link' target='_blank'>"
                     $itemIconAndOrName
                     "</a>"
                 }
@@ -406,27 +389,26 @@ $bodyElements = @(
     "</header>"
 
     # * The main content
+
     "<div class='main'>$outputHtml</div>"    
 
-    # * The footer
-    "<footer>"
-    if ($FooterMenu) {
-        "<style>"
-        "@media (orientation: landscape) {"
-            ".footer-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1em }"
-            ".footer-menu-item { text-align: center; padding: 1em; }"
-        "}"
-        "@media (orientation: portrait) {"
-            ".footer-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5em }"
-            ".footer-menu-item { text-align: center; padding: 0.5em; }"
-        "}"
-        "</style>"
-        "<nav class='footer-menu'>"            
-        foreach ($menuItem in $FooterMenu.GetEnumerator()) {
-            "<a href='$($menuItem.Value)' class='footer-menu-item'>$([Web.HttpUtility]::HtmlEncode($menuItem.Key))</a>"
-        }
-        "</nav>"
+    if ($page.FixFooter -or $site.FixFooter) {
+        "<style>footer { position:fixed; $(
+            @(
+                foreach ($key in $site.FixFooter.Keys) {
+                    "${key}:$($site.FixFooter[$key])"
+                }   
+                foreach ($key in $page.FixFooter.Keys) {
+                    "${key}:$($Page.FixFooter[$key])"
+                }
+            ) -join ';'
+        )
+        }</style>"
     }
+    
+
+    # * The footer
+    "<footer>"    
     if ($Page.Footer) { $page.Footer -join [Environment]::NewLine }
     if ($Site.Footer) { $site.Footer -join [Environment]::NewLine } 
     "</footer>"
@@ -436,7 +418,9 @@ $bodyElements = @(
 "<html>
     <head>
         <title>$(if ($page['Title']) { $page['Title'] } else { $Title })</title>
-        $($headerElements -join [Environment]::NewLine)
+$($headerElements -join [Environment]::NewLine)
     </head>
-    <body>$($bodyElements -join [Environment]::NewLine)</body>
+    <body>
+$($bodyElements -join [Environment]::NewLine)
+</body>
 </html>"

@@ -50,7 +50,10 @@ We can easily keep a list of these steps in memory, and draw them with [SVG](htt
 
 We can make Turtle in any language.
 
-This module makes Turtle in PowerShell.
+This module gives you Turtle in a PowerShell.
+
+* [Amazing Examples](https://psturtle.com/Commands/Get-Turtle)
+* [A Brief History of Turtles](https://psturtle.com/History)
 "@
 
 #endregion Introduction

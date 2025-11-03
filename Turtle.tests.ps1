@@ -24,18 +24,21 @@ describe Turtle {
         $t = turtle ArcRight $Radius 360
         $Heading = 180.0
         [Math]::Round($t.Width,1) | Should -Be ($Radius * 2)
+        [Math]::Round($t.Height,1) | Should -Be ($Radius * 2)
         [Math]::Round($t.Heading,1) | Should -Be 360.0
 
         $Radius = 1
         $Heading = 180.0
         $t = turtle ArcRight $Radius 180
-        [Math]::Round($t.Width,1) | Should -Be ($Radius * 2)
+        [Math]::Round($t.Width,1) | Should -Be $Radius
+        [Math]::Round($t.Height,1) | Should -Be ($Radius * 2)
         [Math]::Round($t.Heading,1) | Should -Be $Heading
 
         $Radius = 1
         $Heading = 90.0
         $t = turtle ArcRight $Radius $Heading
-        [Math]::Round($t.Width,1) | Should -Be ($Radius * 4)
+        [Math]::Round($t.Width,1) | Should -Be $Radius
+        [Math]::Round($t.Height,1) | Should -Be $Radius
         [Math]::Round($t.Heading,1) | Should -Be $Heading        
     }
 
@@ -56,15 +59,33 @@ describe Turtle {
             $turtle = $turtle.Rotate($turtle.Towards(1,1))
             $turtle = $turtle.Forward($turtle.Distance(1,1))
             $turtle.Heading | Should -be 45
-            [Math]::Round($turtle.Position.X,10) | Should -be 1
-            [Math]::Round($turtle.Position.Y,10) | Should -be 1
+            [Math]::Round($turtle.Position.X,$turtle.Precision) | Should -be 1
+            [Math]::Round($turtle.Position.Y,$turtle.Precision) | Should -be 1
             $turtle = $turtle.Rotate($turtle.Towards(2,2))
             $turtle = $turtle.Forward($turtle.Distance(2,2))
             $turtle.Heading -as [float] | Should -be 45
-            [Math]::Round($turtle.Position.Y,10) | Should -be 2
-            [Math]::Round($turtle.Position.Y,10) | Should -be 2
+            [Math]::Round($turtle.Position.X,$turtle.Precision) | Should -be 2
+            [Math]::Round($turtle.Position.Y,$turtle.Precision) | Should -be 2
         }
     }
 
-    
+    context 'Turtle Security' {
+        it 'Can run in a data block' {
+            $dataBlockTurtle = data -supportedCommand turtle, Get-Random {
+                turtle rotate 45 forward (Get-Random -Min 21 -Max 42)
+            }
+            $dataBlockTurtle.Heading | Should -Be 45
+        }
+        it 'Will not show a turtle in non-interactive mode' {
+            if ([Environment]::UserInteractive -and -not $env:GITHUB_WORKFLOW) {
+                Write-Warning "Cannot test non-iteractivity interactively"
+            } else {
+                $dataBlockTurtle = data -supportedCommand turtle, Get-Random {
+                    turtle rotate 45 forward (Get-Random -Min 21 -Max 42) show
+                }
+                $dataBlockTurtle.Heading | Should -Be 45   
+            }
+        }
+    }
 }
+

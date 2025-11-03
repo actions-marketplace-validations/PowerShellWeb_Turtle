@@ -16,7 +16,7 @@ $X,
 $Y
 )
 
-$deltaX = $x - $this.X 
+$deltaX = $x - $this.X
 $deltaY = $y - $this.Y
 $penState = $this.IsPenDown
 $this.IsPenDown = $false

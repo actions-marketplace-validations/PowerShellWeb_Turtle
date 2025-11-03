@@ -12,7 +12,6 @@ param(
 # The DeltaY
 [double]$DeltaY = 0
 )
-
 # If both coordinates are empty, there is no step
 if ($DeltaX -or $DeltaY) {
     $this.Position = $DeltaX, $DeltaY

@@ -28,15 +28,49 @@ $Site.Files =
     else { Get-ChildItem -Recurse -File }
 
 $Site.PSScriptRoot = "$PSScriptRoot"
+foreach ($underbarDirectory in Get-ChildItem -Path $site.PSScriptRoot -Filter _* -Directory) {
+    $Site[$underbarDirectory.Name -replace '^_'] = $Site[$underbarDirectory.Name] = [Ordered]@{}    
+    foreach ($underbarFile in Get-ChildItem -Path $underbarDirectory -Recurse) {
+        $relativePath = $underbarFile.FullName.Substring($underbarDirectory.FullName.Length + 1)
+        $pointer = $site
+        $hierarchy = @($relativePath -split '[\\/]')
+        for ($index = 0; $index -lt ($hierarchy.Length - 1); $index++) {
+            $subdirectory = $hierarchy[$index] -replace '_'
+            if (-not $pointer[$subdirectory]) {
+                $pointer[$subdirectory] = [Ordered]@{}
+            }
+            $pointer = $pointer[$subdirectory]
+        }
+
+        $propertyName = $hierarchy[-1] -replace '_'
+        $getFile = @{LiteralPath=$underbarFile.FullName}
+        $fileData  =
+            switch -regex ($underbarFile.Extension) {
+                '\.ps1$' { $ExecutionContext.SessionState.InvokeCommand.GetCommand($underbarFile.FullName, 'ExternalScript') }
+                '\.(css|html|txt)$' { Get-Content @getFile }
+                '\.json$' { Get-Content @getFile | ConvertFrom-Json }
+                '\.jsonl$' { Get-Content @getFile | ConvertFrom-Json }
+                '\.psd1$' { Get-Content @getFile -Raw | ConvertFrom-StringData }
+                '\.(?>ps1xml|xml|svg)$' { (Get-Content @getFile -Raw) -as [xml] }
+                '\.(?>yaml|toml)$' { Get-Content @getFile -Raw }
+                '\.csv$' { Import-Csv @getFile }
+                '\.tsv$' { Import-Csv @getFile -Delimiter "`t" }
+            }        
+        if (-not $fileData) { continue }
+        $pointer[$relativePath -replace '\.ps1$'] = $fileData        
+    }
+}
 
 #region Common Functions and Filters
+# Any functions or filter file at the site root should be loaded.
 $functionFileNames = 'functions', 'function', 'filters', 'filter'
 $functionPattern   = "(?>$($functionFileNames -join '|'))\.ps1$"
 $functionFiles     = Get-ChildItem -Path $Site.PSScriptRoot |
     Where-Object Name -Match $functionPattern
 
 foreach ($file in $functionFiles) {
-    # If we have a file with the name function or functions, we'll use it to set the site configuration.
+    # If we have a file with the name function or functions, 
+    # we'll dot source it now so we can use the functions in the config
     . $file.FullName
 }
 #endregion Common Functions and Filters
@@ -44,8 +78,9 @@ foreach ($file in $functionFiles) {
 # Set an alias to buildPage.ps1
 Set-Alias BuildPage ./buildPage.ps1
 
-# If we have an event path,
-$gitHubEvent =
+# If we have a github event,
+# save it to a variable and to the `$site`
+$site.GitHubEvent = $gitHubEvent =
     if ($env:GITHUB_EVENT_PATH) {
         # all we need to do to serve it is copy it.
         Copy-Item $env:GITHUB_EVENT_PATH .\gitHubEvent.json
@@ -59,12 +94,15 @@ if (Test-Path 'CNAME') {
     $Site.CNAME = $CNAME = (Get-Content -Path 'CNAME' -Raw).Trim()
     $Site.RootUrl = "https://$CNAME/"
 } elseif (
+    # otherwise, if we are in a directory that could be a domain
     ($site.PSScriptRoot | Split-Path -Leaf) -like '*.*'
 ) {
+    # assume it _is_ the domain.
     $site.CNAME = $CNAME = ($site.PSScriptRoot | Split-Path -Leaf)
     $site.RootUrl = "https://$CNAME/"
 }
 
+#region config
 # If we have a config.json file, it can be used to set the site configuration.
 if (Test-Path 'config.json') {
     $siteConfig = Get-Content -Path 'config.json' -Raw | ConvertFrom-Json
@@ -98,6 +136,7 @@ if (Test-Path 'config.ps1') {
     # run it, and let it configure anything it chooses to.
     . $configScript
 }
+#endregion config
 
 # Start the clock
 $site['LastBuildTime'] = $lastBuildTime = [DateTime]::Now
@@ -105,10 +144,12 @@ $site['LastBuildTime'] = $lastBuildTime = [DateTime]::Now
 
 # Start the clock on the build process
 $buildStart = [DateTime]::Now
+Write-Host "Started Building Pages @ $buildStart"
 # pipe every file we find to buildFile
 $Site.Files | . buildPage
 # and stop the clock
 $buildEnd = [DateTime]::Now
+Write-Host "Finished Building Pages @ $buildEnd ($($buildEnd - $buildStart))"
 
 #endregion Build Files
 

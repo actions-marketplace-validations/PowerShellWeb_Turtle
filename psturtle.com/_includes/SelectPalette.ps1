@@ -18,7 +18,19 @@ $SelectPaletteId = 'SelectPalette',
 
 # The identifier for the stylesheet.  By default, palette.
 [string]
-$PaletteId = 'palette'
+$PaletteId = 'palette',
+
+[string]
+$DefaultPalette = $(
+    if ($page.Palette) {
+        $page.Palette
+    } elseif ($site.Palette) {
+        $site.Palette
+    }
+    else {
+        ''
+    }
+)
 )
 
 
@@ -43,7 +55,8 @@ $(
         $script:PaletteList = Invoke-RestMethod $PaletteListSource
     }
     foreach ($paletteName in $script:PaletteList) {
-        "<option value='$([Web.HttpUtility]::HtmlAttributeEncode($paletteName))'>$([Web.HttpUtility]::HtmlEncode($paletteName))</option>"
+        $selectedPalette = if ($defaultPalette -and $defaultPalette -eq $paletteName) { " selected='true'"} else { '' }
+        "<option value='$([Web.HttpUtility]::HtmlAttributeEncode($paletteName))'$selectedPalette>$([Web.HttpUtility]::HtmlEncode($paletteName))</option>"
     }
 )
 </select>

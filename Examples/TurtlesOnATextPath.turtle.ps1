@@ -1,10 +1,14 @@
 if ($PSScriptRoot) { Push-Location $PSScriptRoot}
 
-$turtlesOnATextPath = turtle rotate 90 jump 50 rotate -90 ArcRight 50 60 text 'turtles on a text path' textattribute @{'font-size'=36}
+$turtlesOnATextPath = turtle rotate 90 jump 50 rotate -90 ArcRight 500 60 text 'turtles on a text path' textattribute @{'font-size'=36}
 $turtlesOnATextPath | Save-Turtle ./TurtlesOnATextPath.svg
+$turtlesOnATextPath = $turtlesOnATextPath.Morph(@(
+    $turtlesOnATextPath
+    turtle rotate 90 jump 50 rotate -90 ArcRight 500 -60 
+    $turtlesOnATextPath
+))
 
-
-$textPath2 = turtle rotate 90 jump 50 rotate -90 ArcRight 50 -60 
+$turtlesOnATextPath | Save-Turtle ./TurtlesOnATextPath-BendMorph.svg
 
 $turtlesOnATextPath = 
     turtle rotate 90 jump 50 rotate -90 rotate -30 forward 200 text 'turtles on a text path' morph @(

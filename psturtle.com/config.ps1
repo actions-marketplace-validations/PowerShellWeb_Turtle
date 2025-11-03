@@ -33,6 +33,14 @@ if ($psScriptRoot -and -not $site.PSScriptRoot) {
 }
 #endregion Core
 
+#region Exclude
+if ($site.Exclude -isnot [Collections.IDictionary] ) {
+    $site.Exclude = [Ordered]@{}
+}
+$site.Exclude.Wildcards = '*.functions.ps1', '*.function.ps1', '*.filters.ps1`', '*.filter.ps1', '*.turtle.ps1'
+$site.Exclude.Patterns = 'build\\.[^\\.]+\\.ps1$'
+#endregion Exclude
+
 #region _
 if ($site.PSScriptRoot) {
     $underbarItems = 
@@ -120,6 +128,10 @@ $Site.Logo =
         {
             turtle SierpinskiTriangle 42 4
         }
+
+        {
+            turtle rotate -90 TurtleMonotile 42 
+        }
     )
 
 $site.Logo = . ($site.Logo | Get-Random)
@@ -133,24 +145,25 @@ $site.Taskbar = [Ordered]@{
     'BlueSky' = 'https://bsky.app/profile/psturtle.com'
     'GitHub' = 'https://github.com/PowerShellWeb/Turtle'
     'RSS' = 'https://psturtle.com/RSS/index.rss'
-    'Help' = @(
-if ($site.Module) {
-    "<h3>Installing</h3>"
-    "<pre><code>Install-Module $($site.Module)</code></pre>"
-    "<h3>Updating</h3>"
-    "<pre><code>Install-Module $($site.Module) -Force</code></pre>"
-    "<h3>Importing</h3>"
-    "<pre><code>Import-Module $($site.Module)</code></pre>"
-    "<h3>Basics</h3>"
-    "<pre><code>turtle polygon 42 6</code></pre>"
-    "$(turtle polygon 42 6)"    
-    "<h3><a href='/Commands/Get-Turtle'>More Examples</a></h3>"
+    'Help' = '/Commands/Get-Turtle'
 }
-    ) -join [Environment]::NewLine
-    'Settings' = @(
-        . $site.includes.SelectPalette
-        . $site.includes.GetRandomPalette
-    )
+
+$env:TURTLE_BOT = $true
+
+$Site.Palette = "Andromeda"
+
+$site.Footer = @(
+    . $site.includes.SelectPalette
+    . $site.includes.GetRandomPalette
+)
+
+$Site.FixFooter = [Ordered]@{
+    'width' = '90vw'
+    'margin-left' = '5vw'
+    'margin-right' = '5vw'
+    'height' = '5vh'
+    'top' =  '92.5vh'
+    'z-index' = 100
 }
 
 <#$site.HeaderMenu = [Ordered]@{
@@ -316,6 +329,55 @@ $sitebackgrounds = @(
 
     {
         turtle FlowerPetal 
+    }
+    
+    {
+        turtle (
+            @(                
+                'circlearc', 21, -60,
+                'rotate',60,
+                'forward',42  * 6 
+                
+                'rotate', 30
+            ) * 12
+        )
+    }
+
+    { 
+        turtle StarFlower
+    }
+
+    {
+        $spokes = Get-Random -Min 3 -Max 13
+        $rings =  Get-Random -Min 3 -Max (13 * 3)
+        turtle web 42 $spokes $rings morph @(
+            turtle web 42 $spokes $rings 
+            turtle rotate (
+                Get-Random -Max 360
+            ) web 42 $spokes $rings 
+            turtle web 42 $spokes $rings 
+        )
+    }
+
+    {
+        Turtle @(
+            'CircleArc',42, -90,
+            'Rotate', 90 * 4
+        )
+    }
+
+    {
+        Turtle @(
+            'CircleArc',42, -60,
+            'Rotate', 60 * 6
+        )
+    }
+
+    {
+        Turtle @(
+            'CircleArc',42, -45,
+            'Rotate', 45 * 8
+        )
     }
 )
 

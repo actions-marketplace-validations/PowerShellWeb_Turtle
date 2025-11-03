@@ -31,7 +31,10 @@ We can easily keep a list of these steps in memory, and draw them with [SVG](htt
 
 We can make Turtle in any language.
 
-This module makes Turtle in PowerShell.
+This module gives you Turtle in a PowerShell.
+
+* [Amazing Examples](https://psturtle.com/Commands/Get-Turtle)
+* [A Brief History of Turtles](https://psturtle.com/History)
 ### Installing and Importing
 
 We can install Turtle from the PowerShell Gallery:
@@ -306,10 +309,10 @@ At the most basic, let's make an inscribed circle and square:
     A simple example of turtles containing turtles
 #>
 $inscribedCircle = 
-    turtle width 42 height 42 turtles @{
+    turtle width 42 height 42 turtles ([Ordered]@{
         'square' = turtle square 42 fill '#4488ff' stroke '#224488'
         'circle' = turtle circle 21 fill '#224488' stroke '#4488ff'
-    } 
+    })
 
 $inscribedCircle | Save-Turtle ./InscribedCircle.svg
 $inscribedCircle | Save-Turtle ./InscribedCirclePattern.svg Pattern

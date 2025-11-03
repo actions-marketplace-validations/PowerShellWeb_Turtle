@@ -1,14 +1,13 @@
 <#
 .SYNOPSIS
-    Sets the opacity
+    Sets a Turtle's opacity
 .DESCRIPTION
-    Sets the opacity of the path
+    Sets the opacity of a Turtle
 .EXAMPLE
-    turtle forward 100 opacity 0.5 save ./dimLine.svg
+    turtle opacity .5 opacity
 #>
 param(
 [double]
-$Opacity = 'nonzero'
+$Opacity
 )
-
-$this.PathAttribute = [Ordered]@{'opacity' = $Opacity}
+$this | Add-Member NoteProperty '.Opacity' $Opacity -Force

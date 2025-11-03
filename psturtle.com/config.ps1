@@ -150,7 +150,7 @@ $site.Taskbar = [Ordered]@{
 
 $env:TURTLE_BOT = $true
 
-$Site.Palette = "Cyberdyne"
+$Site.Palette = "Andromeda"
 
 $site.Footer = @(
     . $site.includes.SelectPalette

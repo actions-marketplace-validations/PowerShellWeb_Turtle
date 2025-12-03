@@ -1,3 +1,9 @@
+<#
+.SYNOPSIS
+    Draws a Koch Curve
+.DESCRIPTION
+    Draws a Koch Curve, using an L-System.
+#>
 param(
     [double]$Size = 10,
     [double]$Rotation = 90,

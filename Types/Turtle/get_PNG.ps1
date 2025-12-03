@@ -1,4 +1,4 @@
-$chromiumNames = 'chromium','chrome','msedge'
+$chromiumNames = 'chromium','chrome'
 foreach ($browserName in $chromiumNames) {
     $chromiumCommand = 
         $ExecutionContext.SessionState.InvokeCommand.GetCommand($browserName,'Application')

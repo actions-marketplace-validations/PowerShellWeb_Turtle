@@ -11,4 +11,8 @@ param(
 $Steps
 )
 
-$this |  Add-Member -MemberType NoteProperty -Force -Name '.Steps' -Value @($Steps)
+$currentSteps = $this.Steps
+foreach ($step in $steps) {
+    $currentSteps.Add($step)
+}
+

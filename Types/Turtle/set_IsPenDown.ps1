@@ -2,10 +2,8 @@ param(
 [bool]
 $IsDown
 )
-
-$this | 
-    Add-Member -MemberType NoteProperty -Force -Name '.IsPenDown' -Value $IsDown
-    
-if ($VerbosePreference -ne 'SilentlyContinue') {
-    Write-Verbose "Turtle is now $($IsDown ? 'down' : 'up')"
+if ($null -eq $this.'.IsPenDown') {
+    $this | Add-Member -MemberType NoteProperty -Force -Name '.IsPenDown' -Value $IsDown
+} else {
+    $this.'.IsPenDown' = $IsDown
 }

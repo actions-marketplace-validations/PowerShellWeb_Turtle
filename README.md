@@ -8,8 +8,6 @@
     </a>
 </div>
 
-
-
 ## Turtles in a PowerShell
 
 [Turtle Graphics](https://en.wikipedia.org/wiki/Turtle_graphics) are a great way to learn programming and describe shapes.
@@ -33,7 +31,10 @@ We can easily keep a list of these steps in memory, and draw them with [SVG](htt
 
 We can make Turtle in any language.
 
-This module makes Turtle in PowerShell.
+This module gives you Turtle in a PowerShell.
+
+* [Amazing Examples](https://psturtle.com/Commands/Get-Turtle)
+* [A Brief History of Turtles](https://psturtle.com/History)
 ### Installing and Importing
 
 We can install Turtle from the PowerShell Gallery:
@@ -90,6 +91,9 @@ The turtle is represented as an object, and any number of commands can make or m
 
 Last but not least:  Get-Turtle lets you run multiple steps of turtle, and is aliased to 	urtle.
 
+Get-Turtle is the command we will use most often, and we will almost always just call it by the alias 	urtle.
+
+If you want to get a sense of all that Turtle can do, check out the [Get-Turtle examples](https://psturtle.com/Commands/Get-Turtle)
 
 ### Drawing Squares
 
@@ -102,15 +106,10 @@ Let's start simple, by drawing a square with a series of commands.
 
 ~~~PowerShell
 
-New-Turtle | 
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
-    Move-Turtle Forward 10 |
-    Move-Turtle Rotate 90 |
+turtle Forward 10 Rotate 90 |
+    turtle Forward 10 Rotate 90 |
+    turtle Forward 10 Rotate 90 |
+    turtle Forward 10 Rotate 90 |    
     Save-Turtle "./Square.svg"
 
 ~~~
@@ -198,7 +197,7 @@ Because this Turtle generates SVG, we can also use it to create patterns.
 
 ### Drawing Fractals
 
-Turtle is often used to draw fractals.
+Turtle is can be used to draw fractals.
 
 Many fractals can be described in something called a [L-System](https://en.wikipedia.org/wiki/L-system) (short for Lindenmayer system)
 
@@ -264,7 +263,7 @@ For example, here is an example of a pattern comprised of Koch Snowflakes:
 
 ~~~
 <div align='center'>
-<img src='./Examples/KochSnowflakePattern.svg' alt='Snowflake Pattern' width='50%' />
+<img src='./Examples/KochSnowflakePattern.svg' alt='Snowflake Pattern' width='100%' height='50%' />
 </div>
 We can also animate the pattern, for endless variety:
 
@@ -288,7 +287,219 @@ $turtle | save-turtle -Path ./EndlessSnowflake.svg -Property Pattern
 Pop-Location
 ~~~
 <div align='center'>
-<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' />
+<img src='./Examples/EndlessSnowflake.svg' alt='Endless Snowflake Pattern' width='100%' height='50%' />
+</div>
+### Turtles all the way down
+
+A turtle can contain turtles, which can contain turtles, which can contain turtles ...
+
+We call this 'Turtles All The Way Down', and it lets us do two very important sets of things:
+
+* It allows turtles to interact
+* It allows us to model the behavior of multiple turtles
+
+Let's start with a few cool examples.
+
+At the most basic, let's make an inscribed circle and square:
+
+~~~PowerShell
+.SYNOPSIS
+    An inscribed circle
+.DESCRIPTION
+    A simple example of turtles containing turtles
+#>
+$inscribedCircle = 
+    turtle width 42 height 42 turtles ([Ordered]@{
+        'square' = turtle square 42 fill '#4488ff' stroke '#224488'
+        'circle' = turtle circle 21 fill '#224488' stroke '#4488ff'
+    })
+
+$inscribedCircle | Save-Turtle ./InscribedCircle.svg
+$inscribedCircle | Save-Turtle ./InscribedCirclePattern.svg Pattern
+~~~
+
+<div align='center'>
+<img src='./Examples/InscribedCircle.svg' alt='Inscribed Circle' width='100%' />
+</div>
+Let's see it as a pattern:
+<div align='center'>
+<img src='./Examples/InscribedCirclePattern.svg' alt='Inscribed Circle Pattern' width='100%' height='50%' />
+</div>
+#### Behavior Modelling
+
+Imagine we are four turtles in a square, each trying to catch up with the next turtle.
+
+[What kind of shape do you think our paths will draw?](Get-Content ./Examples/FollowThatTurtle.turtle.ps1)
+
+~~~PowerShell
+.SYNOPSIS
+    Follow that Turtle!
+.DESCRIPTION
+    Basic behavior modelling with Turtle.
+
+    A series of turtles will follow the next turtle.
+#>
+param(
+# The size of the square
+[double]
+$Size = 200,
+
+# The speed of each turtle
+[double]
+$Speed = 1,
+
+# The number of steps
+[int]
+$StepCount
+)
+
+# If no steps were provided
+if (-not $StepCount) {
+    # double the size and divide by speed
+    $StepCount = ($size * 2)/$speed
+}
+
+# Set up our turtles.
+$followThatTurtle = turtle stroke '#4488ff' square $Size turtles ([Ordered]@{
+    t1 = turtle teleport 0 0 stroke '#4488ff'
+    t2 = turtle teleport $Size 0 stroke '#4488ff'
+    t3 = turtle teleport $Size $Size stroke '#4488ff' 
+    t4 = turtle teleport 0 $Size stroke '#4488ff'
+})
+
+# For each step
+foreach ($n in 1..([Math]::Abs($StepCount))) {
+    # Go to each turtle
+    for ($turtleNumber = 0; $turtleNumber -lt $followThatTurtle.Turtles.Count; $turtleNumber++) {        
+        $thisTurtle = $followThatTurtle.Turtles[$turtleNumber]
+        # and find the next turtle
+        $nextTurtle = if ($turtleNumber -eq $followThatTurtle.Turtles.Count - 1) {
+            $followThatTurtle.Turtles[0]
+        } else {
+            $followThatTurtle.Turtles[$turtleNumber + 1]
+        }
+        # If we are more than 1 unit away
+        if ($thisTurtle.Distance($nextTurtle) -ge 1) {
+            # rotate towards it 
+            $null = $thisTurtle.Rotate(
+                $thisTurtle.Towards($nextTurtle)
+            ).Forward($Speed) # and move forward.
+        }        
+    }
+}
+
+
+$followThatTurtle | turtle save ./FollowThatTurtle.svg
+$followThatTurtle.Stroke = 'transparent'
+$followThatTurtle | Save-Turtle ./FollowThatTurtlePattern.svg Pattern
+
+~~~
+<div align='center'>
+<img src='./Examples/FollowThatTurtle.svg' alt='Follow That Turtle' width='100%' />
+</div>
+Let's see it as a pattern:
+<div align='center'>
+<img src='./Examples/FollowThatTurtlePattern.svg' alt='Follow That Turtle' width='100%' height='50%' />
+</div>
+
+Now let's imagine we have four turtles in the center, and they're trying to get away from the turtles in the corners.
+
+[What kind of shape will this produce?](./Examples/FollowThatTurtleHideAndSeek.turtle.ps1)
+~~~PowerShell
+.SYNOPSIS
+    Hide and Seek
+.DESCRIPTION
+    Simple behavior modelling with Turtle.
+.NOTES
+    Imagine we have eight turtles playing hide and seek
+
+    Four turtles are seeking.
+
+    Four turtles are hiding.
+
+    Each hiding turtle starts in the center.
+
+    Each seeking turtle will chase a hiding turtle.
+
+    Each hiding turtle will run away at an angle (by default 90 degrees).
+#>
+param(
+[double]
+$SquareSize = 200,
+[double]
+$HiderSpeed = 2,
+[double]
+$SeekerSpeedRatio = ((1 + [Math]::Sqrt(5))/2),
+[double]
+$EvadeAngle = 90
+)
+
+if ($PSScriptRoot) { Push-Location $PSScriptRoot}
+
+$midpoint = ($squareSize/2), ($squareSize/2)
+$seekerSpeed = $HiderSpeed * $SeekerSpeedRatio # (1 + (Get-Random -Min 10 -Max 50)/50) # (Get-Random -Min 1 -Max 5)
+$stepCount = $squareSize/2 * (1 + ([Math]::Abs($attackerSpeed - $evaderSpeed)))
+
+$hideAndSeek = turtle square $squareSize stroke '#4488ff' turtles ([Ordered]@{
+    s1 = turtle teleport 0 0 stroke '#4488ff' # stroke 'red' pathclass 'red-stroke' fill red
+    s2 = turtle teleport $squareSize 0 stroke '#4488ff' # stroke 'yellow' pathclass 'yellow-stroke' fill yellow
+    s3 = turtle teleport $squareSize $squareSize stroke '#4488ff' # stroke 'green' pathclass 'green-stroke' fill green
+    s4 = turtle teleport 0 $squareSize stroke '#4488ff' # stroke 'blue' PathClass 'blue-stroke' fill blue
+    h1 = turtle teleport $midpoint stroke '#4488ff' # stroke 'red' fill 'red'
+    h2 = turtle teleport $midpoint stroke '#4488ff' # stroke 'yellow' fill 'yellow'
+    h3 = turtle teleport $midpoint stroke '#4488ff' # stroke 'green' fill 'green'
+    h4 = turtle teleport $midpoint stroke '#4488ff' # stroke 'blue' fill 'blue'
+})
+
+
+
+# Since all attackers and evaders start with equal distances, 
+# when we have caught one we have caught them all.
+:caughtEm foreach ($n in 1..$stepCount) {
+
+    # Get the seeker turtles
+    $seekers = $hideAndSeek.Turtles[@($hideAndSeek.Turtles.Keys -match '^s')]
+    # Get the hiding turtles
+    $hiders = $hideAndSeek.Turtles[@($hideAndSeek.Turtles.Keys -match '^h')]
+
+    for ($hiderNumber = 0; $hiderNumber -lt $hiders.Length; $hiderNumber++) {
+        $thisTurtle = $hiders[$hiderNumber]
+        $runningAwayFrom = $seekers[$hiderNumber % $seekers.Length]
+        $null = $thisTurtle.Rotate(
+            $thisTurtle.Towards($runningAwayFrom) + $evadeAngle # (Get-Random -Minimum 80 -Maximum 100)
+        ).Forward($HiderSpeed)
+    }
+    
+    for ($seekerNumber = 0; $seekerNumber -lt $seekers.Length; $seekerNumber++) {
+        $thisTurtle = $seekers[$seekerNumber]
+        $runningTowards = $hiders[$seekerNumber % $hiders.Length]
+        $null = $thisTurtle.Rotate(
+            $thisTurtle.Towards($runningTowards) # + (Get-Random -Minimum -10 -Maximum 10)
+        ).Forward($seekerSpeed)
+    }
+
+    for ($seekerNumber = 0; $seekerNumber -lt $seekers.Length; $seekerNumber++) {
+        $thisTurtle = $seekers[$seekerNumber]        
+        $runningTowards = $hiders[$seekerNumber % $hiders.Length]
+        if ($thisTurtle.Distance($runningTowards) -le 1) {
+            break caughtEm
+        }
+    }
+}
+
+
+$hideAndSeek | turtle save ./FollowThatTurtleHideAndSeek.svg
+$hideAndSeek.Stroke = 'transparent'
+$hideAndSeek | Save-Turtle ./FollowThatTurtleHideAndSeekPattern.svg Pattern
+
+if ($PSScriptRoot) { Pop-Location}
+~~~
+<div align='center'>
+<img src='./Examples/FollowThatTurtleHideAndSeek.svg' alt='Follow That Turtle Hide And Seek' width='100%' />
+</div>
+Let's see it as a pattern:
+<div align='center'>
+<img src='./Examples/FollowThatTurtleHideAndSeekPattern.svg' alt='Follow That Turtle Hide And Seek Pattern' width='100%' height='50%' />
 </div>
 
 ### Turtles in HTML
@@ -307,11 +518,16 @@ turtle SierpinskiTriangle |
 
 Anything we do with our turtle should work within a webpage.
 
+To include a Turtle in a page, we can simply stringify it:
+
+~~~PowerShell
+"$(turtle SierpinskiTriangle)"
+~~~
+
 There are a few properties of the turtle that may be helpful:
 
 * .Canvas returns the turtle rendered in an HTML canvas
 * .OffsetPath returns the turtle as an offset path
-* .ClipPath returns the turtle as a clip path
 
 
 ### Turtles in Raster

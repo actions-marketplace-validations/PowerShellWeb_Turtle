@@ -18,12 +18,7 @@ $X,
 $Y
 )
 
-$deltaX = $x - $this.X 
-$deltaY = $y - $this.Y
-if ($this.IsPenDown) {
-    $this.Steps += " l $deltaX $deltaY"
-} else {
-    $this.Steps += " m $deltaX $deltaY"
-}
-$this.Position = $deltaX, $deltaY
-return $this
+return $this.Step(
+    $x - $this.X,
+    $y - $this.Y
+)

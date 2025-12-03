@@ -21,9 +21,9 @@
     $turtle.Pattern.Save("$pwd/KochIsland2.svg")
 #>
 param(
-    [double]$Size = 20,
-    [int]$Order = 3,
-    [double]$Angle = 90
+    [double]$Size = 42,
+    [int]$Order = 4,
+    [double]$Angle = -90
 )
 
 return $this.LSystem('W',  [Ordered]@{
